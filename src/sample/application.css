@@ -1,0 +1,10 @@
+.root{
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.image-button{
+    -fx-background-color:transparent;
+    -fx-border-color:transparent;
+    -fx-text-fill:transparent;
+}
