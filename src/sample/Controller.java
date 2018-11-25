@@ -8,7 +8,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 public class Controller extends Application {
     private Stage stage;
@@ -20,6 +24,9 @@ public class Controller extends Application {
     @FXML private Button optionsButton;
 
     @FXML private Button backButton;
+
+    private MediaPlayer mediaPlayer;
+    private Media sound;
 
     @Override
     public void start(Stage stage) throws Exception{
@@ -35,11 +42,16 @@ public class Controller extends Application {
 
 
     @FXML public void initialize(){
+        sound = new Media(new File("src/res/AIRHORN.mp3").toURI().toString());
     }
 
 
     @FXML private void mainMenuButtonClicked(Event e){
         System.out.println(e.getSource());
+        mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.stop();
+        mediaPlayer.play();
+
         if(e.getSource() == hostButton){
             changeFXML("hostgame.fxml");
         } else if(e.getSource() == joinButton){
