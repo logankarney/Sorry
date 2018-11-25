@@ -13,9 +13,13 @@ import javafx.stage.Stage;
 public class Controller extends Application {
     private Stage stage;
 
+    @FXML AnchorPane pane;
+
     @FXML private Button hostButton;
     @FXML private Button joinButton;
     @FXML private Button optionsButton;
+
+    @FXML private Button backButton;
 
     @Override
     public void start(Stage stage) throws Exception{
@@ -42,6 +46,8 @@ public class Controller extends Application {
 
         } else if(e.getSource() == optionsButton){
 
+        } else if(e.getSource() == backButton){
+            changeFXML("main.fxml");
         }
     }
 
@@ -51,16 +57,23 @@ public class Controller extends Application {
     }
 
 
-    private void changeFXML(String docName){
-        //TODO: Fix way of changing FXML documents/controllers
-        //https://codereview.stackexchange.com/questions/119418/javafx-fxml-window-switcher
+    private void changeFXML(String fxmlDoc){
+        //https://stackoverflow.com/questions/46985889/javafx-window-changer-using-fxml/46999540#46999540
+        //answer provided by Oshan_Mendis
         try {
 
-        } catch(Exception e){
+            setPane(FXMLLoader.load(getClass().getResource(fxmlDoc)));
+        }catch(Exception e){
             e.printStackTrace();
         }
+
+
     }
 
+    protected void setPane(AnchorPane pane){
+        this.pane.getChildren().clear();
+        this.pane.getChildren().add(pane);
+    }
 
     public static void main(String[] args) {
         launch(args);
