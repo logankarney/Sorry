@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -19,16 +20,15 @@ public class Controller extends Application {
 
     @FXML AnchorPane pane;
 
-    @FXML private Button hostButton;
-    @FXML private Button joinButton;
-    @FXML private Button optionsButton;
+    @FXML private TextField playerNameField;
+    @FXML private TextField serverPortField;
 
     @FXML private Button backButton;
 
     private MediaPlayer mediaPlayer;
     private Media sound;
 
-    private int port;
+    private String port;
     private String playerName;
 
     @Override
@@ -42,14 +42,25 @@ public class Controller extends Application {
         stage.setScene(scene);
         stage.show();
 
-        //Gets player's preferred username and the server's port number
-        ConnectPopup.display();
+
 
     }
 
 
     @FXML public void initialize(){
         sound = new Media(new File("src/res/AIRHORN.mp3").toURI().toString());
+
+        //Gets player's preferred username and the server's port number
+        ConnectPopup.display();
+
+
+
+        playerName = ConnectPopup.getUsername();
+        port = ConnectPopup.getPort();
+
+
+        playerNameField.setText(playerName);
+        serverPortField.setText(port);
     }
 
 
@@ -59,15 +70,14 @@ public class Controller extends Application {
         mediaPlayer.stop();
         mediaPlayer.play();
 
-        if(e.getSource() == hostButton){
-            changeFXML("hostgame.fxml");
-        } else if(e.getSource() == joinButton){
 
-        } else if(e.getSource() == optionsButton){
+        //saving for later use
+       /*if(e.getSource() == hostButton){
+            changeFXML("hostgame.fxml");
 
         } else if(e.getSource() == backButton){
             changeFXML("main.fxml");
-        }
+        }*/
     }
 
     /** saving for dealing with pieces later **/
