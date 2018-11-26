@@ -28,6 +28,9 @@ public class Controller extends Application {
     private MediaPlayer mediaPlayer;
     private Media sound;
 
+    private int port;
+    private String playerName;
+
     @Override
     public void start(Stage stage) throws Exception{
         this.stage = stage;
@@ -38,6 +41,10 @@ public class Controller extends Application {
         scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
+
+        //Gets player's preferred username and the server's port number
+        ConnectPopup.display();
+
     }
 
 
