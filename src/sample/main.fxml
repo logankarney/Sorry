@@ -18,9 +18,9 @@
             <Image url="@../res/sorrymain.png" />
          </image>
         </ImageView>
-      <TextField fx:id="playerNameField" layoutX="66.0" layoutY="26.0" prefHeight="31.0" prefWidth="275.0" promptText="Username" />
-      <TextField fx:id="serverPortField" layoutX="367.0" layoutY="26.0" prefHeight="31.0" prefWidth="193.0" promptText="Server port" />
-      <VBox layoutX="66.0" layoutY="103.0" prefHeight="443.0" prefWidth="864.0">
+      <TextField fx:id="playerNameField" layoutX="66.0" layoutY="27.0" prefHeight="31.0" prefWidth="275.0" promptText="Username" styleClass="text-field" />
+      <TextField fx:id="serverPortField" layoutX="372.0" layoutY="27.0" prefHeight="31.0" prefWidth="193.0" promptText="Server port" styleClass="text-field" />
+      <VBox layoutX="66.0" layoutY="89.0" prefHeight="443.0" prefWidth="864.0">
          <children>
             <Pane prefHeight="54.0" prefWidth="864.0" styleClass="label-pane-top" stylesheets="@application.css" />
             <TableView prefHeight="384.0" prefWidth="762.0">
@@ -32,7 +32,7 @@
             </TableView>
             <Pane prefHeight="56.0" prefWidth="864.0" styleClass="label-pane-bottom" stylesheets="@application.css">
                <children>
-                  <Button layoutX="790.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Join" />
+                  <Button layoutX="790.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Join" />
                </children>
                <VBox.margin>
                   <Insets />

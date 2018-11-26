@@ -6,24 +6,25 @@
     -fx-my-green: #2eda52;
     -fx-my-yellow: #fffa4a;
 
-    -fx-my-background: #6e6f72;
+    -fx-my-background: #c1c5cc;
+}
+
+.text-field{
+    -fx-background-radius: 10 10 10 10;
 }
 
 .label-pane-top{
-    -fx-background-color: radial-gradient(center 180% -40%, radius 350%, -fx-my-red 45%, -fx-my-yellow 50%);
+    /*-fx-background-color: radial-gradient(center 180% -40%, radius 350%, -fx-my-red 45%, -fx-my-yellow 50%);*/
+    -fx-background-color: -fx-my-background;
     -fx-background-radius: 10 10 0 0;
 }
 
 .label-pane-bottom{
-    -fx-background-color: radial-gradient(center 180% -40%, radius 350%, -fx-my-green 40%, -fx-my-blue 50%);
+    /*-fx-background-color: radial-gradient(center 180% -40%, radius 350%, -fx-my-green 40%, -fx-my-blue 50%);*/
+    -fx-background-color: -fx-my-background;
     -fx-background-radius: 0 0 10 10;
 }
 
-.outline-label .text{
-    -fx-border-color: white;
-    -fx-stroke: black;
-    -fx-stroke-width: 0px;
-}
 
 .image-button{
     -fx-background-color:transparent;
