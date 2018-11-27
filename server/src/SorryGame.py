@@ -9,7 +9,6 @@ class SorryGame(object):
 
 	def add_player(self, new_player, color):
 		self.players[new_player] = {"color": color}
-		self.board[new_player.username] = {}
 		color_initial = color[0].upper()
 		self.turns.append(new_player.username)
 		for pawn_number in [1, 2, 3, 4]:
