@@ -27,6 +27,8 @@ public class Controller extends Application {
 
     @FXML private Button joinButton;
 
+    @FXML private Button cardButton;
+
     private MediaPlayer mediaPlayer;
     private Media sound;
 
@@ -79,8 +81,8 @@ public class Controller extends Application {
     }
 
 
-    @FXML private void mainMenuButtonClicked(Event e){
-        System.out.println(e.getSource());
+    @FXML private void fxButtonClicked(Event e){
+        //System.out.println(e.getSource());
         //mediaPlayer = new MediaPlayer(sound);
        // mediaPlayer.stop();
       //  mediaPlayer.play();
@@ -90,9 +92,8 @@ public class Controller extends Application {
        if(e.getSource() == joinButton) {
            changeFXML("game.fxml");
            addButtons();
-           //pane.getChildren().clear();
-           //TileButton button = new TileButton(TileColor.RED);
-           //pane.getChildren().add(button);
+       } else if(e.getSource() == cardButton){
+           System.out.println("Card Drawn");
        }
     }
 
