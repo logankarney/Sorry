@@ -22,6 +22,10 @@ class SorryGame(object):
 			del self.players[leaving_player]
 			del self.board[leaving_player.username]
 
+		if len(self.players) == 0:
+			del self.server.current_games[self.name]
+			return
+
 		for player in self.players.keys():
 			player.send_json("player_left", leaving_player_data)
 			self.send_game_data(player)
