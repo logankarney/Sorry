@@ -21,9 +21,9 @@ class SorryGame(object):
 
 	def remove_player(self, leaving_player, reason):
 		leaving_player_data = {"player_name": leaving_player.username, "reason": reason}
-		if leaving_player in self.players:
-			del self.players[leaving_player]
-			del self.board[leaving_player.username]
+		leaving_player_color = self.players[leaving_player]["color"][0].upper()
+		self.board = {k:v for k,v in self.board if not k.startswith(leaving_player_color)}
+		del self.players[leaving_player]
 
 		if len(self.players) == 0:
 			del self.server.current_games[self.name]
