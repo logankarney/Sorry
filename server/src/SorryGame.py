@@ -10,9 +10,11 @@ class SorryGame(object):
 	def add_player(self, new_player, color):
 		self.players[new_player] = {"color": color}
 		self.board[new_player.username] = {}
+		color_initial = color[0].upper()
 		self.turns.append(new_player.username)
-		for pawn in [1, 2, 3, 4]:
-			self.board[new_player.username][pawn] = f"{color[0].upper()}22"
+		for pawn_number in [1, 2, 3, 4]:
+			pawn = f"{color_initial}{pawn_number}"
+			self.board[pawn] = f"{color_initial}22"
 		for player in self.players.keys():
 			new_player_data = {"name": new_player.username, "color": color},
 			player.send_json("player_joined", new_player_data)
