@@ -40,3 +40,18 @@ class SorryGame(object):
 
 	def get_players_and_colors(self):
 		return {k.username: v["color"] for k,v in self.players.items()}
+
+	def update_pawn(self, player, pawn, new_position, turn_ends):
+		self.board[pawn] = new_position
+		new_pawn_data = {
+			"player": player.username,
+			"pawn": pawn,
+			"new_position": new_position,
+		}
+		for player in self.players.keys():
+			player.send_json("pawn_updated", new_pawn_data)
+
+		if turn_ends:
+			self.turns.append(self.turns.pop(0))
+			for player in self.players.keys():
+				player.send_json("next_turn", {"player": self.turns[0]})
