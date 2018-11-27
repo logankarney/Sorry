@@ -1,12 +1,15 @@
 .root{
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
-    -fx-my-blue: #0061e2;
-    -fx-my-red: #aa0a0a;
-    -fx-my-green: #2eda52;
-    -fx-my-yellow: #fffa4a;
+    -fx-my-blue: rgba(0, 97, 224, 0.35);
+    -fx-my-red: rgba(170, 10, 10, 0.35);
+    -fx-my-green: rgba(47, 218, 84, 0.35);
+    -fx-my-yellow: rgba(255, 249, 77, 0.35);
 
     -fx-my-background: #c1c5cc;
+
+    -fx-my-border-color: black;
+    -fx-my-border-size: 5px;
 }
 
 .text-field{
@@ -30,6 +33,30 @@
     -fx-background-color:transparent;
     -fx-border-color:transparent;
     -fx-text-fill:transparent;
+}
+
+#red-tile{
+    -fx-background-color: -fx-my-red;
+    -fx-border-color: -fx-my-border-color;
+    -fx-border-padding: -fx-my-border-size;
+}
+
+#blue-tile{
+    -fx-background-color: -fx-my-blue;
+    -fx-border-color: -fx-my-border-color;
+    -fx-border-padding: -fx-my-border-size;
+}
+
+#green-tile{
+    -fx-background-color: -fx-my-green;
+    -fx-border-color: -fx-my-border-color;
+    -fx-border-padding: -fx-my-border-size;
+}
+
+#yellow-tile{
+    -fx-background-color: -fx-my-yellow;
+    -fx-border-color: -fx-my-border-color;
+    -fx-border-padding: -fx-my-border-size;
 }
 
 
