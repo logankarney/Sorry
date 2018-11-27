@@ -19,6 +19,7 @@ class SorryUser(asyncio.Protocol):
 			"get_game_data": self.get_game_data,
 			"update_pawn": self.update_pawn,
 			"start_game": self.start_game,
+			"player_won": self.player_won,
 		}
 
 	def send_json(self, event_type, data):
@@ -155,3 +156,12 @@ class SorryUser(asyncio.Protocol):
 		if not game:
 			return self.send_error(f"Game {game_name} doesn't exist", data)
 		game.start_game()
+
+	def player_won(self, data):
+		game_name = data.get("game")
+		if not game_name:
+			return self.send_error("No game name given", data)
+		game = self.server.current_games.get(game_name)
+		if not game:
+			return self.send_error(f"Game {game_name} doesn't exist", data)
+		game.player_finished(self.username)

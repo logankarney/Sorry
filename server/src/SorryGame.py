@@ -15,7 +15,7 @@ class SorryGame(object):
 			pawn = f"{color_initial}{pawn_number}"
 			self.board[pawn] = f"{color_initial}22"
 		for player in self.players.keys():
-			new_player_data = {"name": new_player.username, "color": color},
+			new_player_data = {"game": self.name, "name": new_player.username, "color": color},
 			player.send_json("player_joined", new_player_data)
 			self.send_game_data(player)
 
@@ -23,7 +23,7 @@ class SorryGame(object):
 			self.start_game()
 
 	def remove_player(self, leaving_player, reason):
-		leaving_player_data = {"player_name": leaving_player.username, "reason": reason}
+		leaving_player_data = {"game": self.name, "player_name": leaving_player.username, "reason": reason}
 		leaving_player_color = self.players[leaving_player]["color"][0].upper()
 		self.board = {k:v for k,v in self.board.items() if not k.startswith(leaving_player_color)}
 		self.turns.remove(leaving_player.username)
@@ -38,7 +38,7 @@ class SorryGame(object):
 			self.send_game_data(player)
 
 	def send_game_data(self, player):
-		game = {"players": self.get_players_and_colors(), "turns": self.turns, "board": self.board}
+		game = {"game": self.name, "players": self.get_players_and_colors(), "turns": self.turns, "board": self.board}
 		player.send_json("game_data", game)
 
 	def get_players_and_colors(self):
@@ -47,6 +47,7 @@ class SorryGame(object):
 	def update_pawn(self, player, pawn, new_position, turn_ends):
 		self.board[pawn] = new_position
 		new_pawn_data = {
+			"game": self.name,
 			"player": player.username,
 			"pawn": pawn,
 			"new_position": new_position,
@@ -57,10 +58,15 @@ class SorryGame(object):
 		if turn_ends:
 			self.turns.append(self.turns.pop(0))
 			for player in self.players.keys():
-				player.send_json("next_turn", {"player": self.turns[0]})
+				player.send_json("next_turn", {"game": self.name, "player": self.turns[0]})
 
 	def start_game(self):
 		self.state = "started"
 		for player in self.players.keys():
 			player.send_json("game_started", {"game": self.name})
-			player.send_json("next_turn", {"player": self.turns[0]})
+			player.send_json("next_turn", {"game": self.name, "player": self.turns[0]})
+
+	def player_finished(self, player):
+		self.turns.remove(player.username)
+		for player in self.players.keys():
+			player.send_json("player_finished", {"game": self.name, "player": player.username})
