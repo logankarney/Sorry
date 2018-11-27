@@ -27,7 +27,9 @@
     -fx-background-color: -fx-my-background;
     -fx-background-radius: 0 0 10 10;
 }
-
+.button .text{
+    -fx-font-size: 20;
+}
 
 .image-button{
     -fx-background-color:transparent;

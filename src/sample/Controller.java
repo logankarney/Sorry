@@ -168,44 +168,54 @@ public class Controller extends Application {
             greenRow[i].setLayoutX(33 + (i + 1- size)* 46);
             greenRow[i].setLayoutY(33 + 46 * 14);
 
+            //Scoring tile
             if(i == redRow.length - 2){
                 redRow[i].setPrefSize(92,92);
+                redRow[i].setOccupiedBy(0);
 
                 blueRow[i].setPrefSize(92,92);
                 blueRow[i].setLayoutX(blueRow[i].getLayoutX() - 46);
+                blueRow[i].setOccupiedBy(0);
 
                 yellowRow[i].setPrefSize(92,92);
                 yellowRow[i].setLayoutX(yellowRow[i].getLayoutX() - 46);
                 yellowRow[i].setLayoutY(yellowRow[i].getLayoutY() - 46);
+                yellowRow[i].setOccupiedBy(0);
 
                 greenRow[i].setPrefSize(92,92);
                 greenRow[i].setLayoutY(greenRow[i].getLayoutY() - 46);
+                greenRow[i].setOccupiedBy(0);
             }
 
             pane.getChildren().addAll(redRow[i], blueRow[i], yellowRow[i], greenRow[i]);
         }
 
+        //home area
         int last = redRow.length - 1;
 
         redRow[last] = new TileButton(TileColor.RED, last);
         redRow[last].setPrefSize(92,92);
         redRow[last].setLayoutX(46 * 4 + 33);
         redRow[last].setLayoutY(33 + 46);
+        redRow[last].setOccupiedBy(4);
 
         blueRow[last] = new TileButton(TileColor.BLUE, last);
         blueRow[last].setPrefSize(92, 92);
         blueRow[last].setLayoutX(33 + 14 * 46);
         blueRow[last].setLayoutY(33 + 46 * 4);
+        blueRow[last].setOccupiedBy(4);
 
         yellowRow[last] = new TileButton(TileColor.YELLOW, last);
         yellowRow[last].setPrefSize(92,92);
         yellowRow[last].setLayoutX(33 + 11 * 46);
         yellowRow[last].setLayoutY(33 + 14 * 46);
+        yellowRow[last].setOccupiedBy(4);
 
         greenRow[last] = new TileButton(TileColor.GREEN, last);
         greenRow[last].setPrefSize(92,92);
         greenRow[last].setLayoutX(33 + 46);
         greenRow[last].setLayoutY(33 + 46 * 11);
+        greenRow[last].setOccupiedBy(4);
 
         pane.getChildren().addAll(redRow[last], blueRow[last], yellowRow[last], greenRow[last]);
     }

@@ -8,6 +8,7 @@ public class TileButton extends Button {
     private Image picture;
     private TileColor c;
     private int spot;
+    private int occupiedBy = 0;
 
     public TileButton(Image picture, TileColor c, int spot){
         this.picture = picture;
@@ -70,6 +71,16 @@ public class TileButton extends Button {
 
     public void setSpot(int spot) {
         this.spot = spot;
+    }
+
+    public int getOccupiedBy() {
+        return occupiedBy;
+    }
+
+    public void setOccupiedBy(int occupiedBy) {
+        if(this.spot > 20)
+            this.setText(occupiedBy + "");
+        this.occupiedBy = occupiedBy;
     }
 }
 
