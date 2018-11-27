@@ -121,8 +121,8 @@ class SorryUser(asyncio.Protocol):
 	def get_game_data(self, data):
 		game_name = data.get("name")
 		if not game_name:
-			return self.send_error("No game name given")
+			return self.send_error("No game name given", data)
 		game = self.server.current_games.get(game_name)
 		if not game:
-			return self.send_error(f"No game named {game_name}")
+			return self.send_error(f"No game named {game_name}", data)
 		game.send_game_data(self)
