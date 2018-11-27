@@ -8,6 +8,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -37,6 +39,10 @@ public class Controller extends Application {
 
     private final int size = 16;
 
+    private Image redPiece, bluePiece, yellowPiece, greenPiece;
+
+    private ImageView imageView;
+
     @Override
     public void start(Stage stage) throws Exception{
         this.stage = stage;
@@ -47,12 +53,15 @@ public class Controller extends Application {
         scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
+
+
     }
 
 
     @FXML public void initialize(){
         sound = new Media(new File("src/res/AIRHORN.mp3").toURI().toString());
-
+        //imageView = new ImageView("/res/red.png");
+        redPiece = new Image("/res/red.png");
         //prevents ConnectPopup.display() from firing every time the scene changes
         if(firstTime) {
             //Gets player's preferred username and the server's port number
@@ -114,6 +123,7 @@ public class Controller extends Application {
     }
 
     private void addButtons(){
+
         //size = amount of tiles in rows, 5 for home, 1 for finish, 1 for spawn
         redRow = new TileButton[size + 7];
         blueRow = new TileButton[size + 7];
@@ -144,7 +154,6 @@ public class Controller extends Application {
         for(int i = size; i < redRow.length - 1; i++){
             redRow[i] = new TileButton(TileColor.RED, i);
             redRow[i].setLayoutX(33 + 46 * 2);
-            //redRow[i].setLayoutY(33 + (i + 2) * 46);
             redRow[i].setLayoutY(33 + (i + 1 - size)* 46);
 
             blueRow[i] = new TileButton(TileColor.BLUE, i);
