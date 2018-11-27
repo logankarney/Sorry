@@ -29,6 +29,12 @@ class SorryUser(asyncio.Protocol):
 	def connection_made(self, transport):
 		self.transport = transport
 
+	def connection_lost(self, exc):
+		for game_name, game in self.games.items():
+			game.remove_player(self, "connection closed")
+		if self.username in self.server.current_users:
+			del self.server.current_users[self.username]
+
 	def data_received(self, data):
 		self.recvqueue += data.decode()
 		messages = re.split("\n", self.recvqueue)
@@ -64,12 +70,6 @@ class SorryUser(asyncio.Protocol):
 		self.username = username
 		self.server.current_users[username] = self
 		self.send_json("user_registered", {"username": username})
-
-	def remove_user(self, reason):
-		for game_name, game in self.games.items():
-			game.remove_player(self, reason)
-		if self.username in self.server.current_users:
-			del self.server.current_users[self.username]
 
 	def get_game_list(self, data):
 		available_games = []
