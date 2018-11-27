@@ -19,6 +19,9 @@ class SorryGame(object):
 			player.send_json("player_joined", new_player_data)
 			self.send_game_data(player)
 
+		if len(self.players) == 4:
+			self.start_game()
+
 	def remove_player(self, leaving_player, reason):
 		leaving_player_data = {"player_name": leaving_player.username, "reason": reason}
 		leaving_player_color = self.players[leaving_player]["color"][0].upper()
@@ -55,3 +58,9 @@ class SorryGame(object):
 			self.turns.append(self.turns.pop(0))
 			for player in self.players.keys():
 				player.send_json("next_turn", {"player": self.turns[0]})
+
+	def start_game(self):
+		self.state = "started"
+		for player in self.players.keys():
+			player.send_json("game_started", {"game": self.name})
+			player.send_json("next_turn", {"player": self.turns[0]})

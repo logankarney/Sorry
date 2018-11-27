@@ -18,6 +18,7 @@ class SorryUser(asyncio.Protocol):
 			"join_game": self.join_game,
 			"get_game_data": self.get_game_data,
 			"update_pawn": self.update_pawn,
+			"start_game": self.start_game,
 		}
 
 	def send_json(self, event_type, data):
@@ -145,3 +146,12 @@ class SorryUser(asyncio.Protocol):
 		if turn_ends is None:
 			return self.send_error("Need to specify if the turn is ending", data)
 		game.update_pawn(self, pawn, new_position, turn_ends)
+
+	def start_game(self, data):
+		game_name = data.get("game")
+		if not game_name:
+			return self.send_error("No game name given", data)
+		game = self.server.current_games.get(game_name)
+		if not game:
+			return self.send_error(f"Game {game_name} doesn't exist", data)
+		game.start_game()
