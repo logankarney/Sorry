@@ -12,27 +12,15 @@ import org.json.simple.parser.JSONParser;
 class Sorry{
 
 
-    public static ArrayList<Card> deck;
+    private static ArrayList<Card> deck;
     private static ArrayList<Card> discard;
-    public static ArrayList<Object> board;
+    private static ArrayList<Space> board;
+    private static ArrayList<ArrayList <Space>> homes;
     private Socket connection;
 
 
     public void joinGame(String addr, int port, String color, String name){
         try {
-            connection = new Socket(InetAddress.getByName(addr), port);
-            JSONObject command = new JSONObject();
-            JSONObject data = new JSONObject();
-            command.put("command", "register_user");
-            data.put("username", '['+name+']');
-            command.put("data", data);
-            System.out.println(command.toString());
-            DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String output_string = command.toString();
-            byte[] output = output_string.getBytes();
-            out.write(output);
-            System.out.println(in.readLine());
 
         }catch (Exception e){
             e.printStackTrace();
@@ -40,7 +28,18 @@ class Sorry{
 
     }
 
-    public void generateDeck(){
+    public Sorry(){
+
+        deck = new ArrayList<>();
+        discard = new ArrayList<>();
+        board = new ArrayList<>();
+        homes = new ArrayList<>();
+        generateBoard();
+        generateDeck();
+
+    }
+
+    private void generateDeck(){
 
         for(int i = 0; i < 5; i++){
             deck.add(new Card(1));
@@ -58,14 +57,35 @@ class Sorry{
             }
         }
         Collections.shuffle(deck);
-        //  System.out.println(deck.toString());
 
     }
 
-    public void generateBoard(){
+    private void generateBoard(){
 
+        String[] color = new String[4];
+        color[0] = "red";
+        color[1] = "blue";
+        color[2] = "yellow";
+        color[3] = "green";
+        for(int j = 0; j < 3; j++){
+            homes.add(new ArrayList());
+            for(int k = 0; k < 6; k++){
+                homes.get(j).add(new Space(false,color[j],""));
+            }
+        }
+        for(int i = 0; i < 60; i++){
 
-
+            if(i >= 0 && i < 16){
+                board.add(new Space(false,color[0],""));
+            } else if(i >= 16 && i < 32){
+                board.add(new Space(false,color[1],""));
+            } else if(i >= 32 && i < 48){
+                board.add(new Space(false,color[2],""));
+            } else{
+                board.add(new Space(false,color[3],""));
+            }
+            System.out.println(i+":"+board.get(i).getColor());
+        }
     }
 
     public static Card drawCard(){
@@ -73,6 +93,27 @@ class Sorry{
         deck.remove(temp);
         discard.add(temp);
         return temp;
+    }
+
+}
+
+class Space{
+
+    boolean slide;
+    String color;
+    String player;
+
+
+    public Space(boolean slide, String color, String player){
+
+        this.slide = slide;
+        this.color = color;
+        this.player = player;
+
+    }
+
+    public String getColor(){
+        return color;
     }
 
 }
