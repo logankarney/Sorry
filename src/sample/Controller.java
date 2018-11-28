@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,13 +36,13 @@ public class Controller extends Application {
     private String port;
     private String playerName;
 
-    private TileButton[] redRow, blueRow, greenRow, yellowRow;
+    private static TileButton[] redRow, blueRow, greenRow, yellowRow;
 
     private static boolean firstTime = true;
 
     private final int size = 16;
 
-    private Image redPiece, bluePiece, yellowPiece, greenPiece;
+    protected Image redPiece, bluePiece, yellowPiece, greenPiece;
 
     private ImageView imageView;
 
@@ -62,8 +63,11 @@ public class Controller extends Application {
 
     @FXML public void initialize(){
         sound = new Media(new File("src/res/AIRHORN.mp3").toURI().toString());
-        //imageView = new ImageView("/res/red.png");
+
         redPiece = new Image("/res/red.png");
+        bluePiece = new Image("/res/blue.png");
+        yellowPiece = new Image("/res/yellow.png");
+        greenPiece = new Image("/res/green.png");
         //prevents ConnectPopup.display() from firing every time the scene changes
         if(firstTime) {
             //Gets player's preferred username and the server's port number
@@ -75,6 +79,12 @@ public class Controller extends Application {
 
             playerNameField.setText(playerName);
             serverPortField.setText(port);
+
+            //size = amount of tiles in rows, 5 for home, 1 for finish, 1 for spawn
+            redRow = new TileButton[size + 7];
+            blueRow = new TileButton[size + 7];
+            yellowRow = new TileButton[size + 7];
+            greenRow = new TileButton[size + 7];
 
             firstTime = false;
         }
@@ -125,11 +135,7 @@ public class Controller extends Application {
 
     private void addButtons(){
 
-        //size = amount of tiles in rows, 5 for home, 1 for finish, 1 for spawn
-        redRow = new TileButton[size + 7];
-        blueRow = new TileButton[size + 7];
-        yellowRow = new TileButton[size + 7];
-        greenRow = new TileButton[size + 7];
+
 
         for(int i = 0; i < size; i++){
             redRow[i] = new TileButton(TileColor.RED, i);
@@ -156,6 +162,7 @@ public class Controller extends Application {
             redRow[i] = new TileButton(TileColor.RED, i);
             redRow[i].setLayoutX(33 + 46 * 2);
             redRow[i].setLayoutY(33 + (i + 1 - size)* 46);
+
 
             blueRow[i] = new TileButton(TileColor.BLUE, i);
             blueRow[i].setLayoutX((33 + 15 * 46) - (i - size) * 46);
@@ -189,6 +196,7 @@ public class Controller extends Application {
             }
 
             pane.getChildren().addAll(redRow[i], blueRow[i], yellowRow[i], greenRow[i]);
+
         }
 
         //home area
