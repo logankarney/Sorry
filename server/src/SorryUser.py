@@ -45,9 +45,7 @@ class SorryUser(asyncio.Protocol):
 			del self.server.current_users[self.username]
 
 	def data_received(self, data):
-		self.recvqueue += data.decode()
-		messages = re.split("\n", self.recvqueue)
-		self.recvqueue = messages.pop()
+		messages = re.split("\n", data.decode())
 		[self.parse_message(msg) for msg in messages]
 
 	def parse_message(self, msg):
