@@ -22,13 +22,18 @@ class SorryUser(asyncio.Protocol):
 			"player_won": self.player_won,
 		}
 
+	def write_message(self, json_message):
+		message = json.dumps(json_message)
+		print(f"Sent: {message}")
+		self.transport.write(f"{message}\n".encode())
+
 	def send_json(self, event_type, data):
 		json_message = {"event": event_type, "data": data}
-		self.transport.write(f"{json.dumps(json_message)}\n".encode())
+		self.write_message(json_message)
 
 	def send_error(self, text, original_message):
 		json_message = {"event": "error", "data": {"text": text, "original_message": original_message}}
-		self.transport.write(f"{json.dumps(json_message)}\n".encode())
+		self.write_message(json_message)
 
 	def connection_made(self, transport):
 		self.transport = transport
@@ -46,6 +51,7 @@ class SorryUser(asyncio.Protocol):
 		[self.parse_message(msg) for msg in messages]
 
 	def parse_message(self, msg):
+		print(f"Received: {msg}")
 		try:
 			body = json.loads(msg)
 		except:
