@@ -7,14 +7,11 @@
 
 <AnchorPane fx:id="pane" prefHeight="769.0" prefWidth="769.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <Button fx:id="cardButton" layoutX="326.0" layoutY="321.0" mnemonicParsing="false" onAction="#fxButtonClicked" styleClass="image-button">
-         <graphic>
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../res/card.png" />
-               </image>
-            </ImageView>
-         </graphic>
-      </Button>
+      <Button fx:id="cardButton" layoutX="326.0" layoutY="321.0" mnemonicParsing="false" onAction="#fxButtonClicked" styleClass="image-button" />
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="352.0" layoutY="327.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../res/card.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
