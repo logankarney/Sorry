@@ -67,25 +67,18 @@ class Sorry{
         color[1] = "blue";
         color[2] = "yellow";
         color[3] = "green";
-        for(int j = 0; j < 3; j++){
-            homes.add(new ArrayList());
-            for(int k = 0; k < 6; k++){
-                homes.get(j).add(new Space(false,color[j],""));
-            }
-        }
-        for(int i = 0; i < 60; i++){
+        for(int j = 0; j < 4; j++){
 
-            if(i >= 0 && i < 16){
-                board.add(new Space(false,color[0],""));
-            } else if(i >= 16 && i < 32){
-                board.add(new Space(false,color[1],""));
-            } else if(i >= 32 && i < 48){
-                board.add(new Space(false,color[2],""));
-            } else{
-                board.add(new Space(false,color[3],""));
+            for(int k = 0; k < 15; k++){
+                board.add(new Space(false,color[j],"",k));
             }
-            System.out.println(i+":"+board.get(i).getColor());
+            homes.add(new ArrayList());
+            for(int k = 16; k < 22; k++){
+                homes.get(j).add(new Space(false,color[j],"",k));
+            }
+
         }
+
     }
 
     public static Card drawCard(){
@@ -102,13 +95,15 @@ class Space{
     boolean slide;
     String color;
     String player;
+    int position;
 
 
-    public Space(boolean slide, String color, String player){
+    public Space(boolean slide, String color, String player, int position){
 
         this.slide = slide;
         this.color = color;
         this.player = player;
+        this.position = position;
 
     }
 
