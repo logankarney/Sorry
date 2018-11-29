@@ -48,7 +48,7 @@ class Sorry{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","register_user");
-            data.put("username","["+name+']');
+            data.put("username", name);
             json.put("data", data);
             byte[] output = json.toString().getBytes();
             out.write(output);
@@ -82,8 +82,8 @@ class Sorry{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","join_game");
-            data.put("color","["+color+"]");
-            data.put("name","["+name+"]");
+            data.put("color", color);
+            data.put("name", name);
             json.put("data",data);
             byte[] output = json.toString().getBytes();
             out.write(output);
@@ -102,9 +102,9 @@ class Sorry{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","create_game");
-            data.put("color","["+color+"]");
-            data.put("name","["+name+"]");
-            json.put("data",data);
+            data.put("color", color);
+            data.put("name", name);
+            json.put("data", data);
             byte[] output = json.toString().getBytes();
             out.write(output);
             String response = in.readLine();
@@ -121,7 +121,7 @@ class Sorry{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","get_game_data");
-            data.put("name","["+name+"]");
+            data.put("name", name);
             json.put("data",data);
             byte[] output = json.toString().getBytes();
             out.write(output);
@@ -139,10 +139,10 @@ class Sorry{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","update_pawn");
-            data.put("game","["+game+"]");
-            data.put("pawn","["+pawn+"]");
-            data.put("new_position","["+position+"]");
-            data.put("turn_ends","["+end+"]");
+            data.put("game", game);
+            data.put("pawn", pawn);
+            data.put("new_position", position);
+            data.put("turn_ends", end);
             json.put("data",data);
             byte[] output = json.toString().getBytes();
             out.write(output);
@@ -160,7 +160,7 @@ class Sorry{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","start_game");
-            data.put("game","["+game+"]");
+            data.put("game", game);
             json.put("data",data);
             byte[] output = json.toString().getBytes();
             out.write(output);
@@ -283,8 +283,6 @@ class Game{
         sorry.get_game_list();
         sorry.join_game("blue","test");
         sorry.create_game("test","blue");
-        while(true){
-        }
     }
 
 }
