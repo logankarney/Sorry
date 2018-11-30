@@ -103,7 +103,7 @@ class SorryUser(asyncio.Protocol):
 		if game_name in self.server.current_games:
 			return self.send_error(f"Game {game_name} already exists", data)
 
-		new_game = SorryGame(game_name)
+		new_game = SorryGame(game_name, self.server)
 		self.server.current_games[game_name] = new_game
 		self.games[game_name] = new_game
 		new_game.add_player(self, color)

@@ -1,7 +1,8 @@
 class SorryGame(object):
 
-	def __init__(self, name):
+	def __init__(self, name, server):
 		self.name = name
+		self.server = server
 		self.players = {}
 		self.turns = []
 		self.state = "open"
