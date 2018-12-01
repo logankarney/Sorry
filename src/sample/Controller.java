@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class Controller extends Application {
-    private Stage stage;
 
     @FXML AnchorPane pane;
 
@@ -59,8 +58,6 @@ public class Controller extends Application {
 
     @Override
     public void start(Stage stage) throws Exception{
-        this.stage = stage;
-
         Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
         stage.setTitle("Sorry!");
         Scene scene = new Scene(root, 1280, 848);
@@ -148,7 +145,7 @@ public class Controller extends Application {
 
     }
 
-    protected void setPane(AnchorPane pane){
+    private void setPane(AnchorPane pane){
         this.pane.getChildren().clear();
         this.pane.getChildren().add(pane);
 
@@ -257,6 +254,44 @@ public class Controller extends Application {
     public void setCurrentCardText(String newCard) {
         this.currentCard.setText(newCard);
     }
+
+    public static TileButton[] getRedRow() {
+        return redRow;
+    }
+
+    public static TileButton[] getBlueRow() {
+        return blueRow;
+    }
+
+    public static TileButton[] getGreenRow() {
+        return greenRow;
+    }
+
+    public static TileButton[] getYellowRow() {
+        return yellowRow;
+    }
+
+    public static TileButton[] getRedHome() {
+        return redHome;
+    }
+
+    public static TileButton[] getBlueHome() {
+        return blueHome;
+    }
+
+    public static TileButton[] getGreenHome() {
+        return greenHome;
+    }
+
+    public static TileButton[] getYellowHome() {
+        return yellowHome;
+    }
+
+    public static TileButton[] getSpawns() {
+        return spawns;
+    }
+
+
 
     public static void main(String[] args) {
         launch(args);

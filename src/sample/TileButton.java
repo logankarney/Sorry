@@ -39,7 +39,6 @@ public class TileButton extends Button {
         //this.setText(spot+ "");
         this.setOnAction(e ->{
             System.out.println(spot);
-            System.out.println(getHeight() + " " + getWidth());
         });
 
         this.setPrefSize(46,46);
