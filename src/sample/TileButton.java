@@ -19,8 +19,6 @@ public class TileButton extends Button {
 
         this.setPrefSize(46,46);
 
-        this.setOnAction(e -> System.out.println(spot));
-
         this.c = c;
         this.setId(c.name().toLowerCase() + "-tile");
 
@@ -39,7 +37,10 @@ public class TileButton extends Button {
         this.spot = spot;
 
         //this.setText(spot+ "");
-        this.setOnAction(e -> System.out.println(spot));
+        this.setOnAction(e ->{
+            System.out.println(spot);
+            System.out.println(getHeight() + " " + getWidth());
+        });
 
         this.setPrefSize(46,46);
     }
