@@ -11,10 +11,10 @@ public class Player{
         this.color = color;
         this.playerID = playerID;
         pawns = new Pawn[4];
-        pawns[0] = new Pawn(color);
-        pawns[1] = new Pawn(color);
-        pawns[2] = new Pawn(color);
-        pawns[3] = new Pawn(color);
+        pawns[0] = new Pawn(color, playerID);
+        pawns[1] = new Pawn(color, playerID);
+        pawns[2] = new Pawn(color, playerID);
+        pawns[3] = new Pawn(color, playerID);
     }
 
     public int getPlayerID(){

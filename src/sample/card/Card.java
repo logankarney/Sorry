@@ -1,8 +1,8 @@
 package sample.card;
 
+import sample.Board;
 import sample.Pawn;
 
-import java.util.ArrayList;
 
 public abstract class Card {
 
@@ -32,8 +32,14 @@ public abstract class Card {
         this.desc = desc;
     }
 
-    public ArrayList<Integer> getMoves(Pawn p, int[][] board){
 
+    /*
+     * Default behavior for a generic card
+     */
+    public Board getMoves(Pawn p, Board b){
+        Board board = new Board(b);
+        board.move(p, value);
+        return board;
     }
 
 }

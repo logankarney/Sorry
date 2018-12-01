@@ -5,14 +5,16 @@ import javafx.util.Pair;
 
 public class Pawn{
     private TileColor color;
+    private int playerID;
     private int row;
     private int space;
     private boolean isInStart;
     private boolean isInHomeRow;
     private boolean isHome;
 
-    public Pawn (TileColor color){
+    public Pawn (TileColor color, int playerID){
         this.color = color;
+        this.playerID = playerID;
         isInStart = true;
         isHome =  false;
         isInHomeRow = false;
@@ -49,4 +51,20 @@ public class Pawn{
         return isInStart;
     }
 
+    public int getRow() {
+        return row;
+    }
+
+    public int getSpace() {
+        return space;
+    }
+
+    public void setLocation(int row, int space) {
+        this.row = row;
+        this.space = space;
+    }
+
+    public int getPlayerID() {
+        return playerID;
+    }
 }
