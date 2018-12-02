@@ -6,10 +6,10 @@ public class Board {
     private Pawn[][] sorryBoard;
     private ArrayList<Pawn>[] start;
     private Player[] players;
-    public Board(){
+    public Board(Player[] players, int numPlayers){
         sorryBoard = new Pawn[4][21];
-        players = new Player[4];
-        start = new ArrayList[4];
+        this.players = players;
+        start = new ArrayList[numPlayers];
         // fill in start
         for (int i = 0; i<4; i++){
             for (int j = 0; j<4; j++){

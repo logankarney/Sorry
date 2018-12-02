@@ -4,31 +4,20 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import org.json.simple.*;
 import sample.card.Card;
 
-class Sorry{
+class SorryClient{
 
 
-    private static ArrayList<Card> deck;
-    private static ArrayList<Card> discard;
-    private static ArrayList<Space> board;
-    private static ArrayList<ArrayList <Space>> homes;
     private Socket connection;
     private DataOutputStream out;
     private BufferedReader in;
+    private GameLogic game;
 
-    Sorry(){
-
-        deck = new ArrayList<>();
-        discard = new ArrayList<>();
-        board = new ArrayList<>();
-        homes = new ArrayList<>();
-        generateBoard();
-        generateDeck();
-
+    SorryClient(){
+        game = new GameLogic();
     }
 
     String connect(InetAddress addr, int port){
@@ -172,28 +161,7 @@ class Sorry{
             return "error";
         }
     }
-
-    private void generateDeck(){
-
-        for(int i = 0; i < 5; i++){
-            deck.add(new Card(1));
-            if(i < 4) {
-                deck.add(new Card(2));
-                deck.add(new Card(3));
-                deck.add(new Card(4));
-                deck.add(new Card(5));
-                deck.add(new Card(7));
-                deck.add(new Card(8));
-                deck.add(new Card(10));
-                deck.add(new Card(11));
-                deck.add(new Card(12));
-                deck.add(new Card(13));
-            }
-        }
-        Collections.shuffle(deck);
-
-    }
-
+/*
     private void generateBoard(){
 
         String[] color = new String[4];
@@ -272,12 +240,13 @@ class Space{
     public void setPosition(int position) {
         this.position = position;
     }
+    */
 }
 
 class Game{
 
     public static void main(String[] args) throws Exception{
-        Sorry sorry = new Sorry();
+        SorryClient sorry = new SorryClient();
         System.out.println(sorry.connect(InetAddress.getByName("127.0.0.1") ,12000));
         sorry.register_user("lol");
         sorry.get_game_list();

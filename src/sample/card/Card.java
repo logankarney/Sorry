@@ -37,7 +37,7 @@ public abstract class Card {
 
 
     /*
-     * Default behavior for a generic card
+     * See all of a players' possible moves
      */
     public abstract ArrayList<Board> getMoves(Player p, Board b);
 

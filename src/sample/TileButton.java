@@ -4,10 +4,14 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class TileButton extends Button {
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class TileButton extends Button implements ActionListener{
     private Image picture;
     private TileColor c;
     private int spot;
+    private boolean selected;
     private int occupiedBy = 0;
 
     public TileButton(Image picture, TileColor c, int spot){
@@ -23,7 +27,7 @@ public class TileButton extends Button {
         this.setId(c.name().toLowerCase() + "-tile");
 
         this.spot = spot;
-
+        this.selected = false;
         this.setPrefSize(46,46);
     }
 
@@ -83,7 +87,18 @@ public class TileButton extends Button {
         this.occupiedBy = occupiedBy;
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (!selected){
+            selected = true;
+        }else{
+    //TODO
+        }
+    }
 
+    public boolean isSelected(){
+        return selected;
+    }
 }
 
 
