@@ -9,7 +9,6 @@ public class Pawn{
     private int row;
     private int space;
     private boolean isInStart;
-    private boolean isInHomeRow;
     private boolean isHome;
 
     public Pawn (TileColor color, int playerID){
@@ -17,7 +16,6 @@ public class Pawn{
         this.playerID = playerID;
         isInStart = true;
         isHome =  false;
-        isInHomeRow = false;
         switch (color){
             case GREEN:
                 row = 0;
@@ -43,8 +41,8 @@ public class Pawn{
         return isHome;
     }
 
-    public boolean isInHomeRow() {
-        return isInHomeRow;
+    public void setInStart(boolean inStart) {
+        isInStart = inStart;
     }
 
     public boolean isInStart() {

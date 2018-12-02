@@ -1,9 +1,21 @@
 package sample;
 
+import java.util.ArrayList;
+
 public class Board {
     private Pawn[][] sorryBoard;
+    private ArrayList<Pawn>[] start;
+    private Player[] players;
     public Board(){
         sorryBoard = new Pawn[4][21];
+        players = new Player[4];
+        start = new ArrayList[4];
+        // fill in start
+        for (int i = 0; i<4; i++){
+            for (int j = 0; j<4; j++){
+                start[i].add(players[i].getPawns()[j]);
+            }
+        }
     }
 
     /**
@@ -11,9 +23,13 @@ public class Board {
      */
     public Board(Board b){
         Pawn[][] temp = b.getSorryBoard();
+        ArrayList<Pawn>[] tempStart = b.getStart();
         for (int i=0; i<4; i++){
             for (int j=0; j<15; j++){
                 this.sorryBoard[i][j] = temp[i][j];
+                if (j<4){
+                    this.start[i].set(j,tempStart[i].get(j));
+                }
             }
         }
     }
@@ -95,8 +111,39 @@ public class Board {
         return sorryBoard;
     }
 
-    private void returnToStart(Pawn p){
+    public ArrayList<Pawn>[] getStart() {
+        return start;
+    }
 
+    /**
+     * Send a pawn back to the start
+     * @param p
+     */
+    public void returnToStart(Pawn p){
+        sorryBoard[p.getRow()][p.getSpace()] = null;
+        start[p.getPlayerID()].add(p);
+        p.setInStart(true);
+    }
+
+    public boolean moveFromStart(Pawn p){
+        int id = p.getPlayerID();
+        if (sorryBoard[id][3] != null && sorryBoard[id][3].getPlayerID() != id){
+            sorryBoard[p.getPlayerID()][3] = p;
+            p.setInStart(false);
+            start[p.getPlayerID()].remove(p);
+            return true;
+        }
+        return false;
+    }
+
+    public void setPawnLocation(int row, int space, Pawn p){
+        sorryBoard[row][space] = p;
+        p.setLocation(row,space);
+        p.setInStart(false);
+    }
+
+    public Player[] getPlayers() {
+        return players;
     }
 
     /**

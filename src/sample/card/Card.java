@@ -2,6 +2,9 @@ package sample.card;
 
 import sample.Board;
 import sample.Pawn;
+import sample.Player;
+
+import java.util.ArrayList;
 
 
 public abstract class Card {
@@ -36,10 +39,6 @@ public abstract class Card {
     /*
      * Default behavior for a generic card
      */
-    public Board getMoves(Pawn p, Board b){
-        Board board = new Board(b);
-        board.move(p, value);
-        return board;
-    }
+    public abstract ArrayList<Board> getMoves(Player p, Board b);
 
 }
