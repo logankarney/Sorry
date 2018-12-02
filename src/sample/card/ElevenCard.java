@@ -36,9 +36,9 @@ public class ElevenCard extends Card {
                     }
                 }
             }
-            // Look for move-10s
+            // Look for move-11s
             Board board = new Board(b);
-            if (board.move(pawn,10)) boards.add(board);
+            if (board.move(pawn,11)) boards.add(board);
         }
 
         return boards;

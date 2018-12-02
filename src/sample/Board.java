@@ -40,13 +40,49 @@ public class Board {
      * @param numSpaces
      */
     public boolean move(Pawn p, int numSpaces){
+
         int row = p.getRow();
         int space = p.getSpace();
         int newRow;
         int newSpace;
 
+        // Moving backwards
+        if (numSpaces < 0){
+            if (numSpaces == -1){
+                if (space == 0){
+                    newRow = nextRow(nextRow(nextRow(row)));
+                    newSpace = 14;
+                }else if (space == 15){
+                    newRow = row;
+                    newSpace = 1;
+                }else{
+                    newRow = row;
+                    newSpace = space -1;
+                }
+            } else { // Hard coding -4 because it's a pain
+                if (space < 4){
+                    newRow = nextRow(nextRow(nextRow(row)));
+                    newSpace = 14 + space + numSpaces;
+                } else if (space == 15){
+                    newRow = nextRow(nextRow(nextRow(row)));
+                    newSpace = 13;
+                } else if (space == 16){
+                    newRow = nextRow(nextRow(nextRow(row)));
+                    newSpace = 14;
+                } else if (space == 17){
+                    newRow = row;
+                    newSpace = 0;
+                } else if (space == 18){
+                    newRow = row;
+                    newSpace = 1;
+                } else {
+                    newRow = row;
+                    newSpace = space + numSpaces;
+                }
+            }
+        }
         // Not in home row
-        if (space > 2 || p.getPlayerID() != row) {
+        else if (space > 2 || p.getPlayerID() != row) {
             // normal movement within one row
             if (space + numSpaces < 15) {
                 newRow = row;

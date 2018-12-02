@@ -19,8 +19,6 @@ public class FourCard extends Card {
             if (!pawn.isInStart()){
                 if(board.move(pawn, -4)) boards.add(board);
             }
-
-
         }
         return boards;
     }
