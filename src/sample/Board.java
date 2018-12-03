@@ -12,6 +12,7 @@ public class Board {
         start = new ArrayList[numPlayers];
         // fill in start
         for (int i = 0; i<4; i++){
+            start[i] = new ArrayList<>(4);
             for (int j = 0; j<4; j++){
                 start[i].add(players[i].getPawns()[j]);
             }
