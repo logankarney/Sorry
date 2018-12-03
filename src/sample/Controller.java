@@ -67,6 +67,7 @@ public class Controller extends Application {
         scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
+        stage.setResizable(false);
 
        // backgroundSound = new Media(new File("src/res/bensound-hipjazz.mp3").toURI().toString());
         //backgroundPlayer = new MediaPlayer(backgroundSound);
