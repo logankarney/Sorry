@@ -22,7 +22,6 @@ public class Controller extends Application {
 
     @FXML AnchorPane pane;
 
-    @FXML private TextField playerNameField, serverPortField;
 
     @FXML private TableView<GameInfo> tableView = new TableView<>();
 
@@ -102,9 +101,6 @@ public class Controller extends Application {
 
             playerName = ConnectPopup.getUsername();
             port = ConnectPopup.getPort();
-
-            playerNameField.setText(playerName);
-            serverPortField.setText(port);
 
             //size = amount of tiles in rows, 5 for home, 1 for finish, 1 for spawn
             redRow = new TileButton[size];

@@ -22,8 +22,6 @@
             <Image url="@../res/sorrymain.png" />
          </image>
         </ImageView>
-      <TextField fx:id="playerNameField" layoutX="66.0" layoutY="27.0" prefHeight="31.0" prefWidth="275.0" promptText="Username" styleClass="text-field" />
-      <TextField fx:id="serverPortField" layoutX="372.0" layoutY="27.0" prefHeight="31.0" prefWidth="193.0" promptText="Server port" styleClass="text-field" />
       <VBox layoutX="66.0" layoutY="89.0" prefHeight="443.0" prefWidth="864.0">
          <children>
             <Pane prefHeight="54.0" prefWidth="864.0" styleClass="label-pane-top" stylesheets="@application.css" />
