@@ -164,7 +164,13 @@ public class Board {
 
     public boolean moveFromStart(Pawn p){
         int id = p.getPlayerID();
-        if (sorryBoard[id][3] != null && sorryBoard[id][3].getPlayerID() != id){
+        if (sorryBoard[id][3] == null){
+            sorryBoard[p.getPlayerID()][3] = p;
+            p.setInStart(false);
+            start[p.getPlayerID()].remove(p);
+            return true;
+        }else if (sorryBoard[id][3].getPlayerID() != id){
+            returnToStart(sorryBoard[p.getPlayerID()][3]);
             sorryBoard[p.getPlayerID()][3] = p;
             p.setInStart(false);
             start[p.getPlayerID()].remove(p);

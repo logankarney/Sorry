@@ -22,21 +22,27 @@ public class BoardTest {
 
     @org.junit.Test
     public void moveFromStart() throws Exception {
-
+        Board b = makeBoard();
+        Pawn p = b.getPlayers()[1].getPawns()[3];
+        b.moveFromStart(p);
+        Assert.assertEquals(b.getSorryBoard()[1][3], p);
     }
 
     @org.junit.Test
     public void setPawnLocation() throws Exception {
-        Player[] players = new Player[]{new Player("A",TileColor.GREEN),
-                new Player("A",TileColor.RED),
-                new Player("A",TileColor.BLUE),
-                new Player("A",TileColor.YELLOW)};
-        Board board1 = new Board(players, 4);
+        Board board1 = makeBoard();
         Pawn p = board1.getPlayers()[0].getPawns()[0];
         board1.setPawnLocation(2, 13, p);
         Assert.assertEquals(board1.getSorryBoard()[2][13],p);
         Assert.assertEquals(p.getRow(), 2);
         Assert.assertEquals(p.getSpace(), 13);
+    }
+
+    private Board makeBoard(){
+        return new Board(new Player[]{new Player("A",TileColor.GREEN),
+                new Player("A",TileColor.RED),
+                new Player("A",TileColor.BLUE),
+                new Player("A",TileColor.YELLOW)},4);
     }
 
 }
