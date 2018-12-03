@@ -11,10 +11,10 @@ public class TileButton extends Button implements ActionListener{
     private Image picture;
     private TileColor c;
     private int spot;
-    private boolean selected;
+    private static boolean selected = false;
     private int occupiedBy = 0;
 
-    public TileButton(Image picture, TileColor c, int spot){
+    /*public TileButton(Image picture, TileColor c, int spot){
         this.picture = picture;
         ImageView imageView = new ImageView(picture);
         imageView.setFitHeight(28);
@@ -29,7 +29,7 @@ public class TileButton extends Button implements ActionListener{
         this.spot = spot;
         this.selected = false;
         this.setPrefSize(46,46);
-    }
+    }*/
 
     public TileButton(TileColor c, int spot){
         this.c = c;
@@ -42,6 +42,16 @@ public class TileButton extends Button implements ActionListener{
 
         //this.setText(spot+ "");
         this.setOnAction(e ->{
+            if(Controller.playersTurn ) {
+                if(this.picture != null) {
+                    //TODO: call method to get valid moves, change selected to true, change css of valid moves
+                }
+                else{
+                    if(selected){
+                        //TODO: return this tile as the next move
+                    }
+                }
+            }
             System.out.println(spot);
         });
 

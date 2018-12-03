@@ -22,7 +22,7 @@ public final class JoinPopup {
 
     private static TextField gameNameField;
 
-    static void display(boolean host){
+    static void display(boolean host, String colors){
 
         final ToggleGroup radioGroup = new ToggleGroup();
 
@@ -98,6 +98,24 @@ public final class JoinPopup {
 
         content.getChildren().addAll(red,blue,yellow,green, bottomLine);
 
+        if(!host){
+            for(int i = 0; i < colors.length(); i++){
+                switch(colors.charAt(i)){
+                    case 'R':
+                        red.setDisable(true);
+                        break;
+                    case 'B':
+                        blue.setDisable(true);
+                        break;
+                    case 'Y':
+                            yellow.setDisable(true);
+                            break;
+                    case 'G':
+                        green.setDisable(true);
+                        break;
+                }
+            }
+        }
 
 
         Scene scene = new Scene(content, width, height);
