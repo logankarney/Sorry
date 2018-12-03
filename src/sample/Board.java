@@ -25,11 +25,14 @@ public class Board {
     public Board(Board b){
         Pawn[][] temp = b.getSorryBoard();
         ArrayList<Pawn>[] tempStart = b.getStart();
+        sorryBoard = new Pawn[4][21];
+        start = new ArrayList[4];
         for (int i=0; i<4; i++){
-            for (int j=0; j<15; j++){
+            this.start[i] = new ArrayList<>(4);
+            for (int j=0; j<21; j++){
                 this.sorryBoard[i][j] = temp[i][j];
                 if (j<4){
-                    this.start[i].set(j,tempStart[i].get(j));
+                    this.start[i].add(tempStart[i].get(j));
                 }
             }
         }
@@ -162,6 +165,11 @@ public class Board {
         p.setInStart(true);
     }
 
+    /**
+     * Attempt to move a pawn from spawn
+     * @param p
+     * @return true if move is successful
+     */
     public boolean moveFromStart(Pawn p){
         int id = p.getPlayerID();
 
