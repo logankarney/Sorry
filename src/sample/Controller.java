@@ -193,6 +193,14 @@ public class Controller extends Application {
 
        }
 
+       /*else if(e.getSource() == toggleCSSButton){
+           greenRow[3].setPicture(greenPiece);
+           if(greenRow[3].getId().equals("yellow-tile"))
+           greenRow[3].setId("yellow-move-tile");
+           else
+               greenRow[3].setId("yellow-tile");
+       }*/
+
        /*else if(e.getSource() == startButton){
             String gameName = JoinPopup.getGameName();
             sorryBoard.start_game(gameName);
