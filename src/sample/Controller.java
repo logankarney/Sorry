@@ -1,16 +1,15 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -23,20 +22,22 @@ public class Controller extends Application {
 
     @FXML AnchorPane pane;
 
-    @FXML private TextField playerNameField;
-    @FXML private TextField serverPortField;
+    @FXML private TextField playerNameField, serverPortField;
 
-    @FXML private Button joinButton;
+    @FXML private TableView<GameInfo> tableView = new TableView<>();
+
+    @FXML private Button hostButton, joinButton, refreshButton, startButton;
 
     @FXML private Button cardButton;
 
     @FXML private Text currentCard;
 
+    @FXML private TextArea currentCardDescription;
+
     private MediaPlayer mediaPlayer;
     private Media sound;
 
-    private String port;
-    private String playerName;
+    private String port, playerName;
 
     /** The outside rows for each color */
     private static TileButton[] redRow, blueRow, greenRow, yellowRow;
@@ -53,7 +54,7 @@ public class Controller extends Application {
 
     protected Image redPiece, bluePiece, yellowPiece, greenPiece;
 
-
+    private Sorry sorryBoard;
 
 
     @Override
@@ -103,6 +104,10 @@ public class Controller extends Application {
 
             spawns = new TileButton[4];
 
+            sorryBoard = new Sorry(this);
+            populateTableView();
+            onRefreshClick();
+
             firstTime = false;
         }
     }
@@ -114,15 +119,48 @@ public class Controller extends Application {
        // mediaPlayer.stop();
       //  mediaPlayer.play();
 
+       if(e.getSource() == cardButton){
+           onDraw();
+        }
 
-        //saving for later use
-       if(e.getSource() == joinButton) {
+        else if(e.getSource() == joinButton){
+           GameInfo chosenGame = tableView.getSelectionModel().getSelectedItem();
+           JoinPopup.display(false);
+
+           String chosenColor = JoinPopup.getChosenColor();
+           sorryBoard.register_user(playerName);
+           sorryBoard.join_game(chosenColor, playerName);
+
            changeFXML("game.fxml");
+           removeStartButton();
            addButtons();
-       } else if(e.getSource() == cardButton){
-           System.out.println("Card Drawn");
-           setCurrentCardText("3");
+
+
        }
+
+       else if(e.getSource() == refreshButton){
+            onRefreshClick();
+       }
+
+       else if(e.getSource() == hostButton) {
+           changeFXML("game.fxml");
+
+           addButtons();
+           JoinPopup.display(true);
+           String chosenColor = JoinPopup.getChosenColor();
+
+           sorryBoard.register_user(playerName);
+           sorryBoard.create_game(playerName, chosenColor);
+
+
+       }
+
+       else if(e.getSource() == startButton){
+            String gameName = JoinPopup.getGameName();
+            sorryBoard.start_game(gameName);
+            removeStartButton();
+       }
+
     }
 
     /** saving for dealing with pieces later **/
@@ -247,12 +285,73 @@ public class Controller extends Application {
         pane.getChildren().addAll(spawns[0], spawns[1], spawns[2], spawns[3]);
     }
 
+    public void onRefreshClick(){
+        String gamesList;
+        try {
+            //gamesList = sorryBoard.get_game_list();
+        } catch (Exception e){
+            gamesList = "none";
+        }
+
+        /*
+        if(!gamesList.equals("none")){
+            String[] games = gamesList.split("\n");
+            for (String game : games) {
+                String[] gameData = game.split("\t");
+                GameInfo room = new FileInfo(gameData[0], gameData[1], ect.);
+                table.getItems().add(room);
+            }
+        }
+        */
+
+        GameInfo game1 = new GameInfo("Party People", "My Username", "RGB");
+        tableView.getItems().add(game1);
+
+        tableView.refresh();
+    }
+
+    public void onDraw(){
+        Card drawn = sorryBoard.drawCard();
+        setCurrentCardText(drawn.getValue() + "");
+        setCurrentCardDescription(drawn.getDesc());
+    }
+
+    private void populateTableView(){
+        TableColumn lobbyNameCol = new TableColumn("Lobby Name");
+        lobbyNameCol.setCellValueFactory(new PropertyValueFactory<GameInfo,String>("lobbyName"));
+
+        TableColumn hostNameCol = new TableColumn("Host Name");
+        hostNameCol.setCellValueFactory(
+                new PropertyValueFactory<GameInfo,String>("hostName")
+        );
+
+        TableColumn playersCol = new TableColumn("Players");
+        playersCol.setMinWidth(200);
+        playersCol.setCellValueFactory(
+                new PropertyValueFactory<GameInfo,String>("players")
+        );
+
+
+        lobbyNameCol.setMinWidth(240);
+        hostNameCol.setMinWidth(240);
+        playersCol.setMinWidth(520);
+        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, playersCol);
+    }
+
+    private void removeStartButton(){
+        pane.getChildren().remove(startButton);
+    }
+
     public String getCurrentCardText() {
         return currentCard.getText();
     }
 
     public void setCurrentCardText(String newCard) {
         this.currentCard.setText(newCard);
+    }
+
+    public void setCurrentCardDescription(String newDescription){
+        this.currentCardDescription.setText(newDescription);
     }
 
     public static TileButton[] getRedRow() {
@@ -291,9 +390,52 @@ public class Controller extends Application {
         return spawns;
     }
 
+    public static class GameInfo{
+
+        private final SimpleStringProperty lobbyName;
+        private final SimpleStringProperty hostName;
+        private final SimpleStringProperty players;
+
+        private GameInfo(String lobbyName, String hostName, String players){
+            this.lobbyName = new SimpleStringProperty(lobbyName);
+            this.hostName = new SimpleStringProperty(hostName);
+            this.players = new SimpleStringProperty(players);
+        }
+
+        public String getLobbyName() {
+            return lobbyName.get();
+        }
+
+
+        public String getHostName() {
+            return hostName.get();
+        }
+
+
+        public String getPlayers() {
+            return players.get();
+        }
+
+        public SimpleStringProperty lobbyNameProperty() {
+            return lobbyName;
+        }
+
+        public SimpleStringProperty hostNameProperty() {
+            return hostName;
+        }
+
+        public SimpleStringProperty playersProperty() {
+            return players;
+        }
+
+
+    }
 
 
     public static void main(String[] args) {
         launch(args);
     }
 }
+
+
+

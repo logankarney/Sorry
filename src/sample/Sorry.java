@@ -19,7 +19,7 @@ class Sorry{
     private Socket connection;
     private DataOutputStream out;
     private BufferedReader in;
-    private Controller controller;
+    private static Controller controller;
 
     Sorry(Controller controller){
         this.controller = controller;
