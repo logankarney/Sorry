@@ -19,6 +19,19 @@ class Sorry{
     private Socket connection;
     private DataOutputStream out;
     private BufferedReader in;
+    private static Controller controller;
+
+    Sorry(Controller controller){
+        this.controller = controller;
+        deck = new ArrayList<>();
+        discard = new ArrayList<>();
+        board = new ArrayList<>();
+        homes = new ArrayList<>();
+        generateBoard();
+        generateDeck();
+
+    }
+
 
     Sorry(){
 
