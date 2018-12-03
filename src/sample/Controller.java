@@ -147,7 +147,7 @@ public class Controller extends Application {
                return;
 
            try {
-               InetAddress address = InetAddress.getByName(chosenGame.getHostIp());
+               InetAddress address = InetAddress.getByName("127.0.0.1");
                sorryBoard.connect(address,Integer.parseInt(port));
 
                sorryBoard.register_user(playerName);
@@ -366,11 +366,6 @@ public class Controller extends Application {
                 new PropertyValueFactory<GameInfo,String>("hostName")
         );
 
-        TableColumn hostIpCol = new TableColumn("Host IP");
-        hostIpCol.setCellValueFactory(
-                new PropertyValueFactory<GameInfo, String>("hostIp")
-        );
-
         TableColumn playersCol = new TableColumn("Players");
         playersCol.setCellValueFactory(
                 new PropertyValueFactory<GameInfo,String>("players")
@@ -379,9 +374,8 @@ public class Controller extends Application {
 
         lobbyNameCol.setMinWidth(240);
         hostNameCol.setMinWidth(240);
-        hostIpCol.setMinWidth(100);
-        playersCol.setMinWidth(240);
-        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, hostIpCol, playersCol);
+        playersCol.setMinWidth(580);
+        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, playersCol);
     }
 
     public String getCurrentCardText() {
@@ -436,13 +430,13 @@ public class Controller extends Application {
 
         private final SimpleStringProperty lobbyName;
         private final SimpleStringProperty hostName;
-        private final SimpleStringProperty hostIp;
+
         private final SimpleStringProperty players;
 
         private GameInfo(String lobbyName, String hostName, String hostIP, String players){
             this.lobbyName = new SimpleStringProperty(lobbyName);
             this.hostName = new SimpleStringProperty(hostName);
-            this.hostIp = new SimpleStringProperty(hostIP);
+
             this.players = new SimpleStringProperty(players);
         }
 
@@ -454,7 +448,6 @@ public class Controller extends Application {
             return hostName.get();
         }
 
-        public String getHostIp() { return hostIp.get(); }
 
         public String getPlayers() {
             return players.get();
@@ -468,7 +461,6 @@ public class Controller extends Application {
             return hostName;
         }
 
-        public SimpleStringProperty hostIpProperty() { return hostIp; }
 
         public SimpleStringProperty playersProperty() {
             return players;

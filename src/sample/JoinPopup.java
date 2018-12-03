@@ -19,10 +19,8 @@ public final class JoinPopup {
 
     private static String chosenColor;
     private static String gameName;
-    private static String hostIP;
 
     private static TextField gameNameField;
-    private static TextField hostIPField;
 
     static void display(boolean host){
 
@@ -74,7 +72,6 @@ public final class JoinPopup {
                     if(host){
                         try {
                             gameName = gameNameField.getText();
-                            hostIP = hostIPField.getText();
                         } catch(NullPointerException ex){
                             gameName = "Creative Name";
                         }
@@ -88,16 +85,13 @@ public final class JoinPopup {
         if(host){
             gameNameField = new TextField();
             gameNameField.setPromptText("Game Name");
-            hostIPField = new TextField();
-            hostIPField.setPromptText("Host IP");
             try {
-                hostIPField.setText(InetAddress.getLocalHost().getHostAddress());
             } catch(Exception ex){
                 ex.printStackTrace();
             }
-            width = 400;
+            width = 230;
             //height = 190;
-            bottomLine.getChildren().addAll(gameNameField, hostIPField);
+            bottomLine.getChildren().addAll(gameNameField);
         }
 
         bottomLine.getChildren().add(enterButton);
@@ -127,9 +121,5 @@ public final class JoinPopup {
 
     public static String getGameName(){
         return  gameName;
-    }
-
-    public static String getHostIP(){
-        return  hostIP;
     }
 }
