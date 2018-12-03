@@ -3,10 +3,12 @@ package sample;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 
+import javafx.util.Pair;
 import org.json.simple.*;
+import org.json.simple.parser.JSONParser;
 import sample.card.Card;
+
 
 class SorryClient{
 
@@ -15,6 +17,9 @@ class SorryClient{
     private DataOutputStream out;
     private BufferedReader in;
     private GameLogic game;
+    private String user;
+    private String game_name;
+    private String color;
 
     SorryClient(){
         game = new GameLogic();
@@ -41,9 +46,16 @@ class SorryClient{
             json.put("data", data);
             byte[] output = json.toString().getBytes();
             out.write(output);
-            String response = in.readLine();
-            System.out.println(response);
-            return response;
+            JSONParser parser = new JSONParser();
+            JSONObject response = (JSONObject)parser.parse(in.readLine());
+            if(response.containsKey("error")){
+                System.out.println("Something has gone wrong...");
+            } else{
+                JSONObject response_data = (JSONObject)response.get("data");
+                //System.out.println("Success! Player "+response_data.get("username"));
+                user = response_data.get("username").toString();
+            }
+            return response.toJSONString();
         } catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -76,9 +88,30 @@ class SorryClient{
             json.put("data",data);
             byte[] output = json.toString().getBytes();
             out.write(output);
-            String response = in.readLine();
-            System.out.println(response);
-            return response;
+            JSONParser parser = new JSONParser();
+            JSONObject player_joined = (JSONObject)parser.parse(in.readLine());
+            JSONObject game_data = (JSONObject)parser.parse(in.readLine());
+            //  System.out.println(game_data);
+            if(player_joined.containsKey("error") || game_data.containsKey("error")){
+                System.out.println("Something has gone wrong...");
+                return player_joined.toString()+" "+game_data.toString();
+            } else{
+                // System.out.println(player_joined.toString());
+                JSONArray player_joined_array = (JSONArray) player_joined.get("data");
+                JSONObject player_joined_data = (JSONObject)player_joined_array.get(0);
+                game_name = player_joined_data.get("game").toString();
+                color = player_joined_data.get("color").toString().toUpperCase();
+                game_data = (JSONObject)game_data.get("data");
+                JSONObject players = (JSONObject)game_data.get("players");
+                for(Object s: players.keySet()){
+                    String player = s.toString();
+                    String temp_color = players.get(s).toString().toUpperCase();
+                    game.addPlayer(new Player(player,TileColor.valueOf(temp_color)));
+                }
+                //System.out.println("Success! Player "+player_joined.get("username"));
+                // user = player_joined.get("username").toString();
+            }
+            return player_joined.toJSONString();
         }catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -96,9 +129,30 @@ class SorryClient{
             json.put("data", data);
             byte[] output = json.toString().getBytes();
             out.write(output);
-            String response = in.readLine();
-            System.out.println(response);
-            return response;
+            JSONParser parser = new JSONParser();
+            JSONObject player_joined = (JSONObject)parser.parse(in.readLine());
+            JSONObject game_data = (JSONObject)parser.parse(in.readLine());
+          //  System.out.println(game_data);
+            if(player_joined.containsKey("error")){
+                System.out.println("Something has gone wrong...");
+            } else{
+               // System.out.println(player_joined.toString());
+                JSONArray player_joined_array = (JSONArray) player_joined.get("data");
+                JSONObject player_joined_data = (JSONObject)player_joined_array.get(0);
+                game_name = player_joined_data.get("game").toString();
+                color = player_joined_data.get("color").toString().toUpperCase();
+                name = player_joined_data.get("name").toString();
+                game_data = (JSONObject)game_data.get("data");
+                JSONObject players = (JSONObject)game_data.get("players");
+                for(Object s: players.keySet()){
+                    String player = s.toString();
+                    String temp_color = players.get(s).toString().toUpperCase();
+                    game.addPlayer(new Player(player,TileColor.valueOf(temp_color)));
+                }
+                //System.out.println("Success! Player "+player_joined.get("username"));
+               // user = player_joined.get("username").toString();
+            }
+            return player_joined.toJSONString();
         } catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -115,7 +169,7 @@ class SorryClient{
             byte[] output = json.toString().getBytes();
             out.write(output);
             String response = in.readLine();
-            System.out.println(response);
+    //        System.out.println(response);
             return response;
         } catch (Exception e){
             e.printStackTrace();
@@ -248,11 +302,33 @@ class Game{
     public static void main(String[] args) throws Exception{
         SorryClient sorry = new SorryClient();
         System.out.println(sorry.connect(InetAddress.getByName("127.0.0.1") ,12000));
-        sorry.register_user("lol");
+        sorry.register_user("Tanner");
+        sorry.create_game("game","blue");
+        System.out.println(sorry.get_game_data("game"));
+        while(true){}
+       // System.out.println(sorry.join_game("green","what"));
+        /*sorry.register_user("lol");
         sorry.get_game_list();
         sorry.join_game("blue","test");
-        sorry.create_game("test","blue");
+        sorry.create_game("test","blue");*/
     }
 
 }
 
+class Game2{
+    public static void main(String[] args) throws Exception{
+        SorryClient sorry = new SorryClient();
+        System.out.println(sorry.connect(InetAddress.getByName("127.0.0.1") ,12000));
+        sorry.register_user("lol");
+        System.out.println(sorry.get_game_list());
+        System.out.println(sorry.join_game("green","game"));
+        sorry.start_game("game");
+        System.out.println(sorry.get_game_data("game"));
+        while(true){}
+        /*sorry.register_user("lol");
+        sorry.get_game_list();
+        sorry.join_game("blue","test");
+        sorry.create_game("test","blue");*/
+    }
+
+}
