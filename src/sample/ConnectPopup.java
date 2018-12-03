@@ -67,7 +67,7 @@ public final class ConnectPopup {
 
         content.getChildren().addAll(nameField, portField, blankSpace, buttonContent);
 
-        Scene scene = new Scene(content, 300, 150);
+        Scene scene = new Scene(content, 300, 170);
         popup.setScene(scene);
 
         enterButton.requestFocus();

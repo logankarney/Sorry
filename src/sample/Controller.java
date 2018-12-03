@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.net.InetAddress;
 
 public class Controller extends Application {
 
@@ -67,21 +68,21 @@ public class Controller extends Application {
         stage.setScene(scene);
         stage.show();
 
-        backgroundSound = new Media(new File("src/res/bensound-hipjazz.mp3").toURI().toString());
-        backgroundPlayer = new MediaPlayer(backgroundSound);
-        backgroundPlayer.play();
+       // backgroundSound = new Media(new File("src/res/bensound-hipjazz.mp3").toURI().toString());
+        //backgroundPlayer = new MediaPlayer(backgroundSound);
+       // backgroundPlayer.play();
 
         //https://stackoverflow.com/questions/43190594/javafx-mediaplayer-loop
         //  answer by Berke Bakar
-        backgroundPlayer.setOnEndOfMedia(() -> {
-            backgroundPlayer.seek(Duration.ZERO);
-            backgroundPlayer.play();
-        });
+      //  backgroundPlayer.setOnEndOfMedia(() -> {
+       //     backgroundPlayer.seek(Duration.ZERO);
+      //      backgroundPlayer.play();
+        //});
 
 
 
-        buttonSound = new Media(new File("src/res/HITMARKER.mp3").toURI().toString());
-        buttonPlayer = new MediaPlayer(buttonSound);
+    //    buttonSound = new Media(new File("src/res/HITMARKER.mp3").toURI().toString());
+      //  buttonPlayer = new MediaPlayer(buttonSound);
     }
 
 
@@ -131,8 +132,11 @@ public class Controller extends Application {
 
 
     @FXML private void fxButtonClicked(Event e){
-        buttonPlayer.stop();
-        buttonPlayer.play();
+//        buttonPlayer.stop();
+ //       buttonPlayer.play();
+
+        playerName = ConnectPopup.getUsername();
+        port = ConnectPopup.getPort();
 
        if(e.getSource() == cardButton){
            onDraw();
@@ -146,8 +150,16 @@ public class Controller extends Application {
 
            if(chosenColor.equals("none"))
                return;
-           sorryBoard.register_user(playerName);
-           sorryBoard.join_game(chosenColor, playerName);
+
+           try {
+               InetAddress address = InetAddress.getByName(chosenGame.getHostIp());
+               sorryBoard.connect(address,Integer.parseInt(port));
+
+               sorryBoard.register_user(playerName);
+               sorryBoard.join_game(chosenColor, "asdf");
+           } catch(Exception ex){
+               //ex.printStackTrace();
+           }
 
            changeFXML("game.fxml");
            removeStartButton();
@@ -164,18 +176,26 @@ public class Controller extends Application {
 
            JoinPopup.display(true);
            String chosenColor = JoinPopup.getChosenColor();
-
+            String gameName = JoinPopup.getGameName();
            if(chosenColor.equals("none"))
                return;
+
+           //sorryBoard.register_user(playerName);
+           //sorryBoard.join_game(chosenColor, playerName);
 
            changeFXML("game.fxml");
 
            addButtons();
 
+           try {
+               InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
 
-           sorryBoard.register_user(playerName);
-           sorryBoard.create_game(playerName, chosenColor);
-
+               sorryBoard.connect(inetAddress, Integer.parseInt(port));
+               sorryBoard.register_user(playerName);
+               sorryBoard.create_game(gameName, chosenColor);
+           } catch(Exception ex){
+               //e.printStacktrace();
+           }
 
        }
 
@@ -312,9 +332,11 @@ public class Controller extends Application {
     public void onRefreshClick(){
         String gamesList;
         try {
-            //gamesList = sorryBoard.get_game_list();
+            gamesList = sorryBoard.get_game_list();
+            System.out.println(gamesList);
+            gamesList = "error";
         } catch (Exception e){
-            gamesList = "none";
+            gamesList = "error";
         }
 
         /*
@@ -328,7 +350,7 @@ public class Controller extends Application {
         }
         */
 
-        GameInfo game1 = new GameInfo("Party People", "My Username", "RGB");
+        GameInfo game1 = new GameInfo("Party People", "My Username",  "15.51451.4", "RGB");
         tableView.getItems().add(game1);
 
         tableView.refresh();
@@ -349,8 +371,12 @@ public class Controller extends Application {
                 new PropertyValueFactory<GameInfo,String>("hostName")
         );
 
+        TableColumn hostIpCol = new TableColumn("Host IP");
+        hostIpCol.setCellValueFactory(
+                new PropertyValueFactory<GameInfo, String>("hostIp")
+        );
+
         TableColumn playersCol = new TableColumn("Players");
-        playersCol.setMinWidth(200);
         playersCol.setCellValueFactory(
                 new PropertyValueFactory<GameInfo,String>("players")
         );
@@ -358,8 +384,9 @@ public class Controller extends Application {
 
         lobbyNameCol.setMinWidth(240);
         hostNameCol.setMinWidth(240);
-        playersCol.setMinWidth(520);
-        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, playersCol);
+        hostIpCol.setMinWidth(100);
+        playersCol.setMinWidth(240);
+        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, hostIpCol, playersCol);
     }
 
     private void removeStartButton(){
@@ -418,11 +445,13 @@ public class Controller extends Application {
 
         private final SimpleStringProperty lobbyName;
         private final SimpleStringProperty hostName;
+        private final SimpleStringProperty hostIp;
         private final SimpleStringProperty players;
 
-        private GameInfo(String lobbyName, String hostName, String players){
+        private GameInfo(String lobbyName, String hostName, String hostIP, String players){
             this.lobbyName = new SimpleStringProperty(lobbyName);
             this.hostName = new SimpleStringProperty(hostName);
+            this.hostIp = new SimpleStringProperty(hostIP);
             this.players = new SimpleStringProperty(players);
         }
 
@@ -430,11 +459,11 @@ public class Controller extends Application {
             return lobbyName.get();
         }
 
-
         public String getHostName() {
             return hostName.get();
         }
 
+        public String getHostIp() { return hostIp.get(); }
 
         public String getPlayers() {
             return players.get();
@@ -447,6 +476,8 @@ public class Controller extends Application {
         public SimpleStringProperty hostNameProperty() {
             return hostName;
         }
+
+        public SimpleStringProperty hostIpProperty() { return hostIp; }
 
         public SimpleStringProperty playersProperty() {
             return players;
