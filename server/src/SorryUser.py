@@ -45,9 +45,7 @@ class SorryUser(asyncio.Protocol):
 			del self.server.current_users[self.username]
 
 	def data_received(self, data):
-		self.parse_message(data.decode().strip("\r\n"))
-		#messages = re.split("\n", data.decode())
-		#[self.parse_message(msg) for msg in messages]
+		self.parse_message(data.decode("utf-8", "backslashreplace").strip("\r\n"))
 
 	def parse_message(self, msg):
 		print(f"Received: {msg}")
