@@ -62,7 +62,7 @@ public final class JoinPopup {
                     try {
                         chosenColor = selected.getText();
                     } catch (NullPointerException ex){
-                        chosenColor = "Red";
+                        chosenColor = "none";
                     } finally{
                         popup.close();
                     }
@@ -96,6 +96,8 @@ public final class JoinPopup {
 
         Scene scene = new Scene(content, width, height);
         popup.setScene(scene);
+
+        popup.setOnCloseRequest(e -> chosenColor = "none");
 
         enterButton.requestFocus();
 

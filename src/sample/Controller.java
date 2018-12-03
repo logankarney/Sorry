@@ -15,6 +15,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.File;
 
@@ -34,8 +35,8 @@ public class Controller extends Application {
 
     @FXML private TextArea currentCardDescription;
 
-    private MediaPlayer mediaPlayer;
-    private Media sound;
+    private static MediaPlayer backgroundPlayer, buttonPlayer;
+    private static Media backgroundSound, buttonSound;
 
     private String port, playerName;
 
@@ -66,12 +67,26 @@ public class Controller extends Application {
         stage.setScene(scene);
         stage.show();
 
+        backgroundSound = new Media(new File("src/res/bensound-hipjazz.mp3").toURI().toString());
+        backgroundPlayer = new MediaPlayer(backgroundSound);
+        backgroundPlayer.play();
 
+        //https://stackoverflow.com/questions/43190594/javafx-mediaplayer-loop
+        //  answer by Berke Bakar
+        backgroundPlayer.setOnEndOfMedia(() -> {
+            backgroundPlayer.seek(Duration.ZERO);
+            backgroundPlayer.play();
+        });
+
+
+
+        buttonSound = new Media(new File("src/res/HITMARKER.mp3").toURI().toString());
+        buttonPlayer = new MediaPlayer(buttonSound);
     }
 
 
     @FXML public void initialize(){
-        sound = new Media(new File("src/res/AIRHORN.mp3").toURI().toString());
+
 
         redPiece = new Image("/res/red.png");
         bluePiece = new Image("/res/blue.png");
@@ -79,6 +94,8 @@ public class Controller extends Application {
         greenPiece = new Image("/res/green.png");
         //prevents ConnectPopup.display() from firing every time the scene changes
         if(firstTime) {
+
+
             //Gets player's preferred username and the server's port number
             ConnectPopup.display();
 
@@ -114,10 +131,8 @@ public class Controller extends Application {
 
 
     @FXML private void fxButtonClicked(Event e){
-        //System.out.println(e.getSource());
-        //mediaPlayer = new MediaPlayer(sound);
-       // mediaPlayer.stop();
-      //  mediaPlayer.play();
+        buttonPlayer.stop();
+        buttonPlayer.play();
 
        if(e.getSource() == cardButton){
            onDraw();
@@ -128,6 +143,9 @@ public class Controller extends Application {
            JoinPopup.display(false);
 
            String chosenColor = JoinPopup.getChosenColor();
+
+           if(chosenColor.equals("none"))
+               return;
            sorryBoard.register_user(playerName);
            sorryBoard.join_game(chosenColor, playerName);
 
@@ -143,11 +161,17 @@ public class Controller extends Application {
        }
 
        else if(e.getSource() == hostButton) {
+
+           JoinPopup.display(true);
+           String chosenColor = JoinPopup.getChosenColor();
+
+           if(chosenColor.equals("none"))
+               return;
+
            changeFXML("game.fxml");
 
            addButtons();
-           JoinPopup.display(true);
-           String chosenColor = JoinPopup.getChosenColor();
+
 
            sorryBoard.register_user(playerName);
            sorryBoard.create_game(playerName, chosenColor);
