@@ -109,7 +109,9 @@ public final class JoinPopup {
         Scene scene = new Scene(content, width, height);
         popup.setScene(scene);
 
-        popup.setOnCloseRequest(e -> chosenColor = "none");
+        popup.setOnCloseRequest(e -> {
+            chosenColor = "none";
+        });
 
         enterButton.requestFocus();
 

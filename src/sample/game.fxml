@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
@@ -8,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="pane" prefHeight="848.0" prefWidth="1280.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane fx:id="pane" prefHeight="848.0" prefWidth="1280.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <Button fx:id="cardButton" layoutX="309.0" layoutY="357.0" mnemonicParsing="false" onAction="#fxButtonClicked" styleClass="image-button">
          <graphic>
@@ -68,7 +73,6 @@
             <Font size="68.0" />
          </font>
       </Text>
-      <Button fx:id="startButton" layoutX="552.0" layoutY="365.0" mnemonicParsing="false" onAction="#fxButtonClicked" style="-fx-font-size: 12;" text="Start" />
       <TextArea fx:id="currentCardDescription" editable="false" layoutX="878.0" layoutY="125.0" prefHeight="287.0" prefWidth="327.0" wrapText="true">
          <font>
             <Font size="16.0" />

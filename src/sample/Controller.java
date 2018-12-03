@@ -15,9 +15,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
-import java.io.File;
 import java.net.InetAddress;
 
 public class Controller extends Application {
@@ -28,7 +26,7 @@ public class Controller extends Application {
 
     @FXML private TableView<GameInfo> tableView = new TableView<>();
 
-    @FXML private Button hostButton, joinButton, refreshButton, startButton;
+    @FXML private Button hostButton, joinButton, refreshButton;
 
     @FXML private Button cardButton;
 
@@ -39,7 +37,7 @@ public class Controller extends Application {
     private static MediaPlayer backgroundPlayer, buttonPlayer;
     private static Media backgroundSound, buttonSound;
 
-    private String port, playerName;
+    private static String port, playerName, gameName;
 
     /** The outside rows for each color */
     private static TileButton[] redRow, blueRow, greenRow, yellowRow;
@@ -157,13 +155,12 @@ public class Controller extends Application {
                sorryBoard.connect(address,Integer.parseInt(port));
 
                sorryBoard.register_user(playerName);
-               sorryBoard.join_game(chosenColor, "asdf");
+               sorryBoard.join_game(chosenColor, chosenGame.getLobbyName());
            } catch(Exception ex){
                //ex.printStackTrace();
            }
 
            changeFXML("game.fxml");
-           removeStartButton();
            addButtons();
 
 
@@ -177,7 +174,7 @@ public class Controller extends Application {
 
            JoinPopup.display(true);
            String chosenColor = JoinPopup.getChosenColor();
-            String gameName = JoinPopup.getGameName();
+            gameName = JoinPopup.getGameName();
            if(chosenColor.equals("none"))
                return;
 
@@ -200,11 +197,11 @@ public class Controller extends Application {
 
        }
 
-       else if(e.getSource() == startButton){
+       /*else if(e.getSource() == startButton){
             String gameName = JoinPopup.getGameName();
             sorryBoard.start_game(gameName);
             removeStartButton();
-       }
+       }*/
 
     }
 
@@ -358,6 +355,7 @@ public class Controller extends Application {
     }
 
     public void onDraw(){
+
         Card drawn = sorryBoard.drawCard();
         setCurrentCardText(drawn.getValue() + "");
         setCurrentCardDescription(drawn.getDesc());
@@ -388,10 +386,6 @@ public class Controller extends Application {
         hostIpCol.setMinWidth(100);
         playersCol.setMinWidth(240);
         tableView.getColumns().addAll(lobbyNameCol, hostNameCol, hostIpCol, playersCol);
-    }
-
-    private void removeStartButton(){
-        pane.getChildren().remove(startButton);
     }
 
     public String getCurrentCardText() {
