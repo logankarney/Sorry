@@ -352,7 +352,7 @@ public class Controller extends Application {
         }
         */
 
-        GameInfo game1 = new GameInfo("Party People", "My Username",  "15.51451.4", "RGB");
+        GameInfo game1 = new GameInfo("Party People", "My Username",  "15.51451.4", "RGBY");
         tableView.getItems().add(game1);
 
         tableView.refresh();
@@ -380,9 +380,9 @@ public class Controller extends Application {
         );
 
 
-        lobbyNameCol.setMinWidth(240);
+        lobbyNameCol.setMinWidth(300);
         hostNameCol.setMinWidth(240);
-        playersCol.setMinWidth(580);
+        playersCol.setMinWidth(240);
         tableView.getColumns().addAll(lobbyNameCol, hostNameCol, playersCol);
     }
 
