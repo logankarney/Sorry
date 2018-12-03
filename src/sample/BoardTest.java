@@ -11,13 +11,12 @@ import static org.junit.Assert.*;
  ***********************************************/
 public class BoardTest {
     @org.junit.Test
-    public void move() throws Exception {
-
-    }
-
-    @org.junit.Test
-    public void returnToStart() throws Exception {
-
+    public void tryMoveFromStart() throws Exception {
+        Board b = makeBoard();
+        Board b2 = new Board(b);
+        Pawn p = b.getPlayers()[1].getPawns()[3];
+        b.move(p, 10);
+        Assert.assertArrayEquals(b.getSorryBoard(), b2.getSorryBoard());
     }
 
     @org.junit.Test
@@ -26,6 +25,29 @@ public class BoardTest {
         Pawn p = b.getPlayers()[1].getPawns()[3];
         b.moveFromStart(p);
         Assert.assertEquals(b.getSorryBoard()[1][3], p);
+    }
+
+    @org.junit.Test
+    public void moveFromStartOnEnemy() throws Exception {
+        Board b = makeBoard();
+        Pawn e = b.getPlayers()[0].getPawns()[1];
+        Pawn p = b.getPlayers()[1].getPawns()[3];
+        b.moveFromStart(e);
+        b.setPawnLocation(1,3,e);
+        b.moveFromStart(p);
+        //Assert.assertEquals(b.getSorryBoard()[1][3], p);
+        Assert.assertTrue(e.isInStart());
+        Assert.assertEquals(b.getStart()[0].get(3), e);
+    }
+    @org.junit.Test
+    public void moveFromStartOnAlly() throws Exception {
+        Board b = makeBoard();
+        Pawn p1 = b.getPlayers()[1].getPawns()[3];
+        Pawn p2 = b.getPlayers()[1].getPawns()[1];
+
+        b.moveFromStart(p1);
+        Assert.assertTrue(!b.moveFromStart(p2));
+        Assert.assertEquals(b.getSorryBoard()[1][3], p1);
     }
 
     @org.junit.Test
