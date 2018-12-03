@@ -37,6 +37,12 @@
     -fx-text-fill:transparent;
 }
 
+#image-button{
+     -fx-background-color:transparent;
+     -fx-border-color:transparent;
+     -fx-text-fill:transparent;
+ }
+
 #red-tile{
     -fx-background-color: -fx-my-red;
     -fx-border-color: -fx-my-border-color;

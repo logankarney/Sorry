@@ -20,9 +20,20 @@ class SorryClient{
     private String user;
     private String game_name;
     private String color;
+    private static Controller controller;
+
+    public SorryClient(Controller controller){
+        this.controller = controller;
+
+    }
+
 
     SorryClient(){
         game = new GameLogic();
+    }
+
+    public GameLogic getGame() {
+        return game;
     }
 
     String connect(InetAddress addr, int port){

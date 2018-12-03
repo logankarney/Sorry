@@ -1,42 +1,43 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sample.card.Card;
 
-import java.io.File;
+import java.net.InetAddress;
 
 public class Controller extends Application {
 
     @FXML AnchorPane pane;
 
-    @FXML private TextField playerNameField;
-    @FXML private TextField serverPortField;
 
-    @FXML private Button joinButton;
+    @FXML private TableView<GameInfo> tableView = new TableView<>();
+
+    @FXML private Button hostButton, joinButton, refreshButton;
 
     @FXML private Button cardButton;
 
     @FXML private Text currentCard;
 
-    private MediaPlayer mediaPlayer;
-    private Media sound;
+    @FXML private TextArea currentCardDescription;
 
-    private String port;
-    private String playerName;
+    private static MediaPlayer backgroundPlayer, buttonPlayer;
+    private static Media backgroundSound, buttonSound;
+
+    private static String port, playerName, gameName;
 
     /** The outside rows for each color */
     private static TileButton[] redRow, blueRow, greenRow, yellowRow;
@@ -53,7 +54,7 @@ public class Controller extends Application {
 
     protected Image redPiece, bluePiece, yellowPiece, greenPiece;
 
-
+    private SorryClient sorryBoard;
 
 
     @Override
@@ -64,13 +65,28 @@ public class Controller extends Application {
         scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
+        stage.setResizable(false);
+
+       // backgroundSound = new Media(new File("src/res/bensound-hipjazz.mp3").toURI().toString());
+        //backgroundPlayer = new MediaPlayer(backgroundSound);
+       // backgroundPlayer.play();
+
+        //https://stackoverflow.com/questions/43190594/javafx-mediaplayer-loop
+        //  answer by Berke Bakar
+      //  backgroundPlayer.setOnEndOfMedia(() -> {
+       //     backgroundPlayer.seek(Duration.ZERO);
+      //      backgroundPlayer.play();
+        //});
 
 
+
+    //    buttonSound = new Media(new File("src/res/HITMARKER.mp3").toURI().toString());
+      //  buttonPlayer = new MediaPlayer(buttonSound);
     }
 
 
     @FXML public void initialize(){
-        sound = new Media(new File("src/res/AIRHORN.mp3").toURI().toString());
+
 
         redPiece = new Image("/res/red.png");
         bluePiece = new Image("/res/blue.png");
@@ -78,15 +94,14 @@ public class Controller extends Application {
         greenPiece = new Image("/res/green.png");
         //prevents ConnectPopup.display() from firing every time the scene changes
         if(firstTime) {
+
+
             //Gets player's preferred username and the server's port number
             ConnectPopup.display();
 
 
             playerName = ConnectPopup.getUsername();
             port = ConnectPopup.getPort();
-
-            playerNameField.setText(playerName);
-            serverPortField.setText(port);
 
             //size = amount of tiles in rows, 5 for home, 1 for finish, 1 for spawn
             redRow = new TileButton[size];
@@ -103,26 +118,88 @@ public class Controller extends Application {
 
             spawns = new TileButton[4];
 
+            sorryBoard = new SorryClient(this);
+            populateTableView();
+            onRefreshClick();
+
             firstTime = false;
         }
     }
 
 
     @FXML private void fxButtonClicked(Event e){
-        //System.out.println(e.getSource());
-        //mediaPlayer = new MediaPlayer(sound);
-       // mediaPlayer.stop();
-      //  mediaPlayer.play();
+//        buttonPlayer.stop();
+ //       buttonPlayer.play();
 
+        playerName = ConnectPopup.getUsername();
+        port = ConnectPopup.getPort();
 
-        //saving for later use
-       if(e.getSource() == joinButton) {
+       if(e.getSource() == cardButton){
+           onDraw();
+        }
+
+        else if(e.getSource() == joinButton){
+           GameInfo chosenGame = tableView.getSelectionModel().getSelectedItem();
+           JoinPopup.display(false);
+
+           String chosenColor = JoinPopup.getChosenColor();
+
+           if(chosenColor.equals("none"))
+               return;
+
+           try {
+               InetAddress address = InetAddress.getByName("127.0.0.1");
+               sorryBoard.connect(address,Integer.parseInt(port));
+
+               sorryBoard.register_user(playerName);
+               sorryBoard.join_game(chosenColor, chosenGame.getLobbyName());
+           } catch(Exception ex){
+               //ex.printStackTrace();
+           }
+
            changeFXML("game.fxml");
            addButtons();
-       } else if(e.getSource() == cardButton){
-           System.out.println("Card Drawn");
-           setCurrentCardText("3");
+
+
        }
+
+       else if(e.getSource() == refreshButton){
+            onRefreshClick();
+       }
+
+       else if(e.getSource() == hostButton) {
+
+           JoinPopup.display(true);
+           String chosenColor = JoinPopup.getChosenColor();
+            gameName = JoinPopup.getGameName();
+           if(chosenColor.equals("none"))
+               return;
+
+           //sorryBoard.register_user(playerName);
+           //sorryBoard.join_game(chosenColor, playerName);
+
+           changeFXML("game.fxml");
+
+           addButtons();
+
+           try {
+               InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
+
+               sorryBoard.connect(inetAddress, Integer.parseInt(port));
+               sorryBoard.register_user(playerName);
+               sorryBoard.create_game(gameName, chosenColor);
+           } catch(Exception ex){
+               //e.printStacktrace();
+           }
+
+       }
+
+       /*else if(e.getSource() == startButton){
+            String gameName = JoinPopup.getGameName();
+            sorryBoard.start_game(gameName);
+            removeStartButton();
+       }*/
+
     }
 
     /** saving for dealing with pieces later **/
@@ -247,12 +324,71 @@ public class Controller extends Application {
         pane.getChildren().addAll(spawns[0], spawns[1], spawns[2], spawns[3]);
     }
 
+    public void onRefreshClick(){
+        String gamesList;
+        try {
+            gamesList = sorryBoard.get_game_list();
+            System.out.println(gamesList);
+            gamesList = "error";
+        } catch (Exception e){
+            gamesList = "error";
+        }
+
+        /*
+        if(!gamesList.equals("none")){
+            String[] games = gamesList.split("\n");
+            for (String game : games) {
+                String[] gameData = game.split("\t");
+                GameInfo room = new FileInfo(gameData[0], gameData[1], ect.);
+                table.getItems().add(room);
+            }
+        }
+        */
+
+        GameInfo game1 = new GameInfo("Party People", "My Username",  "15.51451.4", "RGB");
+        tableView.getItems().add(game1);
+
+        tableView.refresh();
+    }
+
+    public void onDraw(){
+
+        Card drawn = sorryBoard.getGame().drawCard();
+        setCurrentCardText(drawn.getValue() + "");
+        setCurrentCardDescription(drawn.getDesc());
+    }
+
+    private void populateTableView(){
+        TableColumn lobbyNameCol = new TableColumn("Lobby Name");
+        lobbyNameCol.setCellValueFactory(new PropertyValueFactory<GameInfo,String>("lobbyName"));
+
+        TableColumn hostNameCol = new TableColumn("Host Name");
+        hostNameCol.setCellValueFactory(
+                new PropertyValueFactory<GameInfo,String>("hostName")
+        );
+
+        TableColumn playersCol = new TableColumn("Players");
+        playersCol.setCellValueFactory(
+                new PropertyValueFactory<GameInfo,String>("players")
+        );
+
+
+        lobbyNameCol.setMinWidth(240);
+        hostNameCol.setMinWidth(240);
+        playersCol.setMinWidth(580);
+        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, playersCol);
+    }
+
     public String getCurrentCardText() {
         return currentCard.getText();
     }
 
     public void setCurrentCardText(String newCard) {
         this.currentCard.setText(newCard);
+    }
+
+    public void setCurrentCardDescription(String newDescription){
+        this.currentCardDescription.setText(newDescription);
     }
 
     public static TileButton[] getRedRow() {
@@ -291,9 +427,54 @@ public class Controller extends Application {
         return spawns;
     }
 
+    public static class GameInfo{
+
+        private final SimpleStringProperty lobbyName;
+        private final SimpleStringProperty hostName;
+
+        private final SimpleStringProperty players;
+
+        private GameInfo(String lobbyName, String hostName, String hostIP, String players){
+            this.lobbyName = new SimpleStringProperty(lobbyName);
+            this.hostName = new SimpleStringProperty(hostName);
+
+            this.players = new SimpleStringProperty(players);
+        }
+
+        public String getLobbyName() {
+            return lobbyName.get();
+        }
+
+        public String getHostName() {
+            return hostName.get();
+        }
+
+
+        public String getPlayers() {
+            return players.get();
+        }
+
+        public SimpleStringProperty lobbyNameProperty() {
+            return lobbyName;
+        }
+
+        public SimpleStringProperty hostNameProperty() {
+            return hostName;
+        }
+
+
+        public SimpleStringProperty playersProperty() {
+            return players;
+        }
+
+
+    }
 
 
     public static void main(String[] args) {
         launch(args);
     }
 }
+
+
+
