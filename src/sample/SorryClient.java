@@ -50,15 +50,16 @@ class SorryClient{
             JSONObject response = (JSONObject)parser.parse(in.readLine());
             if(response.containsKey("error")){
                 System.out.println("Something has gone wrong...");
+                return "Error: "+response.get("error");
             } else{
                 JSONObject response_data = (JSONObject)response.get("data");
                 //System.out.println("Success! Player "+response_data.get("username"));
                 user = response_data.get("username").toString();
+                return user+" has been successfully registered with the server.";
             }
-            return response.toJSONString();
         } catch (Exception e){
             e.printStackTrace();
-            return "error";
+            return "Error registering user.";
         }
     }
 
@@ -71,7 +72,11 @@ class SorryClient{
             out.write(output);
             String response = in.readLine();
             System.out.println(response);
-            return response;
+            JSONParser parser = new JSONParser();
+            JSONObject resp_json = (JSONObject)parser.parse(response);
+            JSONObject games = (JSONObject)resp_json.get("data");
+            return games.toString();
+
         } catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -111,7 +116,7 @@ class SorryClient{
                 //System.out.println("Success! Player "+player_joined.get("username"));
                 // user = player_joined.get("username").toString();
             }
-            return player_joined.toJSONString();
+            return name+" has successfully joined "+game_name+" and has been assigned "+color;
         }catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -152,7 +157,7 @@ class SorryClient{
                 //System.out.println("Success! Player "+player_joined.get("username"));
                // user = player_joined.get("username").toString();
             }
-            return player_joined.toJSONString();
+            return game_name+" has been successfully created.";
         } catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -209,7 +214,7 @@ class SorryClient{
             out.write(output);
             String response = in.readLine();
             System.out.println(response);
-            return response;
+            return game_name+" has begun.";
         } catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -302,8 +307,8 @@ class Game{
     public static void main(String[] args) throws Exception{
         SorryClient sorry = new SorryClient();
         System.out.println(sorry.connect(InetAddress.getByName("127.0.0.1") ,12000));
-        sorry.register_user("Tanner");
-        sorry.create_game("game","blue");
+        System.out.println(sorry.register_user("Tanner"));
+        System.out.println(sorry.create_game("game","blue"));
         System.out.println(sorry.get_game_data("game"));
         while(true){}
        // System.out.println(sorry.join_game("green","what"));
