@@ -164,19 +164,20 @@ public class Board {
 
     public boolean moveFromStart(Pawn p){
         int id = p.getPlayerID();
-        if (sorryBoard[id][3] == null){
-            sorryBoard[p.getPlayerID()][3] = p;
-            p.setInStart(false);
-            start[p.getPlayerID()].remove(p);
-            return true;
-        }else if (sorryBoard[id][3].getPlayerID() != id){
-            returnToStart(sorryBoard[p.getPlayerID()][3]);
-            sorryBoard[p.getPlayerID()][3] = p;
-            p.setInStart(false);
-            start[p.getPlayerID()].remove(p);
-            return true;
+
+        if (sorryBoard[id][3] != null){
+            // Ally pawn outside -- illegal
+            if (sorryBoard[id][3].getPlayerID() == id){
+                return false;
+            }else{ // Enemy pawn outside
+                returnToStart(sorryBoard[p.getPlayerID()][3]);
+            }
         }
-        return false;
+        // Move from start
+        sorryBoard[p.getPlayerID()][3] = p;
+        p.setInStart(false);
+        start[p.getPlayerID()].remove(p);
+        return true;
     }
 
     public void setPawnLocation(int row, int space, Pawn p){
