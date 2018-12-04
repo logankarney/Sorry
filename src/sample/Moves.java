@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import sample.Controller;
 import sample.TileButton;
 import sample.TileColor;
@@ -47,6 +48,23 @@ public class Moves {
             pieces.add(spawns[i]);
         }
 
+        //Have to explicitly set this as lamda's do not like assigning on actions in loops
+        spawns[0].setOnAction(e -> {reset(); displayMoves(spawns[0], spawns[0].getC(), controller.cardValue);});
+        spawns[0].setPieceColor(TileColor.RED);
+        spawns[0].setPicture(controller.redPiece);
+
+        spawns[1].setOnAction(e -> { reset(); displayMoves(spawns[1], spawns[1].getC(), controller.cardValue);});
+        spawns[1].setPieceColor(TileColor.BLUE);
+        spawns[1].setPicture(controller.bluePiece);
+
+        spawns[2].setOnAction(e -> { reset(); displayMoves(spawns[2], spawns[2].getC(), controller.cardValue);});
+        spawns[2].setPieceColor(TileColor.YELLOW);
+        spawns[2].setPicture(controller.yellowPiece);
+
+        spawns[3].setOnAction(e -> {reset(); displayMoves(spawns[3], spawns[3].getC(), controller.cardValue);});
+        spawns[3].setPieceColor(TileColor.GREEN);
+        spawns[3].setPicture(controller.greenPiece);
+
         moves = new ArrayList<TileButton>();
 
         selectedPiece = null;
@@ -81,10 +99,14 @@ public class Moves {
         newPiece.setPieceColor(playerColor);
         newPiece.setOnAction(e -> displayMoves(newPiece, playerColor, controller.cardValue));
 
-        oldPiece.setOccupiedBy(0);
-        oldPiece.setPicture(null);
-        oldPiece.setPieceColor(null);
-        oldPiece.setOnAction(e -> {});
+        oldPiece.setOccupiedBy(oldPiece.getOccupiedBy() - 1);
+        if(oldPiece.getOccupiedBy() == 0) {
+            oldPiece.setPicture(null);
+            oldPiece.setPieceColor(null);
+
+            oldPiece.setOnAction(e -> {
+            });
+        }
     }
 
 
@@ -145,11 +167,14 @@ public class Moves {
                     //TODO:When its the player's row
 
                         TileButton[] row = getColorRow(nextColor);
-                        moves.add(row[moveAmount + spot - 15 - 1]);
+                        if(row[moveAmount + spot - 15 - 1].getOccupiedBy() == 0)
+                            moves.add(row[moveAmount + spot - 15 - 1]);
                     //if the move stays in the current row;
                 } else {
-                    if(spot < 15 && moveAmount > 0)
-                        moves.add(currentRow[spot + moveAmount]);
+                    if(spot < 15 && moveAmount > 0) {
+                        if(currentRow[spot + moveAmount].getOccupiedBy() == 0)
+                            moves.add(currentRow[spot + moveAmount]);
+                    }
                 }
 
                 if (moveAmount  < 0) {
@@ -158,13 +183,15 @@ public class Moves {
                         TileColor nextColor = getNextRowColor(origSpot.getC(), true);
                         TileButton[] row = getColorRow(nextColor);
                         int amount = spot - 4;
-                        moves.add(row[amount + 16]);
+                        if(row[amount + 16].getOccupiedBy() == 0)
+                            moves.add(row[amount + 16]);
                     } else
-                        moves.add(currentRow[spot + moveAmount]);
+                        if(currentRow[spot + moveAmount].getOccupiedBy() == 0)
+                            moves.add(currentRow[spot + moveAmount]);
                 }
 
             }
-             for (TileButton t : getSpecialMoves(playerColor, moveAmount)) {
+             for (TileButton t : getSpecialMoves(origSpot, playerColor, moveAmount)) {
                 moves.add(t);
                 }
             return  moves;
@@ -239,15 +266,19 @@ public class Moves {
         }
     }
 
-    public ArrayList<TileButton> getSpecialMoves(TileColor playerColor, int moveAmount){
+    public ArrayList<TileButton> getSpecialMoves(TileButton origSpot, TileColor playerColor, int moveAmount){
             ArrayList<TileButton> moves = new ArrayList<TileButton>();
 
             TileButton[] row = getColorRow(playerColor);
 
-            if(moveAmount == 1) {
+        System.out.println(origSpot.getSpot());
+
+            if(moveAmount == 1 && origSpot.getSpot() == 22) {
                 if (row[3].getOccupiedBy() == 0)
                     moves.add(row[3]);
-            } else if(moveAmount == 2){
+                    origSpot.setGraphic(new ImageView(controller.redPiece));
+
+            } else if(moveAmount == 2 && origSpot.getSpot() == 22){
                 if (row[3].getOccupiedBy() == 0)
                     moves.add(row[3]);
             }
@@ -273,7 +304,7 @@ public class Moves {
         ArrayList<TileButton> moves= new ArrayList<TileButton>();
 
         for(int i = 0; i < pieces.size(); i++){
-            if(pieces.get(i).getPieceColor() != playerColor && pieces.get(i).getSpot() <= 15){
+            if(pieces.get(i).getPieceColor() != playerColor && pieces.get(i).getSpot() <= 15 && pieces.get(i).getPicture() != null){
                 moves.add(pieces.get(i));
             }
         }
