@@ -120,6 +120,23 @@ public class Moves {
             oldPiece.setPieceColor(temp.getPieceColor());
             oldPiece.setOnAction(e -> displayMoves(oldPiece, oldPiece.getPieceColor(), controller.cardValue));
         }
+
+        //if its a sliding spot
+        if(newPiece.getSpot() == 0 || newPiece.getSpot() == 10)
+            if(newPiece.getC() != newPiece.getPieceColor()) {
+                TileButton[] row = getColorRow(newPiece.getC());
+
+               /* //removes any piece thats on the slider CURRENT BUG
+                for(int i = newPiece.getSpot(); i < newPiece.getSpot() + 3; i++){
+                    if(row[i].getPicture() != null){
+                        row[i].setPicture(null);
+                        row[i].setPieceColor(null);
+                        row[i].setOccupiedBy(0);
+                    }
+                }*/
+
+                movePiece(newPiece, row[newPiece.getSpot() + 3], newPiece.getPieceColor(), false);
+            }
     }
 
 
@@ -163,7 +180,7 @@ public class Moves {
                 if (moveAmount + spot > 15) {
                     TileColor nextColor = getNextRowColor(origSpot.getC(), false) ;
 
-                    //TODO:When its the player's row
+                    //TODO:When the player needs to go home
 
                         TileButton[] row = getColorRow(nextColor);
                         if(row[moveAmount + spot - 15 - 1].getOccupiedBy() == 0)
