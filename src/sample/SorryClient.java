@@ -3,45 +3,37 @@ package sample;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
 
+import javafx.util.Pair;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
+import sample.card.Card;
 
-class Sorry{
+
+class SorryClient{
 
 
-    private static ArrayList<Card> deck;
-    private static ArrayList<Card> discard;
-    private static ArrayList<Space> board;
-    private static ArrayList<ArrayList <Space>> homes;
     private Socket connection;
     private DataOutputStream out;
     private BufferedReader in;
+    private GameLogic game;
+    private String user;
+    private String game_name;
+    private String color;
     private static Controller controller;
 
-    Sorry(Controller controller){
+    public SorryClient(Controller controller){
         this.controller = controller;
-        deck = new ArrayList<>();
-        discard = new ArrayList<>();
-        board = new ArrayList<>();
-        homes = new ArrayList<>();
-        generateBoard();
-        generateDeck();
-
+        game = new GameLogic();
     }
 
 
-    Sorry(){
+    SorryClient(){
+        game = new GameLogic();
+    }
 
-        deck = new ArrayList<>();
-        discard = new ArrayList<>();
-        board = new ArrayList<>();
-        homes = new ArrayList<>();
-        generateBoard();
-        generateDeck();
-
+    public GameLogic getGame() {
+        return game;
     }
 
     String connect(InetAddress addr, int port){
@@ -65,12 +57,20 @@ class Sorry{
             json.put("data", data);
             byte[] output = json.toString().getBytes();
             out.write(output);
-            String response = in.readLine();
-            System.out.println(response);
-            return response;
+            JSONParser parser = new JSONParser();
+            JSONObject response = (JSONObject)parser.parse(in.readLine());
+            if(response.containsKey("error")){
+                System.out.println("Something has gone wrong...");
+                return "Error: "+response.get("error");
+            } else{
+                JSONObject response_data = (JSONObject)response.get("data");
+                //System.out.println("Success! Player "+response_data.get("username"));
+                user = response_data.get("username").toString();
+                return user+" has been successfully registered with the server.";
+            }
         } catch (Exception e){
             e.printStackTrace();
-            return "error";
+            return "Error registering user.";
         }
     }
 
@@ -83,9 +83,13 @@ class Sorry{
             out.write(output);
             String response = in.readLine();
             System.out.println(response);
-            return response;
+            JSONParser parser = new JSONParser();
+            JSONObject resp_json = (JSONObject)parser.parse(response);
+            JSONObject games = (JSONObject)resp_json.get("data");
+            return games.toString();
+
         } catch (Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return "error";
         }
      }
@@ -100,9 +104,30 @@ class Sorry{
             json.put("data",data);
             byte[] output = json.toString().getBytes();
             out.write(output);
-            String response = in.readLine();
-            System.out.println(response);
-            return response;
+            JSONParser parser = new JSONParser();
+            JSONObject player_joined = (JSONObject)parser.parse(in.readLine());
+            JSONObject game_data = (JSONObject)parser.parse(in.readLine());
+            //  System.out.println(game_data);
+            if(player_joined.containsKey("error") || game_data.containsKey("error")){
+                System.out.println("Something has gone wrong...");
+                return player_joined.toString()+" "+game_data.toString();
+            } else{
+                // System.out.println(player_joined.toString());
+                JSONArray player_joined_array = (JSONArray) player_joined.get("data");
+                JSONObject player_joined_data = (JSONObject)player_joined_array.get(0);
+                game_name = player_joined_data.get("game").toString();
+                color = player_joined_data.get("color").toString().toUpperCase();
+                game_data = (JSONObject)game_data.get("data");
+                JSONObject players = (JSONObject)game_data.get("players");
+                for(Object s: players.keySet()){
+                    String player = s.toString();
+                    String temp_color = players.get(s).toString().toUpperCase();
+                    game.addPlayer(new Player(player,TileColor.valueOf(temp_color)));
+                }
+                //System.out.println("Success! Player "+player_joined.get("username"));
+                // user = player_joined.get("username").toString();
+            }
+            return name+" has successfully joined "+game_name+" and has been assigned "+color;
         }catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -120,9 +145,30 @@ class Sorry{
             json.put("data", data);
             byte[] output = json.toString().getBytes();
             out.write(output);
-            String response = in.readLine();
-            System.out.println(response);
-            return response;
+            JSONParser parser = new JSONParser();
+            JSONObject player_joined = (JSONObject)parser.parse(in.readLine());
+            JSONObject game_data = (JSONObject)parser.parse(in.readLine());
+          //  System.out.println(game_data);
+            if(player_joined.containsKey("error")){
+                System.out.println("Something has gone wrong...");
+            } else{
+               // System.out.println(player_joined.toString());
+                JSONArray player_joined_array = (JSONArray) player_joined.get("data");
+                JSONObject player_joined_data = (JSONObject)player_joined_array.get(0);
+                game_name = player_joined_data.get("game").toString();
+                color = player_joined_data.get("color").toString().toUpperCase();
+                name = player_joined_data.get("name").toString();
+                game_data = (JSONObject)game_data.get("data");
+                JSONObject players = (JSONObject)game_data.get("players");
+                for(Object s: players.keySet()){
+                    String player = s.toString();
+                    String temp_color = players.get(s).toString().toUpperCase();
+                    game.addPlayer(new Player(player,TileColor.valueOf(temp_color)));
+                }
+                //System.out.println("Success! Player "+player_joined.get("username"));
+               // user = player_joined.get("username").toString();
+            }
+            return game_name+" has been successfully created.";
         } catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -139,7 +185,7 @@ class Sorry{
             byte[] output = json.toString().getBytes();
             out.write(output);
             String response = in.readLine();
-            System.out.println(response);
+    //        System.out.println(response);
             return response;
         } catch (Exception e){
             e.printStackTrace();
@@ -179,34 +225,13 @@ class Sorry{
             out.write(output);
             String response = in.readLine();
             System.out.println(response);
-            return response;
+            return game_name+" has begun.";
         } catch (Exception e){
             e.printStackTrace();
             return "error";
         }
     }
-
-    private void generateDeck(){
-
-        for(int i = 0; i < 5; i++){
-            deck.add(new Card(1));
-            if(i < 4) {
-                deck.add(new Card(2));
-                deck.add(new Card(3));
-                deck.add(new Card(4));
-                deck.add(new Card(5));
-                deck.add(new Card(7));
-                deck.add(new Card(8));
-                deck.add(new Card(10));
-                deck.add(new Card(11));
-                deck.add(new Card(12));
-                deck.add(new Card(13));
-            }
-        }
-        Collections.shuffle(deck);
-
-    }
-
+/*
     private void generateBoard(){
 
         String[] color = new String[4];
@@ -285,18 +310,41 @@ class Space{
     public void setPosition(int position) {
         this.position = position;
     }
+    */
 }
 
 class Game{
 
     public static void main(String[] args) throws Exception{
-        Sorry sorry = new Sorry();
+        SorryClient sorry = new SorryClient();
         System.out.println(sorry.connect(InetAddress.getByName("127.0.0.1") ,12000));
-        sorry.register_user("lol");
+        System.out.println(sorry.register_user("Tanner"));
+        System.out.println(sorry.create_game("game","blue"));
+        System.out.println(sorry.get_game_data("game"));
+        while(true){}
+       // System.out.println(sorry.join_game("green","what"));
+        /*sorry.register_user("lol");
         sorry.get_game_list();
         sorry.join_game("blue","test");
-        sorry.create_game("test","blue");
+        sorry.create_game("test","blue");*/
     }
 
 }
 
+class Game2{
+    public static void main(String[] args) throws Exception{
+        SorryClient sorry = new SorryClient();
+        System.out.println(sorry.connect(InetAddress.getByName("127.0.0.1") ,12000));
+        sorry.register_user("lol");
+        System.out.println(sorry.get_game_list());
+        System.out.println(sorry.join_game("green","game"));
+        sorry.start_game("game");
+        System.out.println(sorry.get_game_data("game"));
+        while(true){}
+        /*sorry.register_user("lol");
+        sorry.get_game_list();
+        sorry.join_game("blue","test");
+        sorry.create_game("test","blue");*/
+    }
+
+}
