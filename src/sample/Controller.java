@@ -416,6 +416,16 @@ public class Controller extends Application {
         this.currentCardDescription.setText(newDescription);
     }
 
+    public void changecss(){
+        //for each TileButton passed in
+        /*
+                //store in arraylist to clear later
+                change css id to $playersColor-move-tile
+                set selected in that TileButton to true //TODO: have it change some variable to its position
+                on selected click reset every tile in arraylist, then remove them
+         */
+    }
+
     public static TileButton[] getRedRow() {
         return redRow;
     }
