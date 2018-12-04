@@ -40,4 +40,5 @@ public class Player{
     public Pawn[] getPawns() {
         return pawns;
     }
+
 }

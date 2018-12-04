@@ -132,7 +132,11 @@ public class GameLogic{
         return card;
     }
 
-public static void main(String[] args){
+    public Board getBoard() {
+        return board;
+    }
+
+    public static void main(String[] args){
     GameLogic game = new GameLogic();
     game.addPlayer(new Player("Ryan", TileColor.BLUE));
     game.addPlayer(new Player("Em", TileColor.GREEN));

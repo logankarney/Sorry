@@ -3,6 +3,7 @@ package sample;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javafx.util.Pair;
 import org.json.simple.*;
@@ -41,7 +42,7 @@ class SorryClient{
            connection = new Socket(addr, port);
            out = new DataOutputStream(connection.getOutputStream());
            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-           return "Connection established.";
+           return "Connection established";
        } catch (Exception e){
            return "No server running at specified port or address.";
        }
@@ -116,7 +117,7 @@ class SorryClient{
                 JSONArray player_joined_array = (JSONArray) player_joined.get("data");
                 JSONObject player_joined_data = (JSONObject)player_joined_array.get(0);
                 game_name = player_joined_data.get("game").toString();
-                color = player_joined_data.get("color").toString().toUpperCase();
+                this.color = player_joined_data.get("color").toString().toUpperCase();
                 game_data = (JSONObject)game_data.get("data");
                 JSONObject players = (JSONObject)game_data.get("players");
                 for(Object s: players.keySet()){
@@ -127,7 +128,7 @@ class SorryClient{
                 //System.out.println("Success! Player "+player_joined.get("username"));
                 // user = player_joined.get("username").toString();
             }
-            return name+" has successfully joined "+game_name+" and has been assigned "+color;
+            return user+" has successfully joined "+game_name+" and has been assigned "+color;
         }catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -179,20 +180,27 @@ class SorryClient{
         try{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
+            JSONParser parser = new JSONParser();
             json.put("command","get_game_data");
             data.put("name", name);
             json.put("data",data);
             byte[] output = json.toString().getBytes();
             out.write(output);
-            String response = in.readLine();
-            return response;
+            JSONObject response = null;
+            while(true){
+                response = (JSONObject)parser.parse(in.readLine());
+                if(response.containsValue("game_data")){
+                    break;
+                }
+            }
+            return response.toString();
         } catch (Exception e){
             e.printStackTrace();
             return "error";
         }
     }
 
-    String update_pawn(String game, String pawn, String position, boolean end){
+    String update_pawn(String game, String pawn, String position, boolean end, Board b){
         try{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
@@ -210,9 +218,9 @@ class SorryClient{
             JSONObject gamedata_data = new JSONObject();
             gamedata_data.put("name",game);
             gamedata.put("data",gamedata_data);
+            /*in.readLine();
             in.readLine();
-            in.readLine();
-            in.readLine();
+            in.readLine();*/
             output = gamedata.toString().getBytes();
             out.write(output);
             JSONParser parser = new JSONParser();
@@ -229,7 +237,15 @@ class SorryClient{
                 players[i] = new Player(player,TileColor.valueOf(temp_color));
                 i++;
             }
-            Board board = new Board(players,players.length);
+            Player[] temp_players = b.getPlayers();
+            Player temp = null;
+            for(i = 0; i < temp_players.length; i++){
+                if(temp_players[i].getName() == user){
+                    temp = temp_players[i];
+                    break;
+                }
+            }
+            this.game.saveMove(b);
        //     String response = in.readLine();
             System.out.println(response);
             return "updated";
@@ -248,9 +264,28 @@ class SorryClient{
             json.put("data",data);
             byte[] output = json.toString().getBytes();
             out.write(output);
+            out.flush();
+            JSONObject game_json = new JSONObject();
+            game_json.put("command","get_game_data");
+            game_json.put("data","");
+            output = json.toString().getBytes();
+            System.out.println(game_json);
+            out.write(output);
+            JSONParser parser = new JSONParser();
+            JSONObject response = (JSONObject)parser.parse(get_game_data(game));
+            //System.out.println(response);
+            JSONObject game_data = (JSONObject)response.get("data");
+         //   JSONObject current_Game = (JSONObject)
+        //    System.out.println(response);
+            JSONObject players = (JSONObject)game_data.get("players");
+            System.out.println(players);
+            for(Object s:players.keySet()){
+                String name = s.toString();
+                String color = players.get(name).toString().toUpperCase();
+                System.out.println(name+":"+color);
+                this.game.addPlayer(new Player(name,TileColor.valueOf(color)));
+            }
             this.game.startGame();
-            String response = in.readLine();
-            System.out.println(response);
             return game_name+" has begun.";
         } catch (Exception e){
             e.printStackTrace();
@@ -261,95 +296,23 @@ class SorryClient{
     Card drawCard(){
         return game.drawCard();
     }
-/*
-    private void generateBoard(){
 
-        String[] color = new String[4];
-        color[0] = "red";
-        color[1] = "blue";
-        color[2] = "yellow";
-        color[3] = "green";
-        for(int j = 0; j < 4; j++){
-
-            for(int k = 0; k < 15; k++){
-                board.add(new Space(false,color[j],"",k));
-            }
-            homes.add(new ArrayList());
-            for(int k = 16; k < 22; k++){
-                homes.get(j).add(new Space(false,color[j],"",k));
-            }
-
-        }
-
+    Player getPlayer(){
+        return new Player(user,TileColor.valueOf(color));
     }
 
-    static Card drawCard(){
-        Card temp = deck.get(deck.size()-1);
-        deck.remove(temp);
-        discard.add(temp);
-        return temp;
+    Board getBoard(){
+        return game.getBoard();
     }
-
-}
-
-class Space{
-    boolean slide;
-    String color;
-    String player;
-    int position;
-
-
-    Space(boolean slide, String color, String player, int position){
-
-        this.slide = slide;
-        this.color = color;
-        this.player = player;
-        this.position = position;
-
-    }
-
-    String getColor(){
-        return color;
-    }
-
-
-    public boolean isSlide() {
-        return slide;
-    }
-
-    public void setSlide(boolean slide) {
-        this.slide = slide;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(String player) {
-        this.player = player;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-    */
 }
 
 class Game{
 
     public static void main(String[] args) throws Exception{
         SorryClient sorry = new SorryClient();
-        System.out.println(sorry.connect(InetAddress.getByName("127.0.0.1") ,12000));
-        System.out.println(sorry.register_user("Tanner"));
-        System.out.println(sorry.create_game("game","blue"));
+        sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
+        sorry.register_user("Tanner");
+        sorry.create_game("game","blue");
      //   System.out.println(sorry.get_game_data("game"));
         while(true){
         }
@@ -365,13 +328,15 @@ class Game{
 class Game2{
     public static void main(String[] args) throws Exception{
         SorryClient sorry = new SorryClient();
-        System.out.println(sorry.connect(InetAddress.getByName("127.0.0.1") ,12000));
+        sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
         sorry.register_user("lol");
         System.out.println(sorry.get_game_list());
         System.out.println(sorry.join_game("green","game"));
-        sorry.start_game("game");
+        System.out.println(sorry.start_game("game"));
         Card c = sorry.drawCard();
-        sorry.update_pawn("game","B3","B3",true);
+        ArrayList<Board> moves = c.getMoves(sorry.getPlayer(),sorry.getBoard());
+        System.out.println(moves.toString());
+        sorry.update_pawn("game","B3","B3",true,moves.get(0));
         System.out.println(sorry.get_game_data("game"));
         while(true){}
         /*sorry.register_user("lol");
