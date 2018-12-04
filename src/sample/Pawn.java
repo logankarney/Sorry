@@ -30,7 +30,7 @@ public class Pawn{
                 row = 3;
                 break;
         }
-        space = -1;
+        space = 3;
     }
 
     public TileColor getColor() {
@@ -65,4 +65,6 @@ public class Pawn{
     public int getPlayerID() {
         return playerID;
     }
+
+
 }

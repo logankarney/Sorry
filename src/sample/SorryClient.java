@@ -89,7 +89,7 @@ class SorryClient{
             return games.toString();
 
         } catch (Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return "error";
         }
      }
