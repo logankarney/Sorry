@@ -30,6 +30,7 @@ public class GameLogic{
                 }
             }
             players.add(player);
+            currentNumPlayers++;
         }else{
             System.out.println("Too many players!");
         }
@@ -134,7 +135,7 @@ public class GameLogic{
     }
 
 
-public static void main(String[] args){
+/*public static void main(String[] args){
     GameLogic game = new GameLogic();
     game.addPlayer(new Player("Ryan", TileColor.BLUE));
     game.addPlayer(new Player("Em", TileColor.GREEN));
@@ -143,7 +144,7 @@ public static void main(String[] args){
 
     game.startGame();
 
-}
+}*/
 
 
 }

@@ -20,21 +20,22 @@ public class SorryCard extends Card {
             if(pawn.isInStart()) {
                 for (int i = 0; i < 4; i++) {
                     if (i != p.getPlayerID()) {
-                        for (Pawn opponent : players[i].getPawns()) {
-                            // Check opponent isn't safe
-                            if (!opponent.isInStart() && opponent.getSpace() < 15) {
-                                Board board = new Board(b);
-                                int row = opponent.getRow();
-                                int space = opponent.getSpace();
-                                board.returnToStart(opponent);
-                                board.setPawnLocation(row, space, pawn);
-                                boards.add(board);
+                        if(players[i] != null) {
+                            for (Pawn opponent : players[i].getPawns()) {
+                                // Check opponent isn't safe
+                                if (!opponent.isInStart() && opponent.getSpace() < 15) {
+                                    Board board = new Board(b);
+                                    int row = opponent.getRow();
+                                    int space = opponent.getSpace();
+                                    board.returnToStart(opponent);
+                                    board.setPawnLocation(row, space, pawn);
+                                    boards.add(board);
+                                }
                             }
                         }
                     }
                 }
             }
-
         }
 
         return boards;

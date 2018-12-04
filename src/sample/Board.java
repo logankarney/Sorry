@@ -14,9 +14,11 @@ public class Board {
         start = new ArrayList[4];
         // fill in start
         for (int i = 0; i<numPlayers; i++){
-            start[i] = new ArrayList<>(4);
-            for (int j = 0; j<4; j++){
-                start[i].add(players[i].getPawns()[j]);
+            if(players[i] != null) {
+                start[i] = new ArrayList<>(4);
+                for (int j = 0; j < 4; j++) {
+                    start[i].add(players[i].getPawns()[j]);
+                }
             }
         }
     }
@@ -35,12 +37,14 @@ public class Board {
         players = new Player[4];
 
         for (int i=0; i<4; i++){
-            this.players[i] = new Player(tempPlayers[i]);
-            this.start[i] = new ArrayList<>();
-            for (int j=0; j<21; j++){
-                this.sorryBoard[i][j] = temp[i][j];
-                if (j<tempStart[i].size()){
-                    this.start[i].add(tempStart[i].get(j));
+            if(players[i] != null) {
+                this.players[i] = new Player(tempPlayers[i]);
+                this.start[i] = new ArrayList<>();
+                for (int j = 0; j < 21; j++) {
+                    this.sorryBoard[i][j] = temp[i][j];
+                    if (j < tempStart[i].size()) {
+                        this.start[i].add(tempStart[i].get(j));
+                    }
                 }
             }
         }
