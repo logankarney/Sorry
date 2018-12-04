@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.image.Image;
 import sample.Controller;
 import sample.TileButton;
 import sample.TileColor;
@@ -59,13 +60,23 @@ public class Moves {
         redRow[3].setPicture(controller.redPiece);
         redRow[3].setPieceColor(TileColor.RED);
         redRow[3].setOccupiedBy(1);
+        redRow[3].setOnAction(e -> displayMoves(redRow[3], TileColor.RED, controller.cardValue));
 
         pieces.add(redRow[3]);
 
     }
 
+    public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor){
+        newPiece.setPicture(oldPiece.getPicture());
+        newPiece.setOccupiedBy(1);
+        newPiece.setPieceColor(playerColor);
+        oldPiece.setOccupiedBy(0);
+        //oldPiece.setPicture(null);
+        oldPiece.setPieceColor(null);
+    }
 
-    public void displayMoves(TileColor playerColor, int moveAmount){
+
+    public void displayMoves(TileButton tile, TileColor playerColor, int moveAmount){
         int offset = 0;
         switch(playerColor){
             case RED:
@@ -82,17 +93,16 @@ public class Moves {
                 break;
         }
 
-        /*for(int i = offset; i < offset + 4; i++){
-            move(spawns[i], playerColor, moveAmount);
-        }*/
-        for(TileButton t : pieces){
-            ArrayList<TileButton> moves = move(t, playerColor, moveAmount);
-            for(TileButton m : moves){
-                m.setId(getId(playerColor));
-                m.setOnAction(e -> {
-                    reset();
-                });
-            }
+  //      for(TileButton t : pieces){
+            if(playerColor == tile.getPieceColor()) {
+                ArrayList<TileButton> moves = move(tile, playerColor, moveAmount);
+                for (TileButton m : moves) {
+                    m.setId(getId(playerColor));
+                    m.setOnAction(e -> {
+                        reset();
+                    });
+                }
+        //    }
         }
     }
 
@@ -280,4 +290,5 @@ public class Moves {
         }
         return  rtn;
     }
+
 }
