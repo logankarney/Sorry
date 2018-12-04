@@ -176,21 +176,22 @@ public class Controller extends Application {
 
        else if(e.getSource() == hostButton) {
 
-           JoinPopup.display(true, null);
-           String chosenColor = JoinPopup.getChosenColor();
-            gameName = JoinPopup.getGameName();
-           if(chosenColor.equals("none"))
-               return;
-
-           //sorryBoard.register_user(playerName);
-           //sorryBoard.join_game(chosenColor, playerName);
-
-           changeFXML("game.fxml");
-
-           addButtons();
-
            try {
                InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
+
+               JoinPopup.display(true, null);
+               String chosenColor = JoinPopup.getChosenColor();
+               gameName = JoinPopup.getGameName();
+               if(chosenColor.equals("none") || gameName.equals("no game name chosen"))
+                   return;
+
+
+               //sorryBoard.register_user(playerName);
+               //sorryBoard.join_game(chosenColor, playerName);
+
+               changeFXML("game.fxml");
+
+               addButtons();
 
                sorryBoard.connect(inetAddress, Integer.parseInt(port));
                sorryBoard.register_user(playerName);
