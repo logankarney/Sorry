@@ -155,7 +155,7 @@ class SorryClient{
             if(player_joined.containsKey("error")){
                 System.out.println("Something has gone wrong...");
             } else{
-                System.out.println(player_joined.toString());
+                //System.out.println(player_joined.toString());
                 JSONArray player_joined_array = (JSONArray) player_joined.get("data");
                 JSONObject player_joined_data = (JSONObject)player_joined_array.get(0);
                 game_name = player_joined_data.get("game").toString();
@@ -226,11 +226,11 @@ class SorryClient{
             JSONParser parser = new JSONParser();
             while(true){
                 response = (JSONObject)parser.parse(in.readLine());
-                if(response.containsKey("game_data"))
+                if(response.containsValue("game_data"))
                     break;
             }
             JSONObject response_data = (JSONObject) response.get("data");
-            System.out.println(response.toString());
+          //  System.out.println(response.toString());
             JSONObject players_json = (JSONObject) parser.parse(response_data.get("players").toString());
             //System.out.println(response);
             Player[] players = new Player[players_json.size()];
@@ -244,14 +244,16 @@ class SorryClient{
             Player[] temp_players = b.getPlayers();
             Player temp = null;
             for(i = 0; i < temp_players.length; i++){
-                if(temp_players[i].getName() == user){
-                    temp = temp_players[i];
-                    break;
+                if(temp_players[i] != null) {
+                    if (temp_players[i].getName() == user) {
+                        temp = temp_players[i];
+                        break;
+                    }
                 }
             }
             this.game.saveMove(b);
        //     String response = in.readLine();
-            System.out.println(response);
+          //  System.out.println(response);
             return "updated";
         } catch (Exception e){
             e.printStackTrace();
@@ -273,7 +275,7 @@ class SorryClient{
             game_json.put("command","get_game_data");
             game_json.put("data","");
             output = json.toString().getBytes();
-            System.out.println(game_json);
+         //   System.out.println(game_json);
             out.write(output);
             JSONParser parser = new JSONParser();
             JSONObject response = (JSONObject)parser.parse(get_game_data(game));
@@ -282,11 +284,11 @@ class SorryClient{
          //   JSONObject current_Game = (JSONObject)
         //    System.out.println(response);
             JSONObject players = (JSONObject)game_data.get("players");
-            System.out.println(players);
+          //  System.out.println(players);
             for(Object s:players.keySet()){
                 String name = s.toString();
                 String color = players.get(name).toString().toUpperCase();
-                System.out.println(name+":"+color);
+               // System.out.println(name+":"+color);
                 this.game.addPlayer(new Player(name,TileColor.valueOf(color)));
             }
             this.game.startGame();
@@ -355,7 +357,7 @@ class Game{
 
     public static void main(String[] args) throws Exception{
         SorryClient sorry = new SorryClient();
-        sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
+        sorry.connect(InetAddress.getByName("10.146.205.110") ,12000);
         sorry.register_user("Tanner");
         sorry.create_game("game","blue");
      //   System.out.println(sorry.get_game_data("game"));
@@ -373,7 +375,7 @@ class Game{
 class Game2{
     public static void main(String[] args) throws Exception{
         SorryClient sorry = new SorryClient();
-        sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
+        sorry.connect(InetAddress.getByName("10.146.205.110") ,12000);
         sorry.register_user("lol");
         System.out.println(sorry.get_game_list());
         System.out.println(sorry.join_game("green","game"));
@@ -387,7 +389,7 @@ class Game2{
         temp_board.moveFromStart(temp.getPawns()[0]);
         sorry.setBoard(temp_board);
         String pos = temp.getPawns()[0].getColor().toString().substring(0,1)+temp.getPawns()[0].getSpace();
-        System.out.println(sorry.update_pawn("game","G1",pos,true,temp_board));
+        sorry.update_pawn("game","G1",pos,true,temp_board);
         while(true){
         }
      /*   c  = sorry.drawCard();
