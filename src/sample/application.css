@@ -5,8 +5,10 @@
     -fx-my-red: rgba(170, 10, 10, 0.35);
     -fx-my-green: rgba(47, 218, 84, 0.35);
     -fx-my-yellow: rgba(255, 249, 77, 0.35);
+    -fx-my-grey: rgba(71, 71, 71, 0.35);
 
     -fx-my-background: #c1c5cc;
+
 
     -fx-my-border-color: black;
     -fx-my-border-size: 5px;
@@ -66,5 +68,32 @@
     -fx-border-color: -fx-my-border-color;
     -fx-border-padding: -fx-my-border-size;
 }
+/**  Move tiles **/
+#red-move-tile{
+    -fx-background-color: red;
+    -fx-border-color: -fx-my-border-color;
+    -fx-border-padding: -fx-my-border-size;
+}
+
+#blue-move-tile{
+    -fx-background-color: blue;
+    -fx-border-color: -fx-my-border-color;
+    -fx-border-padding: -fx-my-border-size;
+}
+
+#yellow-move-tile{
+    -fx-background-color: yellow;
+    -fx-border-color: -fx-my-border-color;
+    -fx-border-padding: -fx-my-border-size;
+}
+
+#green-move-tile{
+    -fx-background-color: green;
+    -fx-border-color: -fx-my-border-color;
+    -fx-border-padding: -fx-my-border-size;
+}
+
+
+
 
 

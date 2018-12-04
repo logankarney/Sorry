@@ -54,7 +54,9 @@ public class Controller extends Application {
 
     protected Image redPiece, bluePiece, yellowPiece, greenPiece;
 
-    private SorryClient sorryBoard;
+    private static SorryClient sorryBoard;
+
+    protected static boolean playersTurn = false;
 
 
     @Override
@@ -139,26 +141,31 @@ public class Controller extends Application {
         }
 
         else if(e.getSource() == joinButton){
-           GameInfo chosenGame = tableView.getSelectionModel().getSelectedItem();
-           JoinPopup.display(false);
+            try {
+                GameInfo chosenGame = tableView.getSelectionModel().getSelectedItem();
+                JoinPopup.display(false, chosenGame.getPlayers());
 
-           String chosenColor = JoinPopup.getChosenColor();
+                String chosenColor = JoinPopup.getChosenColor();
 
-           if(chosenColor.equals("none"))
-               return;
+                if(chosenColor.equals("none"))
+                    return;
 
-           try {
-               InetAddress address = InetAddress.getByName("127.0.0.1");
-               sorryBoard.connect(address,Integer.parseInt(port));
+                try {
+                    InetAddress address = InetAddress.getByName("127.0.0.1");
+                    sorryBoard.connect(address,Integer.parseInt(port));
 
-               sorryBoard.register_user(playerName);
-               sorryBoard.join_game(chosenColor, chosenGame.getLobbyName());
-           } catch(Exception ex){
-               //ex.printStackTrace();
-           }
+                    sorryBoard.register_user(playerName);
+                    sorryBoard.join_game(chosenColor, chosenGame.getLobbyName());
+                } catch(Exception ex){
+                    //ex.printStackTrace();
+                }
 
-           changeFXML("game.fxml");
-           addButtons();
+                changeFXML("game.fxml");
+                addButtons();
+
+            } catch(NullPointerException ex){
+                return;
+            }
 
 
        }
@@ -169,21 +176,22 @@ public class Controller extends Application {
 
        else if(e.getSource() == hostButton) {
 
-           JoinPopup.display(true);
-           String chosenColor = JoinPopup.getChosenColor();
-            gameName = JoinPopup.getGameName();
-           if(chosenColor.equals("none"))
-               return;
-
-           //sorryBoard.register_user(playerName);
-           //sorryBoard.join_game(chosenColor, playerName);
-
-           changeFXML("game.fxml");
-
-           addButtons();
-
            try {
                InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
+
+               JoinPopup.display(true, null);
+               String chosenColor = JoinPopup.getChosenColor();
+               gameName = JoinPopup.getGameName();
+               if(chosenColor.equals("none") || gameName.equals("no game name chosen"))
+                   return;
+
+
+               //sorryBoard.register_user(playerName);
+               //sorryBoard.join_game(chosenColor, playerName);
+
+               changeFXML("game.fxml");
+
+               addButtons();
 
                sorryBoard.connect(inetAddress, Integer.parseInt(port));
                sorryBoard.register_user(playerName);
@@ -193,6 +201,14 @@ public class Controller extends Application {
            }
 
        }
+
+       /*else if(e.getSource() == toggleCSSButton){
+           greenRow[3].setPicture(greenPiece);
+           if(greenRow[3].getId().equals("yellow-tile"))
+           greenRow[3].setId("yellow-move-tile");
+           else
+               greenRow[3].setId("yellow-tile");
+       }*/
 
        /*else if(e.getSource() == startButton){
             String gameName = JoinPopup.getGameName();
@@ -345,7 +361,7 @@ public class Controller extends Application {
         }
         */
 
-        GameInfo game1 = new GameInfo("Party People", "My Username",  "15.51451.4", "RGB");
+        GameInfo game1 = new GameInfo("Party People", "My Username",  "15.51451.4", "RGBY");
         tableView.getItems().add(game1);
 
         tableView.refresh();
@@ -373,9 +389,9 @@ public class Controller extends Application {
         );
 
 
-        lobbyNameCol.setMinWidth(240);
+        lobbyNameCol.setMinWidth(300);
         hostNameCol.setMinWidth(240);
-        playersCol.setMinWidth(580);
+        playersCol.setMinWidth(240);
         tableView.getColumns().addAll(lobbyNameCol, hostNameCol, playersCol);
     }
 

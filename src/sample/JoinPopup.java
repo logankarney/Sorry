@@ -18,11 +18,11 @@ import java.net.InetAddress;
 public final class JoinPopup {
 
     private static String chosenColor;
-    private static String gameName;
+    private static String gameName = "no game name chosen";
 
     private static TextField gameNameField;
 
-    static void display(boolean host){
+    static void display(boolean host, String colors){
 
         final ToggleGroup radioGroup = new ToggleGroup();
 
@@ -71,9 +71,11 @@ public final class JoinPopup {
 
                     if(host){
                         try {
+                            if(gameNameField.getText().isEmpty())
+                                return;
                             gameName = gameNameField.getText();
                         } catch(NullPointerException ex){
-                            gameName = "Creative Name";
+                            gameName = "no game name chosen";
                         }
                     }
             }
@@ -98,6 +100,24 @@ public final class JoinPopup {
 
         content.getChildren().addAll(red,blue,yellow,green, bottomLine);
 
+        if(!host){
+            for(int i = 0; i < colors.length(); i++){
+                switch(colors.charAt(i)){
+                    case 'R':
+                        red.setDisable(true);
+                        break;
+                    case 'B':
+                        blue.setDisable(true);
+                        break;
+                    case 'Y':
+                            yellow.setDisable(true);
+                            break;
+                    case 'G':
+                        green.setDisable(true);
+                        break;
+                }
+            }
+        }
 
 
         Scene scene = new Scene(content, width, height);

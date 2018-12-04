@@ -24,7 +24,7 @@ class SorryClient{
 
     public SorryClient(Controller controller){
         this.controller = controller;
-
+        game = new GameLogic();
     }
 
 
