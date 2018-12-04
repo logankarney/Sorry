@@ -62,7 +62,23 @@ public final class JoinPopup {
 
 
                     try {
+
                         chosenColor = selected.getText();
+                        switch(chosenColor){
+                            case "Red":
+                                Controller.playerColor = TileColor.RED;
+                                break;
+                            case "Blue":
+                                Controller.playerColor = TileColor.BLUE;
+                                break;
+                            case "Yellow":
+                                Controller.playerColor = TileColor.YELLOW;
+                                break;
+                            case "Green":
+                                Controller.playerColor = TileColor.GREEN;
+                                break;
+                        }
+
                     } catch (NullPointerException ex){
                         chosenColor = "none";
                     } finally{

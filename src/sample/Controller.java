@@ -48,6 +48,8 @@ public class Controller extends Application {
     /** The spawn for each color, red's is 0, blue's is 1, ect */
     private static TileButton[] spawns;
 
+    protected static TileColor playerColor = null;
+
     private static boolean firstTime = true;
 
     private final int size = 16;
@@ -372,6 +374,8 @@ public class Controller extends Application {
         Card drawn = sorryBoard.getGame().drawCard();
         setCurrentCardText(drawn.getValue() + "");
         setCurrentCardDescription(drawn.getDesc());
+
+        //TODO: disable drawing of cards, get valid moves
     }
 
     private void populateTableView(){
