@@ -24,7 +24,7 @@ class SorryClient{
 
     public SorryClient(Controller controller){
         this.controller = controller;
-
+        game = new GameLogic();
     }
 
 
@@ -82,7 +82,7 @@ class SorryClient{
             byte[] output = json.toString().getBytes();
             out.write(output);
             String response = in.readLine();
-            System.out.println(response);
+         //   System.out.println(response);
             JSONParser parser = new JSONParser();
             JSONObject resp_json = (JSONObject)parser.parse(response);
             JSONObject games = (JSONObject)resp_json.get("data");
@@ -185,7 +185,6 @@ class SorryClient{
             byte[] output = json.toString().getBytes();
             out.write(output);
             String response = in.readLine();
-    //        System.out.println(response);
             return response;
         } catch (Exception e){
             e.printStackTrace();
@@ -205,9 +204,35 @@ class SorryClient{
             json.put("data",data);
             byte[] output = json.toString().getBytes();
             out.write(output);
-            String response = in.readLine();
+            out.flush();
+            JSONObject gamedata = new JSONObject();
+            gamedata.put("command","get_game_data");
+            JSONObject gamedata_data = new JSONObject();
+            gamedata_data.put("name",game);
+            gamedata.put("data",gamedata_data);
+            in.readLine();
+            in.readLine();
+            in.readLine();
+            output = gamedata.toString().getBytes();
+            out.write(output);
+            JSONParser parser = new JSONParser();
+            JSONObject response = (JSONObject)parser.parse(in.readLine());
+            JSONObject response_data = (JSONObject) response.get("data");
+            System.out.println(response.toString());
+            JSONObject players_json = (JSONObject) parser.parse(response_data.get("players").toString());
+            //System.out.println(response);
+            Player[] players = new Player[players_json.size()];
+            int i = 0;
+            for(Object s:players_json.keySet()){
+                String player = s.toString();
+                String temp_color = players_json.get(s).toString().toUpperCase();
+                players[i] = new Player(player,TileColor.valueOf(temp_color));
+                i++;
+            }
+            Board board = new Board(players,players.length);
+       //     String response = in.readLine();
             System.out.println(response);
-            return response;
+            return "updated";
         } catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -223,6 +248,7 @@ class SorryClient{
             json.put("data",data);
             byte[] output = json.toString().getBytes();
             out.write(output);
+            this.game.startGame();
             String response = in.readLine();
             System.out.println(response);
             return game_name+" has begun.";
@@ -230,6 +256,10 @@ class SorryClient{
             e.printStackTrace();
             return "error";
         }
+    }
+
+    Card drawCard(){
+        return game.drawCard();
     }
 /*
     private void generateBoard(){
@@ -320,8 +350,9 @@ class Game{
         System.out.println(sorry.connect(InetAddress.getByName("127.0.0.1") ,12000));
         System.out.println(sorry.register_user("Tanner"));
         System.out.println(sorry.create_game("game","blue"));
-        System.out.println(sorry.get_game_data("game"));
-        while(true){}
+     //   System.out.println(sorry.get_game_data("game"));
+        while(true){
+        }
        // System.out.println(sorry.join_game("green","what"));
         /*sorry.register_user("lol");
         sorry.get_game_list();
@@ -339,6 +370,8 @@ class Game2{
         System.out.println(sorry.get_game_list());
         System.out.println(sorry.join_game("green","game"));
         sorry.start_game("game");
+        Card c = sorry.drawCard();
+        sorry.update_pawn("game","B3","B3",true);
         System.out.println(sorry.get_game_data("game"));
         while(true){}
         /*sorry.register_user("lol");

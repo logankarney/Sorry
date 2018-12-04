@@ -11,7 +11,7 @@ public class Board {
         this.players = players;
         start = new ArrayList[numPlayers];
         // fill in start
-        for (int i = 0; i<4; i++){
+        for (int i = 0; i<numPlayers; i++){
             start[i] = new ArrayList<>(4);
             for (int j = 0; j<4; j++){
                 start[i].add(players[i].getPawns()[j]);
