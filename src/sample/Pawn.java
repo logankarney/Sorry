@@ -10,8 +10,10 @@ public class Pawn{
     private int space;
     private boolean isInStart;
     private boolean isHome;
+    private int pawnID;
 
-    public Pawn (TileColor color, int playerID){
+    public Pawn (TileColor color, int playerID, int pawnID){
+        this.pawnID =pawnID;
         this.color = color;
         this.playerID = playerID;
         isInStart = true;
@@ -31,6 +33,16 @@ public class Pawn{
                 break;
         }
         space = 3;
+    }
+
+    public Pawn(Pawn p){
+        this.pawnID = p.getPawnID();
+        this.color = p.getColor();
+        this.playerID = p.getPlayerID();
+        this.isInStart = p.isInStart();
+        this.isHome = p.isHome();
+        this.row = p.getRow();
+        this.space = p.getSpace();
     }
 
     public TileColor getColor() {
@@ -66,5 +78,7 @@ public class Pawn{
         return playerID;
     }
 
-
+    public int getPawnID() {
+        return pawnID;
+    }
 }

@@ -6,10 +6,12 @@ public class Board {
     private Pawn[][] sorryBoard;
     private ArrayList<Pawn>[] start;
     private Player[] players;
+    private int numPlayers;
     public Board(Player[] players, int numPlayers){
         sorryBoard = new Pawn[4][21];
         this.players = players;
-        start = new ArrayList[numPlayers];
+        this.numPlayers = numPlayers;
+        start = new ArrayList[4];
         // fill in start
         for (int i = 0; i<4; i++){
             start[i] = new ArrayList<>(4);
@@ -25,17 +27,27 @@ public class Board {
     public Board(Board b){
         Pawn[][] temp = b.getSorryBoard();
         ArrayList<Pawn>[] tempStart = b.getStart();
+        Player[] tempPlayers = b.getPlayers();
+
+        numPlayers = b.getNumPlayers();
         sorryBoard = new Pawn[4][21];
         start = new ArrayList[4];
+        players = new Player[4];
+
         for (int i=0; i<4; i++){
-            this.start[i] = new ArrayList<>(4);
+            this.players[i] = new Player(tempPlayers[i]);
+            this.start[i] = new ArrayList<>();
             for (int j=0; j<21; j++){
                 this.sorryBoard[i][j] = temp[i][j];
-                if (j<4){
+                if (j<tempStart[i].size()){
                     this.start[i].add(tempStart[i].get(j));
                 }
             }
         }
+    }
+
+    public int getNumPlayers(){
+        return numPlayers;
     }
 
     /**
@@ -202,6 +214,10 @@ public class Board {
 
     public Player[] getPlayers() {
         return players;
+    }
+
+    public void setSorryBoard(Pawn[][] sorryBoard) {
+        this.sorryBoard = sorryBoard;
     }
 
     /**

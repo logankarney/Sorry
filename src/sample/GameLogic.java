@@ -109,9 +109,6 @@ public class GameLogic{
             case 6:
                 card = drawCard();
                 break;
-            case 7:
-                card = new SevenCard();
-                break;
             case 9:
                 card = drawCard();
                 break;
