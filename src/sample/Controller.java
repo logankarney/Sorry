@@ -30,7 +30,7 @@ public class Controller extends Application {
 
     @FXML private Button cardButton;
 
-    @FXML private Text currentCard;
+    @FXML private Text currentCard, yourTurn;
 
     @FXML private TextArea currentCardDescription;
 
@@ -91,7 +91,6 @@ public class Controller extends Application {
 
     @FXML public void initialize(){
 
-
         redPiece = new Image("/res/red.png");
         bluePiece = new Image("/res/blue.png");
         yellowPiece = new Image("/res/yellow.png");
@@ -139,6 +138,7 @@ public class Controller extends Application {
         port = ConnectPopup.getPort();
 
        if(e.getSource() == cardButton){
+           yourTurn.setText("Your Turn");
            onDraw();
         }
 
@@ -153,7 +153,7 @@ public class Controller extends Application {
                     return;
 
                 try {
-                    InetAddress address = InetAddress.getByName("127.0.0.1");
+                    InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
                     sorryBoard.connect(address,Integer.parseInt(port));
 
                     sorryBoard.register_user(playerName);
@@ -166,7 +166,6 @@ public class Controller extends Application {
                 addButtons();
 
             } catch(NullPointerException ex){
-                return;
             }
 
 
@@ -363,7 +362,7 @@ public class Controller extends Application {
         }
         */
 
-        GameInfo game1 = new GameInfo("Party People", "My Username",  "15.51451.4", "RGBY");
+        GameInfo game1 = new GameInfo("Logan's game", "logan",   "127.0.0.1","R");
         tableView.getItems().add(game1);
 
         tableView.refresh();
@@ -387,6 +386,11 @@ public class Controller extends Application {
                 new PropertyValueFactory<GameInfo,String>("hostName")
         );
 
+        TableColumn hostIPCol = new TableColumn("Host IP");
+        hostIPCol.setCellValueFactory(
+                new PropertyValueFactory<GameInfo,String>("hostIP")
+        );
+
         TableColumn playersCol = new TableColumn("Players");
         playersCol.setCellValueFactory(
                 new PropertyValueFactory<GameInfo,String>("players")
@@ -395,8 +399,9 @@ public class Controller extends Application {
 
         lobbyNameCol.setMinWidth(300);
         hostNameCol.setMinWidth(240);
-        playersCol.setMinWidth(240);
-        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, playersCol);
+        hostIPCol.setMinWidth(200);
+        playersCol.setMinWidth(50);
+        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, hostIPCol, playersCol);
     }
 
     public String getCurrentCardText() {
@@ -451,13 +456,13 @@ public class Controller extends Application {
 
         private final SimpleStringProperty lobbyName;
         private final SimpleStringProperty hostName;
-
+        private final SimpleStringProperty hostIP;
         private final SimpleStringProperty players;
 
         private GameInfo(String lobbyName, String hostName, String hostIP, String players){
             this.lobbyName = new SimpleStringProperty(lobbyName);
             this.hostName = new SimpleStringProperty(hostName);
-
+            this.hostIP = new SimpleStringProperty(hostIP);
             this.players = new SimpleStringProperty(players);
         }
 
@@ -482,6 +487,13 @@ public class Controller extends Application {
             return hostName;
         }
 
+        public String getHostIP() {
+            return hostIP.get();
+        }
+
+        public SimpleStringProperty hostIPProperty() {
+            return hostIP;
+        }
 
         public SimpleStringProperty playersProperty() {
             return players;
