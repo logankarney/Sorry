@@ -82,5 +82,10 @@
             <Font size="32.0" />
          </font>
       </Text>
+      <Text fx:id="yourTurn" layoutX="344.0" layoutY="339.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="158.13000106811523">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

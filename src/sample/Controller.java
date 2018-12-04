@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import sample.card.Card;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 
 public class Controller extends Application {
 
@@ -30,7 +31,7 @@ public class Controller extends Application {
 
     @FXML private Button cardButton;
 
-    @FXML private Text currentCard;
+    @FXML private Text currentCard, yourTurn;
 
     @FXML private TextArea currentCardDescription;
 
@@ -56,9 +57,14 @@ public class Controller extends Application {
 
     protected Image redPiece, bluePiece, yellowPiece, greenPiece;
 
-    private static SorryClient sorryBoard;
+    private static SorryClient sorryClient;
+    private static GameLogic gameLogic;
 
     protected static boolean playersTurn = false;
+
+    protected static Moves moves;
+
+    protected static int cardValue = 0;
 
 
     @Override
@@ -91,7 +97,6 @@ public class Controller extends Application {
 
     @FXML public void initialize(){
 
-
         redPiece = new Image("/res/red.png");
         bluePiece = new Image("/res/blue.png");
         yellowPiece = new Image("/res/yellow.png");
@@ -122,7 +127,7 @@ public class Controller extends Application {
 
             spawns = new TileButton[4];
 
-            sorryBoard = new SorryClient(this);
+            sorryClient = new SorryClient(this);
             populateTableView();
             onRefreshClick();
 
@@ -139,6 +144,7 @@ public class Controller extends Application {
         port = ConnectPopup.getPort();
 
        if(e.getSource() == cardButton){
+           yourTurn.setText("Your Turn");
            onDraw();
         }
 
@@ -153,11 +159,11 @@ public class Controller extends Application {
                     return;
 
                 try {
-                    InetAddress address = InetAddress.getByName("127.0.0.1");
-                    sorryBoard.connect(address,Integer.parseInt(port));
+                    InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
+                    sorryClient.connect(address,Integer.parseInt(port));
 
-                    sorryBoard.register_user(playerName);
-                    sorryBoard.join_game(chosenColor, chosenGame.getLobbyName());
+                    sorryClient.register_user(playerName);
+                    sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
                 } catch(Exception ex){
                     //ex.printStackTrace();
                 }
@@ -166,7 +172,6 @@ public class Controller extends Application {
                 addButtons();
 
             } catch(NullPointerException ex){
-                return;
             }
 
 
@@ -188,16 +193,19 @@ public class Controller extends Application {
                    return;
 
 
-               //sorryBoard.register_user(playerName);
-               //sorryBoard.join_game(chosenColor, playerName);
+               //sorryClient.register_user(playerName);
+               //sorryClient.join_game(chosenColor, playerName);
 
                changeFXML("game.fxml");
 
                addButtons();
 
-               sorryBoard.connect(inetAddress, Integer.parseInt(port));
-               sorryBoard.register_user(playerName);
-               sorryBoard.create_game(gameName, chosenColor);
+               sorryClient.connect(inetAddress, Integer.parseInt(port));
+               sorryClient.register_user(playerName);
+               sorryClient.create_game(gameName, chosenColor);
+
+               moves = new Moves(this);
+
            } catch(Exception ex){
                //e.printStacktrace();
            }
@@ -214,7 +222,7 @@ public class Controller extends Application {
 
        /*else if(e.getSource() == startButton){
             String gameName = JoinPopup.getGameName();
-            sorryBoard.start_game(gameName);
+            sorryClient.start_game(gameName);
             removeStartButton();
        }*/
 
@@ -345,7 +353,7 @@ public class Controller extends Application {
     public void onRefreshClick(){
         String gamesList;
         try {
-            gamesList = sorryBoard.get_game_list();
+            gamesList = sorryClient.get_game_list();
             System.out.println(gamesList);
             gamesList = "error";
         } catch (Exception e){
@@ -363,18 +371,32 @@ public class Controller extends Application {
         }
         */
 
-        GameInfo game1 = new GameInfo("Party People", "My Username",  "15.51451.4", "RGBY");
+        GameInfo game1 = new GameInfo("Logan's game", "logan",   "127.0.0.1","R");
         tableView.getItems().add(game1);
 
         tableView.refresh();
     }
-
     public void onDraw(){
 
-        Card drawn = sorryBoard.getGame().drawCard();
+       gameLogic = sorryClient.getGame();
+        moves.reset();
+        Card drawn = gameLogic.drawCard();
+        cardValue = drawn.getValue();
         setCurrentCardText(drawn.getValue() + "");
         setCurrentCardDescription(drawn.getDesc());
 
+        //ArrayList<Board> moveList = drawn.getMoves(gameLogic.currentPlayer, gameLogic.board);
+        /*for (TileButton t : moves.move(redRow[3], TileColor.RED, drawn.getValue())) {
+                    t.setId("red-move-tile");
+                    t.setOnAction(e -> {
+                        moves.reset();
+                    });
+                }
+*/
+        //moves.displayMoves(TileColor.RED, drawn.getValue());
+
+
+        //gameLogic.currentPlayer.pawns;
         //TODO: disable drawing of cards, get valid moves
     }
 
@@ -387,6 +409,11 @@ public class Controller extends Application {
                 new PropertyValueFactory<GameInfo,String>("hostName")
         );
 
+        TableColumn hostIPCol = new TableColumn("Host IP");
+        hostIPCol.setCellValueFactory(
+                new PropertyValueFactory<GameInfo,String>("hostIP")
+        );
+
         TableColumn playersCol = new TableColumn("Players");
         playersCol.setCellValueFactory(
                 new PropertyValueFactory<GameInfo,String>("players")
@@ -395,8 +422,9 @@ public class Controller extends Application {
 
         lobbyNameCol.setMinWidth(300);
         hostNameCol.setMinWidth(240);
-        playersCol.setMinWidth(240);
-        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, playersCol);
+        hostIPCol.setMinWidth(200);
+        playersCol.setMinWidth(50);
+        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, hostIPCol, playersCol);
     }
 
     public String getCurrentCardText() {
@@ -409,6 +437,16 @@ public class Controller extends Application {
 
     public void setCurrentCardDescription(String newDescription){
         this.currentCardDescription.setText(newDescription);
+    }
+
+    public void changecss(){
+        //for each TileButton passed in
+        /*
+                //store in arraylist to clear later
+                change css id to $playersColor-move-tile
+                set selected in that TileButton to true //TODO: have it change some variable to its position
+                on selected click reset every tile in arraylist, then remove them
+         */
     }
 
     public static TileButton[] getRedRow() {
@@ -447,17 +485,21 @@ public class Controller extends Application {
         return spawns;
     }
 
+    public Text getCurrentCard() {
+        return currentCard;
+    }
+
     public static class GameInfo{
 
         private final SimpleStringProperty lobbyName;
         private final SimpleStringProperty hostName;
-
+        private final SimpleStringProperty hostIP;
         private final SimpleStringProperty players;
 
         private GameInfo(String lobbyName, String hostName, String hostIP, String players){
             this.lobbyName = new SimpleStringProperty(lobbyName);
             this.hostName = new SimpleStringProperty(hostName);
-
+            this.hostIP = new SimpleStringProperty(hostIP);
             this.players = new SimpleStringProperty(players);
         }
 
@@ -482,6 +524,13 @@ public class Controller extends Application {
             return hostName;
         }
 
+        public String getHostIP() {
+            return hostIP.get();
+        }
+
+        public SimpleStringProperty hostIPProperty() {
+            return hostIP;
+        }
 
         public SimpleStringProperty playersProperty() {
             return players;

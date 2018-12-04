@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 public class TileButton extends Button implements ActionListener{
     private Image picture;
     private TileColor c;
+    private TileColor pieceColor;
     private int spot;
     private static boolean selected = false;
     private int occupiedBy = 0;
@@ -40,8 +41,19 @@ public class TileButton extends Button implements ActionListener{
 
         this.spot = spot;
 
+        this.pieceColor = null;
+
         //this.setText(spot+ "");
         this.setOnAction(e ->{
+
+       /*     for (TileButton t : Controller.moves.move(Controller.getRedRow()[3], TileColor.RED, Controller.cardValue) {
+                t.setId("red-move-tile");
+                t.setOnAction(ep -> {
+                    Moves.reset();
+                });
+            }*/
+
+
             if(Controller.playersTurn ) {
                 if(this.picture != null) {
                     //TODO: call method to get valid moves, change selected to true, change css of valid moves
@@ -108,6 +120,14 @@ public class TileButton extends Button implements ActionListener{
 
     public boolean isSelected(){
         return selected;
+    }
+
+    public TileColor getPieceColor() {
+        return pieceColor;
+    }
+
+    public void setPieceColor(TileColor pieceColor) {
+        this.pieceColor = pieceColor;
     }
 }
 
