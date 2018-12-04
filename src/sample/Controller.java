@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import sample.card.Card;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 
 public class Controller extends Application {
 
@@ -56,9 +57,14 @@ public class Controller extends Application {
 
     protected Image redPiece, bluePiece, yellowPiece, greenPiece;
 
-    private static SorryClient sorryBoard;
+    private static SorryClient sorryClient;
+    private static GameLogic gameLogic;
 
     protected static boolean playersTurn = false;
+
+    protected static Moves moves;
+
+    protected static int cardValue = 0;
 
 
     @Override
@@ -121,7 +127,7 @@ public class Controller extends Application {
 
             spawns = new TileButton[4];
 
-            sorryBoard = new SorryClient(this);
+            sorryClient = new SorryClient(this);
             populateTableView();
             onRefreshClick();
 
@@ -154,10 +160,10 @@ public class Controller extends Application {
 
                 try {
                     InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
-                    sorryBoard.connect(address,Integer.parseInt(port));
+                    sorryClient.connect(address,Integer.parseInt(port));
 
-                    sorryBoard.register_user(playerName);
-                    sorryBoard.join_game(chosenColor, chosenGame.getLobbyName());
+                    sorryClient.register_user(playerName);
+                    sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
                 } catch(Exception ex){
                     //ex.printStackTrace();
                 }
@@ -187,16 +193,19 @@ public class Controller extends Application {
                    return;
 
 
-               //sorryBoard.register_user(playerName);
-               //sorryBoard.join_game(chosenColor, playerName);
+               //sorryClient.register_user(playerName);
+               //sorryClient.join_game(chosenColor, playerName);
 
                changeFXML("game.fxml");
 
                addButtons();
 
-               sorryBoard.connect(inetAddress, Integer.parseInt(port));
-               sorryBoard.register_user(playerName);
-               sorryBoard.create_game(gameName, chosenColor);
+               sorryClient.connect(inetAddress, Integer.parseInt(port));
+               sorryClient.register_user(playerName);
+               sorryClient.create_game(gameName, chosenColor);
+
+               moves = new Moves(this);
+
            } catch(Exception ex){
                //e.printStacktrace();
            }
@@ -213,7 +222,7 @@ public class Controller extends Application {
 
        /*else if(e.getSource() == startButton){
             String gameName = JoinPopup.getGameName();
-            sorryBoard.start_game(gameName);
+            sorryClient.start_game(gameName);
             removeStartButton();
        }*/
 
@@ -344,7 +353,7 @@ public class Controller extends Application {
     public void onRefreshClick(){
         String gamesList;
         try {
-            gamesList = sorryBoard.get_game_list();
+            gamesList = sorryClient.get_game_list();
             System.out.println(gamesList);
             gamesList = "error";
         } catch (Exception e){
@@ -367,13 +376,27 @@ public class Controller extends Application {
 
         tableView.refresh();
     }
-
     public void onDraw(){
 
-        Card drawn = sorryBoard.getGame().drawCard();
+       gameLogic = sorryClient.getGame();
+        moves.reset();
+        Card drawn = gameLogic.drawCard();
+        cardValue = drawn.getValue();
         setCurrentCardText(drawn.getValue() + "");
         setCurrentCardDescription(drawn.getDesc());
 
+        //ArrayList<Board> moveList = drawn.getMoves(gameLogic.currentPlayer, gameLogic.board);
+        /*for (TileButton t : moves.move(redRow[3], TileColor.RED, drawn.getValue())) {
+                    t.setId("red-move-tile");
+                    t.setOnAction(e -> {
+                        moves.reset();
+                    });
+                }
+*/
+        moves.displayMoves(TileColor.RED, drawn.getValue());
+
+
+        //gameLogic.currentPlayer.pawns;
         //TODO: disable drawing of cards, get valid moves
     }
 
@@ -460,6 +483,10 @@ public class Controller extends Application {
 
     public static TileButton[] getSpawns() {
         return spawns;
+    }
+
+    public Text getCurrentCard() {
+        return currentCard;
     }
 
     public static class GameInfo{

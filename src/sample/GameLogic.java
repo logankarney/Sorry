@@ -8,9 +8,9 @@ import java.util.ArrayList;
  * Keeps game state, player list, and controls underlying playing of the game
  */
 public class GameLogic{
-    private ArrayList<Player> players;
-    private Board board;
-    private Player currentPlayer;
+    protected ArrayList<Player> players;
+    protected Board board;
+    protected Player currentPlayer;
     private int currentNumPlayers;
 
     public GameLogic(){
