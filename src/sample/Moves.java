@@ -93,7 +93,13 @@ public class Moves {
 
     }
 
-    public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor){
+    public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
+        TileButton temp = new TileButton(playerColor, -10);
+        if(swap && newPiece.getPieceColor() != null){
+            temp = new TileButton(newPiece.getPieceColor(), newPiece.getSpot());
+            temp.setPicture(newPiece.getPicture());
+            temp.setPieceColor(newPiece.getPieceColor());
+        }
         newPiece.setPicture(oldPiece.getPicture());
         newPiece.setOccupiedBy(1);
         newPiece.setPieceColor(playerColor);
@@ -107,27 +113,18 @@ public class Moves {
             oldPiece.setOnAction(e -> {
             });
         }
+
+        if(swap && newPiece.getPieceColor() != null){
+            oldPiece.setPicture(temp.getPicture());
+            oldPiece.setOccupiedBy(1);
+            oldPiece.setPieceColor(temp.getPieceColor());
+            oldPiece.setOnAction(e -> displayMoves(oldPiece, oldPiece.getPieceColor(), controller.cardValue));
+        }
     }
 
 
     public void displayMoves(TileButton tile, TileColor playerColor, int moveAmount){
-        int offset = 0;
-        switch(playerColor){
-            case RED:
-                offset = 0;
-                break;
-            case BLUE:
-                offset = 4;
-                break;
-            case YELLOW:
-                offset = 8;
-                break;
-            case GREEN:
-                offset = 12;
-                break;
-        }
 
-  //      for(TileButton t : pieces){
             if(playerColor == tile.getPieceColor()) {
                 ArrayList<TileButton> moves = move(tile, playerColor, moveAmount);
                 for (TileButton m : moves) {
@@ -135,10 +132,12 @@ public class Moves {
                     m.setOnAction(e -> {
                         selectedPiece = m;
                         reset();
-                        movePiece(tile, m, playerColor);
+                        if(moveAmount == 11)
+                            movePiece(tile, m, playerColor, true);
+                        else
+                             movePiece(tile, m, playerColor, false);
                     });
                 }
-        //    }
         }
     }
 
@@ -304,7 +303,7 @@ public class Moves {
         ArrayList<TileButton> moves= new ArrayList<TileButton>();
 
         for(int i = 0; i < pieces.size(); i++){
-            if(pieces.get(i).getPieceColor() != playerColor && pieces.get(i).getSpot() <= 15 && pieces.get(i).getPicture() != null){
+            if(pieces.get(i).getPieceColor() != playerColor && pieces.get(i).getSpot() <= 15 && pieces.get(i).getPicture() != null && pieces.get(i).getPieceColor() != null ){
                 moves.add(pieces.get(i));
             }
         }
