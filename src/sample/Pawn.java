@@ -53,6 +53,10 @@ public class Pawn{
         return isHome;
     }
 
+    public void setHome(boolean home) {
+        isHome = home;
+    }
+
     public void setInStart(boolean inStart) {
         isInStart = inStart;
     }

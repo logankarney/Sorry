@@ -154,6 +154,10 @@ public class Board {
         sorryBoard[newRow][newSpace] = p;
         resolveSlide(p);
 
+        if (p.getSpace() == 20){
+            sendHome(p);
+        }
+
         return true;
     }
 
@@ -206,7 +210,16 @@ public class Board {
         return true;
     }
 
+    public void sendHome(Pawn p){
+        p.setHome(true);
+        sorryBoard[p.getPlayerID()][20] = null;
+    }
+
     public void setPawnLocation(int row, int space, Pawn p){
+        if (p.isInStart()){
+            p.setInStart(false);
+            start[p.getPlayerID()].remove(p);
+        }
         sorryBoard[row][space] = p;
         p.setLocation(row,space);
         p.setInStart(false);
