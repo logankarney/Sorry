@@ -393,7 +393,7 @@ public class Controller extends Application {
                     });
                 }
 */
-        moves.displayMoves(TileColor.RED, drawn.getValue());
+        //moves.displayMoves(TileColor.RED, drawn.getValue());
 
 
         //gameLogic.currentPlayer.pawns;

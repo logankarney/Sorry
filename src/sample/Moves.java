@@ -22,7 +22,10 @@ public class Moves {
 
     private static ArrayList<TileButton> moves;
 
+    private static TileButton selectedPiece;
+
     private Controller controller;
+
 
     public Moves(Controller controller){
         this.controller = controller;
@@ -46,6 +49,10 @@ public class Moves {
 
         moves = new ArrayList<TileButton>();
 
+        selectedPiece = null;
+
+        //for testing purposes
+
         blueRow[5].setPicture(controller.bluePiece);
         blueRow[5].setOccupiedBy(1);
         blueRow[5].setPieceColor(TileColor.BLUE);
@@ -60,7 +67,9 @@ public class Moves {
         redRow[3].setPicture(controller.redPiece);
         redRow[3].setPieceColor(TileColor.RED);
         redRow[3].setOccupiedBy(1);
-        redRow[3].setOnAction(e -> displayMoves(redRow[3], TileColor.RED, controller.cardValue));
+        redRow[3].setOnAction(e -> {
+            displayMoves(redRow[3], TileColor.RED, controller.cardValue);
+        });
 
         pieces.add(redRow[3]);
 
@@ -70,9 +79,12 @@ public class Moves {
         newPiece.setPicture(oldPiece.getPicture());
         newPiece.setOccupiedBy(1);
         newPiece.setPieceColor(playerColor);
+        newPiece.setOnAction(e -> displayMoves(newPiece, playerColor, controller.cardValue));
+
         oldPiece.setOccupiedBy(0);
-        //oldPiece.setPicture(null);
+        oldPiece.setPicture(null);
         oldPiece.setPieceColor(null);
+        oldPiece.setOnAction(e -> {});
     }
 
 
@@ -99,7 +111,9 @@ public class Moves {
                 for (TileButton m : moves) {
                     m.setId(getId(playerColor));
                     m.setOnAction(e -> {
+                        selectedPiece = m;
                         reset();
+                        movePiece(tile, m, playerColor);
                     });
                 }
         //    }
