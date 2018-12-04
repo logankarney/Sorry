@@ -129,6 +129,10 @@ public class GameLogic{
         return card;
     }
 
+    public Board getBoard(){
+        return board;
+    }
+
 public static void main(String[] args){
     GameLogic game = new GameLogic();
     game.addPlayer(new Player("Ryan", TileColor.BLUE));
