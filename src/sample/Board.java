@@ -50,6 +50,10 @@ public class Board {
         int newRow;
         int newSpace;
 
+        if (p.isInStart()){
+            return false;
+        }
+
         // Moving backwards
         if (numSpaces < 0){
             if (numSpaces == -1){

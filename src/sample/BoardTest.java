@@ -16,7 +16,16 @@ public class BoardTest {
         Board b2 = new Board(b);
         Pawn p = b.getPlayers()[1].getPawns()[3];
         b.move(p, 10);
-        Assert.assertArrayEquals(b.getSorryBoard(), b2.getSorryBoard());
+        Assert.assertArrayEquals(b2.getSorryBoard(), b.getSorryBoard());
+    }
+
+    @org.junit.Test
+    public void moveThree() throws Exception {
+        Board b = makeBoard();
+        Pawn p = b.getPlayers()[1].getPawns()[3];
+        b.moveFromStart(p);
+        b.move(p, 3);
+        Assert.assertEquals(p, b.getSorryBoard()[1][6]);
     }
 
     @org.junit.Test
