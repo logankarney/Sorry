@@ -19,10 +19,20 @@ public class Player{
             playerID = 3;
         }
         pawns = new Pawn[4];
-        pawns[0] = new Pawn(color, playerID);
-        pawns[1] = new Pawn(color, playerID);
-        pawns[2] = new Pawn(color, playerID);
-        pawns[3] = new Pawn(color, playerID);
+        pawns[0] = new Pawn(color, playerID, 0);
+        pawns[1] = new Pawn(color, playerID, 1);
+        pawns[2] = new Pawn(color, playerID, 2);
+        pawns[3] = new Pawn(color, playerID, 3);
+    }
+
+    public Player(Player pl){
+        this.name = pl.getName();
+        this.color = pl.getColor();
+        this.playerID = pl.getPlayerID();
+        pawns = new Pawn[4];
+        for (int i=0; i<4; i++){
+            pawns[i] = new Pawn(pl.getPawns()[i]);
+        }
     }
 
     public int getPlayerID(){

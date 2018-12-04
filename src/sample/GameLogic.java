@@ -109,9 +109,6 @@ public class GameLogic{
             case 6:
                 card = drawCard();
                 break;
-            case 7:
-                card = new SevenCard();
-                break;
             case 9:
                 card = drawCard();
                 break;
@@ -136,7 +133,8 @@ public class GameLogic{
         return board;
     }
 
-    public static void main(String[] args){
+
+public static void main(String[] args){
     GameLogic game = new GameLogic();
     game.addPlayer(new Player("Ryan", TileColor.BLUE));
     game.addPlayer(new Player("Em", TileColor.GREEN));
