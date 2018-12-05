@@ -51,7 +51,6 @@ class SorryClient implements Runnable {
               if(object.containsValue("next_turn")){
                   System.out.println(object.toString());
                   JSONObject data = (JSONObject)object.get("data");
-                  System.out.get
                   if (data.get("player").toString().equals(user)) {
                       isTurn = true;
                   } else{
@@ -140,8 +139,6 @@ class SorryClient implements Runnable {
      * @return a list of currently running games on the server
      */
      String get_game_list(){
-         if(!isTurn)
-             return "Not your turn";
          try {
             JSONObject json = new JSONObject();
             JSONObject response = new JSONObject();
@@ -313,7 +310,7 @@ class SorryClient implements Runnable {
      */
     String update_pawn(String game, String pawn, String position, boolean end){
         if(!isTurn)
-            return "";
+            return "This is not your turn";
         try{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
@@ -448,6 +445,8 @@ class Game{
         t.start();
         Thread.sleep(10000);
         sorry.update_pawn("game","B1","B11",true);
+        Thread.sleep(10000);
+        System.out.println(sorry.update_pawn("game","B1","B11",true));
         while(true){}
 
     }
