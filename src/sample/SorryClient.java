@@ -7,19 +7,22 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.sun.org.apache.xml.internal.security.signature.reference.ReferenceNodeSetData;
 import javafx.util.Pair;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import sample.card.Card;
 
 
-class SorryClient{
+class SorryClient implements Runnable {
 
 
     Socket connection;
     DataOutputStream out;
     BufferedReader in;
     static GameLogic game;
+    boolean gameStarted;
+    boolean isTurn;
     boolean gameWon;
     String user;
     String game_name;
@@ -31,9 +34,31 @@ class SorryClient{
         game = new GameLogic();
     }
 
+    public void run(){
+        while(true){
+          try {
+              JSONObject object = new JSONObject();
+              JSONParser parser = new JSONParser();
+              if(!isTurn) {
+                  object = (JSONObject) parser.parse(in.readLine());
+                  if (object.containsValue("Pawn updated")) {
+                      JSONObject data = new JSONObject();
+                      data = (JSONObject) data.get("data");
+                      if (data.get("name").toString().equals(user)) {
+                          isTurn = true;
+                      }
+                  }
+              }
+          } catch (Exception e){
+              e.printStackTrace();
+          }
+        }
+    }
 
     SorryClient(){
         game = new GameLogic();
+        gameStarted = false;
+        isTurn = false;
     }
 
     public GameLogic getGame() {
@@ -53,8 +78,9 @@ class SorryClient{
            out = new DataOutputStream(connection.getOutputStream());
            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
            //Passes off socket to a thread to listen for updates from server
-           Thread t = new Thread(new messageHandler(addr,port));
-           t.start();
+          // messageHandler m = new messageHandler(addr,port,this);
+         //  Thread t = new Thread(m);
+         //  t.start();
            return "Connection established";
        } catch (Exception e){
            return "No server running at specified port or address.";
@@ -101,7 +127,9 @@ class SorryClient{
      * @return a list of currently running games on the server
      */
      String get_game_list(){
-        try {
+         if(!isTurn)
+             return "Not your turn";
+         try {
             JSONObject json = new JSONObject();
             JSONObject response = new JSONObject();
             JSONParser parser = new JSONParser();
@@ -122,12 +150,10 @@ class SorryClient{
             for(int i = 0; i < games.size(); i++){
                 JSONObject game = (JSONObject)games.get(i);
                 for(Object g:game.keySet()){
-                    System.out.println(g.toString());
                     JSONObject players = (JSONObject)game.get(g.toString());
                     for(Object h:players.keySet()){
                         colors = new ArrayList<>();
                         JSONObject player_data = (JSONObject)players.get(h.toString());
-                       // System.out.println(h.toString());
                         for(Object j: player_data.keySet()){
                             String color = player_data.get(j.toString()).toString();
                             colors.add(color);
@@ -167,7 +193,9 @@ class SorryClient{
      * @return string stating if user has successfully joined the game
      */
      String join_game(String color, String name){
-        try {
+         if (gameStarted)
+             return "Game is already in session";
+         try {
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","join_game");
@@ -211,7 +239,9 @@ class SorryClient{
      * @return response from server
      */
      String create_game(String name, String color){
-        try{
+         if(gameStarted)
+             return "Game is already in session";
+         try{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             JSONParser parser = new JSONParser();
@@ -236,6 +266,7 @@ class SorryClient{
      */
     String get_game_data(String name){
         try{
+            out.flush();
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             JSONParser parser = new JSONParser();
@@ -267,6 +298,8 @@ class SorryClient{
      * @return The color of the next player
      */
     String update_pawn(String game, String pawn, String position, boolean end){
+        if(!isTurn)
+            return "";
         try{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
@@ -315,6 +348,8 @@ class SorryClient{
      * @return String stating whether the game has begun or not.
      */
     String start_game(String game){
+        if(gameStarted)
+            return "Game is already in session";
         try{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
@@ -324,6 +359,7 @@ class SorryClient{
             byte[] output = json.toString().getBytes();
             out.write(output);
             out.flush();
+            gameStarted = true;
             //this.game.startGame();
             return game_name+" has begun.";
         } catch (Exception e){
@@ -349,18 +385,19 @@ class SorryClient{
 
 }
 
-class messageHandler implements Runnable{
+/*class messageHandler implements Runnable{
 
     SorryClient game;
     Socket connection;
     DataOutputStream out;
     BufferedReader in;
 
-    messageHandler(InetAddress addr, int port){
+    messageHandler(InetAddress addr, int port,SorryClient game){
         try {
             connection = new Socket(addr,port);
             out = new DataOutputStream(connection.getOutputStream());
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            this.game = game;
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -368,8 +405,9 @@ class messageHandler implements Runnable{
 
     public void run(){
         try {
+            game.update_pawn("game","B1","B11",true);
             while (true) {
-          //      System.out.println("here");
+                System.out.println("here");
                 JSONParser parser = new JSONParser();
                 String input = in.readLine();
                 System.out.println(input);
@@ -382,19 +420,19 @@ class messageHandler implements Runnable{
             e.printStackTrace();
         }
     }
-
-
-}
+}*/
 
 class Game{
 
     public static void main(String[] args) throws Exception{
+
         SorryClient sorry = new SorryClient();
         sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
         sorry.register_user("Tanner");
         sorry.create_game("game","blue");
-       // sorry.update_pawn("game","B1","B15", true);
-        while(true){}
+        Thread t = new Thread(sorry);
+        t.start();
+        while(true){System.out.println(sorry.update_pawn("game","B1","B15", true));}
 
     }
 
@@ -405,37 +443,15 @@ class Game2{
         SorryClient sorry = new SorryClient();
         sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
         sorry.register_user("lol");
-        sorry.join_game("green","game");
         sorry.start_game("game");
+        Thread t = new Thread();
+        t.start();
         sorry.get_game_data("game");
-        System.out.println(sorry.get_game_list());
-        //System.out.println(sorry.update_pawn("game","B1","B11",true));
+        sorry.get_game_list();
+        sorry.update_pawn("game","B1","B11",true);
         while(true){}
     }
 }
 
-class Game3{
-    public static void main(String[] args) throws Exception{
-        SorryClient sorry = new SorryClient();
-        sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
-        sorry.register_user("wtf");
-        sorry.create_game("game_two_electric_boogaloo","red");
-        while(true){}
-
-    }
-}
-
-class Game4{
-    public static void main(String[] args) throws Exception{
-        SorryClient sorry = new SorryClient();
-        sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
-        sorry.register_user("lmao");
-        sorry.join_game("yellow","game_two_electric_boogaloo");
-        sorry.start_game("game_two_electric_boogaloo");
-       // sorry.get_game_data("game_two_electric_boogaloo");
-        System.out.println(sorry.get_game_list());
-        while(true){}
-    }
-}
 
 

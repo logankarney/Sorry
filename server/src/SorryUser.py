@@ -37,6 +37,7 @@ class SorryUser(asyncio.Protocol):
 		self.write_message(json_message)
 
 	def connection_made(self, transport):
+		print("New connection")
 		self.transport = transport
 
 	def connection_lost(self, exc):
