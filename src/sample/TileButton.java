@@ -43,6 +43,13 @@ public class TileButton extends Button implements ActionListener{
         });
 
         this.setPrefSize(46,46);
+
+        if(spot == 22){
+            setOccupiedBy(4);
+        }
+        else{
+            setOccupiedBy(0);
+        }
     }
 
     public Image getPicture() {

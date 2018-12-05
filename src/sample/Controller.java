@@ -43,11 +43,6 @@ public class Controller extends Application {
     /** The outside rows for each color */
     private static TileButton[] redRow, blueRow, greenRow, yellowRow;
 
-    /** the inside lane for each color */
-    private static TileButton[] redHome, blueHome, greenHome, yellowHome;
-
-    /** The spawn for each color, red's is 0, blue's is 1, ect */
-    private static TileButton[] spawns;
 
     protected static TileColor playerColor = null;
 
@@ -113,19 +108,14 @@ public class Controller extends Application {
             port = ConnectPopup.getPort();
 
             //size = amount of tiles in rows, 5 for home, 1 for finish, 1 for spawn
-            redRow = new TileButton[size];
-            redHome = new TileButton[7];
+            redRow = new TileButton[size + 7];
 
-            blueRow = new TileButton[size];
-            blueHome = new TileButton[7];
+            blueRow = new TileButton[size + 7];
 
-            yellowRow = new TileButton[size];
-            yellowHome = new TileButton[7];
+            yellowRow = new TileButton[size + 7];
 
-            greenRow = new TileButton[size];
-            greenHome = new TileButton[7];
+            greenRow = new TileButton[size + 7];
 
-            spawns = new TileButton[4];
 
             sorryClient = new SorryClient(this);
             populateTableView();
@@ -278,76 +268,75 @@ public class Controller extends Application {
 
         }
 
-        int offset = 16;
 
-        for(int i = size; i < redHome.length + offset - 1; i++){
-            redHome[i - offset] = new TileButton(TileColor.RED, i);
-            redHome[i - offset].setLayoutX(33 + 46 * 2);
-            redHome[i - offset].setLayoutY(33 + (i + 1 - size)* 46);
+        for(int i = size; i < redRow.length  - 1; i++){
+            redRow[i] = new TileButton(TileColor.RED, i);
+            redRow[i].setLayoutX(33 + 46 * 2);
+            redRow[i].setLayoutY(33 + (i + 1 - size)* 46);
 
-            blueHome[i - offset] = new TileButton(TileColor.BLUE, i);
-            blueHome[i - offset].setLayoutX((33 + 15 * 46) - (i - size) * 46);
-            blueHome[i - offset].setLayoutY(33 + 46 * 2);
+            blueRow[i] = new TileButton(TileColor.BLUE, i);
+            blueRow[i].setLayoutX((33 + 15 * 46) - (i - size) * 46);
+            blueRow[i].setLayoutY(33 + 46 * 2);
 
-            yellowHome[i - offset] = new TileButton(TileColor.YELLOW, i);
-            yellowHome[i - offset].setLayoutX(33 + 14 * 46);
-            yellowHome[i - offset].setLayoutY(33 + 16 * 46 - (i - size + 1) * 46);
+            yellowRow[i] = new TileButton(TileColor.YELLOW, i);
+            yellowRow[i].setLayoutX(33 + 14 * 46);
+            yellowRow[i].setLayoutY(33 + 16 * 46 - (i - size + 1) * 46);
 
-            greenHome[i - offset] = new TileButton(TileColor.GREEN, i);
-            greenHome[i - offset].setLayoutX(33 + (i + 1- size)* 46);
-            greenHome[i - offset].setLayoutY(33 + 46 * 14);
+            greenRow[i] = new TileButton(TileColor.GREEN, i);
+            greenRow[i].setLayoutX(33 + (i + 1- size)* 46);
+            greenRow[i].setLayoutY(33 + 46 * 14);
 
             //Scoring tile
-            if(i == redHome.length + offset - 2){
-                redHome[i - offset].setPrefSize(92,92);
-                redHome[i - offset].setOccupiedBy(0);
+            if(i == redRow.length -2){
+                redRow[i].setPrefSize(92,92);
+                redRow[i].setOccupiedBy(0);
 
-                blueHome[i - offset].setPrefSize(92,92);
-                blueHome[i - offset].setLayoutX(blueHome[i - offset].getLayoutX() - 46);
-                blueHome[i - offset].setOccupiedBy(0);
+                blueRow[i].setPrefSize(92,92);
+                blueRow[i].setLayoutX(blueRow[i].getLayoutX() - 46);
+                blueRow[i].setOccupiedBy(0);
 
-                yellowHome[i - offset].setPrefSize(92,92);
-                yellowHome[i - offset].setLayoutX(yellowHome[i - offset].getLayoutX() - 46);
-                yellowHome[i - offset].setLayoutY(yellowHome[i - offset].getLayoutY() - 46);
-                yellowHome[i - offset].setOccupiedBy(0);
+                yellowRow[i].setPrefSize(92,92);
+                yellowRow[i].setLayoutX(yellowRow[i].getLayoutX() - 46);
+                yellowRow[i].setLayoutY(yellowRow[i].getLayoutY() - 46);
+                yellowRow[i].setOccupiedBy(0);
 
-                greenHome[i - offset].setPrefSize(92,92);
-                greenHome[i - offset].setLayoutY(greenHome[i - offset].getLayoutY() - 46);
-                greenHome[i - offset].setOccupiedBy(0);
+                greenRow[i].setPrefSize(92,92);
+                greenRow[i].setLayoutY(greenRow[i].getLayoutY() - 46);
+                greenRow[i].setOccupiedBy(0);
             }
 
-            pane.getChildren().addAll(redHome[i - offset], blueHome[i - offset], yellowHome[i - offset], greenHome[i - offset]);
+            pane.getChildren().addAll(redRow[i], blueRow[i], yellowRow[i], greenRow[i]);
 
         }
 
         //home area
         int last = 22;
 
-        spawns[0] = new TileButton(TileColor.RED, last);
-        spawns[0].setPrefSize(92,92);
-        spawns[0].setLayoutX(46 * 4 + 33);
-        spawns[0].setLayoutY(33 + 46);
-        spawns[0].setOccupiedBy(4);
+        redRow[last] = new TileButton(TileColor.RED, last);
+        redRow[last].setPrefSize(92,92);
+        redRow[last].setLayoutX(46 * 4 + 33);
+        redRow[last].setLayoutY(33 + 46);
+        redRow[last].setOccupiedBy(4);
 
-        spawns[1] = new TileButton(TileColor.BLUE, last);
-        spawns[1].setPrefSize(92, 92);
-        spawns[1].setLayoutX(33 + 14 * 46);
-        spawns[1].setLayoutY(33 + 46 * 4);
-        spawns[1].setOccupiedBy(4);
+        blueRow[last] = new TileButton(TileColor.BLUE, last);
+        blueRow[last] .setPrefSize(92, 92);
+        blueRow[last] .setLayoutX(33 + 14 * 46);
+        blueRow[last] .setLayoutY(33 + 46 * 4);
+        blueRow[last] .setOccupiedBy(4);
 
-        spawns[2] = new TileButton(TileColor.YELLOW, last);
-        spawns[2].setPrefSize(92,92);
-        spawns[2].setLayoutX(33 + 11 * 46);
-        spawns[2].setLayoutY(33 + 14 * 46);
-        spawns[2].setOccupiedBy(4);
+        yellowRow[last]  = new TileButton(TileColor.YELLOW, last);
+        yellowRow[last] .setPrefSize(92,92);
+        yellowRow[last] .setLayoutX(33 + 11 * 46);
+        yellowRow[last] .setLayoutY(33 + 14 * 46);
+        yellowRow[last] .setOccupiedBy(4);
 
-        spawns[3] = new TileButton(TileColor.GREEN, last);
-        spawns[3].setPrefSize(92,92);
-        spawns[3].setLayoutX(33 + 46);
-        spawns[3].setLayoutY(33 + 46 * 11);
-        spawns[3].setOccupiedBy(4);
+        greenRow[last] = new TileButton(TileColor.GREEN, last);
+        greenRow[last] .setPrefSize(92,92);
+        greenRow[last] .setLayoutX(33 + 46);
+        greenRow[last] .setLayoutY(33 + 46 * 11);
+        greenRow[last] .setOccupiedBy(4);
 
-        pane.getChildren().addAll(spawns[0], spawns[1], spawns[2], spawns[3]);
+        pane.getChildren().addAll(redRow[last], blueRow[last], yellowRow[last], greenRow[last]);
     }
 
     public void onRefreshClick(){
@@ -463,26 +452,6 @@ public class Controller extends Application {
 
     public static TileButton[] getYellowRow() {
         return yellowRow;
-    }
-
-    public static TileButton[] getRedHome() {
-        return redHome;
-    }
-
-    public static TileButton[] getBlueHome() {
-        return blueHome;
-    }
-
-    public static TileButton[] getGreenHome() {
-        return greenHome;
-    }
-
-    public static TileButton[] getYellowHome() {
-        return yellowHome;
-    }
-
-    public static TileButton[] getSpawns() {
-        return spawns;
     }
 
     public Text getCurrentCard() {
