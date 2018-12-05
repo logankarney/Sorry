@@ -215,7 +215,7 @@ public class Controller extends Application {
        /*else if(e.getSource() == toggleCSSButton){
            greenRow[3].setPicture(greenPiece);
            if(greenRow[3].getId().equals("yellow-tile"))
-           greenRow[3].setId("yellow-move-tile");
+           greenRow[3].setId("yellow-calculateMoves-tile");
            else
                greenRow[3].setId("yellow-tile");
        }*/
@@ -386,8 +386,8 @@ public class Controller extends Application {
         setCurrentCardDescription(drawn.getDesc());
 
         //ArrayList<Board> moveList = drawn.getMoves(gameLogic.currentPlayer, gameLogic.board);
-        /*for (TileButton t : moves.move(redRow[3], TileColor.RED, drawn.getValue())) {
-                    t.setId("red-move-tile");
+        /*for (TileButton t : moves.calculateMoves(redRow[3], TileColor.RED, drawn.getValue())) {
+                    t.setId("red-calculateMoves-tile");
                     t.setOnAction(e -> {
                         moves.reset();
                     });
@@ -443,7 +443,7 @@ public class Controller extends Application {
         //for each TileButton passed in
         /*
                 //store in arraylist to clear later
-                change css id to $playersColor-move-tile
+                change css id to $playersColor-calculateMoves-tile
                 set selected in that TileButton to true //TODO: have it change some variable to its position
                 on selected click reset every tile in arraylist, then remove them
          */

@@ -15,23 +15,6 @@ public class TileButton extends Button implements ActionListener{
     private static boolean selected = false;
     private int occupiedBy = 0;
 
-    /*public TileButton(Image picture, TileColor c, int spot){
-        this.picture = picture;
-        ImageView imageView = new ImageView(picture);
-        imageView.setFitHeight(28);
-        imageView.setFitWidth(28);
-        this.setGraphic(imageView);
-
-        this.setPrefSize(46,46);
-
-        this.c = c;
-        this.setId(c.name().toLowerCase() + "-tile");
-
-        this.spot = spot;
-        this.selected = false;
-        this.setPrefSize(46,46);
-    }*/
-
     public TileButton(TileColor c, int spot){
         this.c = c;
         String css = this.getClass().getResource("application.css")
@@ -46,21 +29,13 @@ public class TileButton extends Button implements ActionListener{
         //this.setText(spot+ "");
         this.setOnAction(e ->{
 
-       /*     for (TileButton t : Controller.moves.move(Controller.getRedRow()[3], TileColor.RED, Controller.cardValue) {
-                t.setId("red-move-tile");
-                t.setOnAction(ep -> {
-                    Moves.reset();
-                });
-            }*/
-
-
             if(Controller.playersTurn ) {
                 if(this.picture != null) {
                     //TODO: call method to get valid moves, change selected to true, change css of valid moves
                 }
                 else{
                     if(selected){
-                        //TODO: return this tile as the next move
+                        //TODO: return this tile as the next calculateMoves
                     }
                 }
             }

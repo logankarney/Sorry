@@ -19,8 +19,6 @@ public class Moves {
     /** The spawn for each color, red's is 0, blue's is 1, ect */
     private static TileButton[] spawns;
 
-    protected static ArrayList<TileButton> pieces;
-
     private static ArrayList<TileButton> moves;
 
     private static TileButton selectedPiece;
@@ -41,11 +39,9 @@ public class Moves {
         this.spawns = controller.getSpawns();
 
 
-        pieces = new ArrayList<>();
 
         for(int i = 0; i < 4; i++){
             spawns[i].setOccupiedBy(4);
-            pieces.add(spawns[i]);
         }
 
         //Have to explicitly set this as lamda's do not like assigning on actions in loops
@@ -71,7 +67,7 @@ public class Moves {
 
         //for testing purposes
 
-        blueRow[5].setPicture(controller.bluePiece);
+        /*blueRow[5].setPicture(controller.bluePiece);
         blueRow[5].setOccupiedBy(1);
         blueRow[5].setPieceColor(TileColor.BLUE);
         pieces.add( blueRow[5]);
@@ -90,7 +86,7 @@ public class Moves {
         });
 
         pieces.add(redRow[3]);
-
+*/
     }
 
     public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
@@ -290,13 +286,13 @@ public class Moves {
         System.out.println(origSpot.getSpot());
 
             if(moveAmount == 1 && origSpot.getSpot() == 22) {
-                if (row[3].getOccupiedBy() == 0)
-                    moves.add(row[3]);
-                    origSpot.setGraphic(new ImageView(controller.redPiece));
+                    if(row[3].getPieceColor() != playerColor)
+                        moves.add(row[3]);
 
             } else if(moveAmount == 2 && origSpot.getSpot() == 22){
-                if (row[3].getOccupiedBy() == 0)
-                    moves.add(row[3]);
+               // if (row[3].getOccupiedBy() == 0)
+                    if(row[3].getPieceColor() != playerColor)
+                        moves.add(row[3]);
             }
 
             else if(moveAmount == 10){
@@ -319,10 +315,15 @@ public class Moves {
     public ArrayList<TileButton> getEnemyPieces(TileColor playerColor){
         ArrayList<TileButton> moves= new ArrayList<TileButton>();
 
-        for(int i = 0; i < pieces.size(); i++){
-            if(pieces.get(i).getPieceColor() != playerColor && pieces.get(i).getSpot() <= 15 && pieces.get(i).getPicture() != null && pieces.get(i).getPieceColor() != null ){
-                moves.add(pieces.get(i));
-            }
+        for(int i = 0; i < redRow.length; i++){
+            if(redRow[i].getPieceColor() != playerColor)
+                moves.add(redRow[i]);
+            if(blueRow[i].getPieceColor() != playerColor)
+                moves.add(blueRow[i]);
+            if(yellowRow[i].getPieceColor() != playerColor)
+                moves.add(yellowRow[i]);
+            if(greenRow[i].getPieceColor() != playerColor)
+                moves.add(greenRow[i]);
         }
 
         return moves;
