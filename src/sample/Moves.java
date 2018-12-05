@@ -76,8 +76,14 @@ public class Moves {
         }
         newPiece.setPicture(oldPiece.getPicture());
 
-        if(newPiece.getSpot() != 21)
-             newPiece.setOccupiedBy(1);
+             newPiece.setOccupiedBy(newPiece.getOccupiedBy() +1);
+
+             //TODO:Check if this works
+             if(newPiece.getSpot() == 21) {
+                 TileButton spawn = getColorRow(newPiece.getC())[22];
+                 spawn.setOccupiedBy(spawn.getOccupiedBy() - 1);
+             }
+
         newPiece.setPieceColor(playerColor);
         newPiece.setOnAction(e -> displayMoves(newPiece, playerColor, controller.cardValue));
 
