@@ -60,11 +60,11 @@ public class Moves {
 
     public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
 
-        TileButton spawn = null;
+        TileButton end = null;
 
         if(newPiece.getPicture() != null && swap == false) {
-            spawn = getColorRow(newPiece.getPieceColor())[22];
-            spawn.setOccupiedBy(spawn.getOccupiedBy()+1);
+            end = getColorRow(newPiece.getPieceColor())[22];
+            end.setOccupiedBy(end.getOccupiedBy()+1);
         }
 
 
@@ -134,7 +134,7 @@ public class Moves {
 
 
     public ArrayList<TileButton> move(TileButton origSpot, TileColor playerColor, int moveAmount){
-           // Image image = origSpot.getPicture();
+           // Image image = origSpot.getPicture();;
 
             int spot = origSpot.getSpot();
 
@@ -142,6 +142,10 @@ public class Moves {
 
             //condition for entering the home row
             if(spot < 2 && origSpot.getC() == playerColor && moveAmount != 4 && moveAmount + spot > 1){
+
+                if(spot == 0) {
+                    moveAmount--;
+                }
 
                 if(moveAmount + origSpot.getSpot() + 15 < 22 && moveAmount + origSpot.getSpot() > 1) {
 
@@ -189,7 +193,6 @@ public class Moves {
 
 
                 if(moveAmount + spot < 22){
-                    System.out.println("HERE");
                     if(currentRow[spot + moveAmount].getOccupiedBy() == 0 || currentRow[spot + moveAmount].getSpot() == 21)
                         moves.add(currentRow[spot + moveAmount]);
                     return moves;
@@ -395,6 +398,14 @@ public class Moves {
                 break;
         }
         return  rtn;
+    }
+
+    public boolean winner(TileButton home){
+        if(home.getOccupiedBy() == 4){
+            System.out.println("winner");
+            return true;
+        }
+        return false;
     }
 
 }
