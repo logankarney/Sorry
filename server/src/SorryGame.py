@@ -60,6 +60,8 @@ class SorryGame(object):
 			self.turns.append(self.turns.pop(0))
 			for player in self.players.keys():
 				player.send_json("next_turn", {"game": self.name, "player": self.turns[0]})
+				player.send_json("next_turn", {"game": self.name, "player": self.turns[0]})
+
 
 	def start_game(self):
 		self.state = "started"

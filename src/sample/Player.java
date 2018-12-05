@@ -3,7 +3,7 @@ package sample;
 public class Player{
     private String name;
     private TileColor color;
-    private Pawn[] pawns;
+    protected Pawn[] pawns;
     private int playerID;
 
     public Player(String name, TileColor color){
