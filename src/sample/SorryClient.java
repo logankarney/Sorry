@@ -39,16 +39,29 @@ class SorryClient implements Runnable {
           try {
               JSONObject object = new JSONObject();
               JSONParser parser = new JSONParser();
-              if(!isTurn) {
-                  object = (JSONObject) parser.parse(in.readLine());
-                  if (object.containsValue("Pawn updated")) {
-                      JSONObject data = new JSONObject();
-                      data = (JSONObject) data.get("data");
-                      if (data.get("name").toString().equals(user)) {
-                          isTurn = true;
-                      }
+              object = (JSONObject) parser.parse(in.readLine());
+              if (object.containsValue("pawn_updated")) {
+                  System.out.println("Updated!");
+                  System.out.println(object.toString());
+                  JSONObject data = (JSONObject)object.get("data");
+                  /*if (data.get("player").toString().equals(user)) {
+                      isTurn = true;
+                  }*/
+              }
+              if(object.containsValue("next_turn")){
+                  System.out.println(object.toString());
+                  JSONObject data = (JSONObject)object.get("data");
+                  System.out.get
+                  if (data.get("player").toString().equals(user)) {
+                      isTurn = true;
+                  } else{
+                      isTurn = false;
                   }
               }
+              if(isTurn)
+                  System.out.println("My turn");
+              else
+                  System.out.println("Not my turn");
           } catch (Exception e){
               e.printStackTrace();
           }
@@ -253,6 +266,7 @@ class SorryClient implements Runnable {
             out.write(output);
             out.flush();
             JSONObject response = (JSONObject)parser.parse(in.readLine());
+            isTurn = true;
             return response.toString();
         } catch (Exception e){
             e.printStackTrace();
@@ -432,7 +446,9 @@ class Game{
         sorry.create_game("game","blue");
         Thread t = new Thread(sorry);
         t.start();
-        while(true){System.out.println(sorry.update_pawn("game","B1","B15", true));}
+        Thread.sleep(10000);
+        sorry.update_pawn("game","B1","B11",true);
+        while(true){}
 
     }
 
@@ -443,12 +459,13 @@ class Game2{
         SorryClient sorry = new SorryClient();
         sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
         sorry.register_user("lol");
+        sorry.join_game("red","game");
         sorry.start_game("game");
-        Thread t = new Thread();
+        Thread t = new Thread(sorry);
         t.start();
-        sorry.get_game_data("game");
-        sorry.get_game_list();
-        sorry.update_pawn("game","B1","B11",true);
+ //       sorry.get_game_data("game");
+//        sorry.get_game_list();
+     //   sorry.update_pawn("game","B1","B11",true);
         while(true){}
     }
 }
