@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.scene.image.Image;
+
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 public class Moves {
@@ -49,6 +52,11 @@ public class Moves {
 */
 
     }
+
+    public void setPiece(String pawnNumber, String pawnLocation){
+            //Converts B3, R16 to a TileButton on redRow[16] with a blue pawn
+    }
+
 
     public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
 
@@ -386,6 +394,28 @@ public class Moves {
         moves.clear();
     }
 
+    private Image getColorPicture(TileColor c){
+
+        Image rtn = null;
+
+        switch (c){
+            case RED:
+                rtn = controller.redPiece;
+                break;
+            case BLUE:
+                rtn = controller.bluePiece;
+                break;
+            case YELLOW:
+                rtn = controller.yellowPiece;
+                break;
+            case GREEN:
+                rtn = controller.greenPiece;
+                break;
+        }
+
+        return rtn;
+    }
+
     public String getId(TileColor c){
         String rtn = "-move-tile";
         switch(c){
@@ -432,6 +462,59 @@ public class Moves {
         }
 
         return  loc;
+    }
+
+    public void convertInput(String pawn,String pieceLocation){
+
+            TileColor c = null;
+
+            switch(pieceLocation.charAt(0)){
+                case 'R':
+                    c = TileColor.RED;
+                    break;
+                case 'B':
+                    c = TileColor.BLUE;
+                        break;
+                case 'Y':
+                    c = TileColor.YELLOW;
+                    break;
+                case 'G':
+                    c = TileColor.GREEN;
+                    break;
+            }
+
+            TileColor pieceColor = null;
+
+        switch(pawn.charAt(0)){
+            case 'R':
+                pieceColor= TileColor.RED;
+                break;
+            case 'B':
+                pieceColor= TileColor.BLUE;
+                break;
+            case 'Y':
+                pieceColor = TileColor.YELLOW;
+                break;
+            case 'G':
+                pieceColor = TileColor.GREEN;
+                break;
+        }
+
+            int spot = Integer.parseInt(pieceLocation.substring(1));
+
+            TileButton rtn = getColorRow(c)[spot];
+            rtn.setPieceColor(pieceColor);
+            rtn.setPicture(getColorPicture(rtn.getPieceColor()));
+            rtn.setOnAction(e -> displayMoves(rtn, rtn.getPieceColor(), controller.cardValue));
+
+            System.out.println("Piece color: " + rtn.getPieceColor());
+            System.out.println("Tile color: " + rtn.getC());
+            System.out.println("Spot: " + rtn.getSpot());
+
+    }
+
+    public void inputClearBoard(){
+
     }
 
     public ArrayList<String> getPieces(){
@@ -507,5 +590,6 @@ public class Moves {
 
         return pieces;
     }
+
 
 }
