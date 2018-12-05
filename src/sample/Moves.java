@@ -77,25 +77,20 @@ public class Moves {
         greenRow[10].setPieceColor(TileColor.YELLOW);
 
         pieces.add(greenRow[10]);
-
-        redRow[3].setPicture(controller.redPiece);
-        redRow[3].setPieceColor(TileColor.RED);
-        redRow[3].setOccupiedBy(1);
-        redRow[3].setOnAction(e -> {
-            displayMoves(redRow[3], TileColor.RED, controller.cardValue);
-        });
-
-        pieces.add(redRow[3]);
 */
+        redHome[0].setPicture(controller.redPiece);
+        redHome[0].setPieceColor(TileColor.RED);
+        redHome[0].setOccupiedBy(1);
+        redHome[0].setOnAction(e -> {
+            displayMoves(redHome[0], TileColor.RED, controller.cardValue);
+        });
     }
 
     public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
 
-        boolean addtoSpawn = false;
         TileButton spawn = null;
 
         if(newPiece.getPicture() != null && swap == false) {
-            addtoSpawn = true;
             spawn= getColorSpawn(newPiece.getPieceColor());
             spawn.setOccupiedBy(spawn.getOccupiedBy()+1);
         }
@@ -173,6 +168,31 @@ public class Moves {
 
             TileButton[] currentRow = getColorRow(origSpot.getC());
 
+            //condition for entering the home row
+            if(spot < 2 && origSpot.getC() == playerColor){
+
+                if(moveAmount < 2)
+                    moves.add(currentRow[moveAmount + 1]);
+
+               if(spot + 6 > moveAmount) {
+                   TileButton[] row = getColorHome(playerColor);
+                   moves.add(row[moveAmount - 1]);
+               }
+               return moves;
+            }
+
+            //21 is the 5th element
+            //for when the piece is inside its homerow
+            if(spot > 15){
+                TileButton[] row = getColorHome(origSpot.getC());
+                if(moveAmount + spot < 21){
+                    System.out.println(spot);
+                    moves.add(row[21 - spot + moveAmount]);
+                    return moves;
+                }
+                else if(spot != 22)
+                    moves.add(row[5]);
+            }
 
             //if the card is 4
             if(moveAmount == 4)
@@ -182,7 +202,9 @@ public class Moves {
 
 
 
-            if(moveAmount != 13  && spot < 20)  {
+
+
+            if(moveAmount != 13  && spot < 16)  {
                 //if the move goes over to the next array
                 if (moveAmount + spot > 15) {
                     TileColor nextColor = getNextRowColor(origSpot.getC(), false) ;
@@ -367,13 +389,13 @@ public class Moves {
         ArrayList<TileButton> moves= new ArrayList<TileButton>();
 
         for(int i = 0; i < redRow.length; i++){
-            if(redRow[i].getPieceColor() != playerColor)
+            if(redRow[i].getPieceColor() != playerColor && redRow[i].getPieceColor() != null)
                 moves.add(redRow[i]);
-            if(blueRow[i].getPieceColor() != playerColor)
+            if(blueRow[i].getPieceColor() != playerColor && blueRow[i].getPieceColor() != null)
                 moves.add(blueRow[i]);
-            if(yellowRow[i].getPieceColor() != playerColor)
+            if(yellowRow[i].getPieceColor() != playerColor && yellowRow[i].getPieceColor() != null)
                 moves.add(yellowRow[i]);
-            if(greenRow[i].getPieceColor() != playerColor)
+            if(greenRow[i].getPieceColor() != playerColor && greenRow[i].getPieceColor() != null)
                 moves.add(greenRow[i]);
         }
 
