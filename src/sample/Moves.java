@@ -50,23 +50,12 @@ public class Moves {
 
         //for testing purposes
 
-        /*blueRow[5].setPicture(controller.bluePiece);
-        blueRow[5].setOccupiedBy(1);
-        blueRow[5].setPieceColor(TileColor.BLUE);
-        pieces.add( blueRow[5]);
-
-        greenRow[10].setPicture(controller.yellowPiece);
-        greenRow[10].setOccupiedBy(1);
-        greenRow[10].setPieceColor(TileColor.YELLOW);
-
-        pieces.add(greenRow[10]);
+      /*  redRow[20].setPicture(controller.redPiece);
+        redRow[20].setOccupiedBy(1);
+        redRow[20].setPieceColor(TileColor.RED);
+        redRow[20].setOnAction(e -> displayMoves(redRow[20], TileColor.RED, controller.cardValue));
 */
-        //redHome[0].setPicture(controller.redPiece);
-        //redHome[0].setPieceColor(TileColor.RED);
-        //redHome[0].setOccupiedBy(1);
-        //redHome[0].setOnAction(e -> {
-           // displayMoves(redHome[0], TileColor.RED, controller.cardValue);
-        //});
+
     }
 
     public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
@@ -156,7 +145,7 @@ public class Moves {
 
                 if(moveAmount + origSpot.getSpot() + 15 < 22 && moveAmount + origSpot.getSpot() > 1) {
 
-                    //if(currentRow[moveAmount + 15].getOccupiedBy() == 0)
+                    if(currentRow[moveAmount + 15].getOccupiedBy() == 0 || currentRow[moveAmount + 15].getSpot() == 21)
 
                     moves.add(currentRow[moveAmount + 15]);
 
@@ -169,7 +158,7 @@ public class Moves {
             }
 
             //for when the piece is inside its homerow
-            if(spot > 15 && spot < 20 ){
+            if(spot > 15 && spot < 21 ){
 
                 if(moveAmount == 4){
                     moveAmount *= -1;
@@ -181,24 +170,28 @@ public class Moves {
                                 TileColor prevColor = getNextRowColor(origSpot.getC(), true);
                                 TileButton[] prevRow = getColorRow(prevColor);
 
-                                moves.add(prevRow[spot + moveAmount + 2]);
+                                if(prevRow[spot + moveAmount +2].getOccupiedBy() == 0)
+                                    moves.add(prevRow[spot + moveAmount + 2]);
                                System.out.println("Spot goes to prev row " + (spot + moveAmount + 2));
                        }
                        else{
                            System.out.println("Spot goes to current row " + (spot + moveAmount - 13));
-                           moves.add(currentRow[spot + moveAmount - 13]);
+                           if(currentRow[spot + moveAmount - 13].getOccupiedBy() == 0)
+                            moves.add(currentRow[spot + moveAmount - 13]);
                         }
                     } else{
-                        moves.add((currentRow[spot + moveAmount]));
+                        if(currentRow[spot + moveAmount].getOccupiedBy() == 0 || currentRow[spot].getSpot() == 21);
+                            moves.add((currentRow[spot + moveAmount]));
                     }
 
                     return  moves;
                 }
 
 
-                if(moveAmount + spot < 21){
-                    //System.out.println(spot);
-                  moves.add(currentRow[spot + moveAmount]);
+                if(moveAmount + spot < 22){
+                    System.out.println("HERE");
+                    if(currentRow[spot + moveAmount].getOccupiedBy() == 0 || currentRow[spot + moveAmount].getSpot() == 21)
+                        moves.add(currentRow[spot + moveAmount]);
                     return moves;
                 }
             }
