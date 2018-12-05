@@ -191,6 +191,15 @@ public class Moves {
                 if (moveAmount + spot > 15) {
                     TileColor nextColor = getNextRowColor(origSpot.getC(), false) ;
 
+                    //if the player is entering their home row next
+                    if(nextColor == playerColor){
+                        if(moveAmount + spot - 15 >= 3 ) {
+                            TileButton[] row = getColorRow(nextColor);
+                            moves.add(row[moveAmount + spot - 2]);
+                            return moves;
+                        }
+                    }
+
                     //TODO:When the player needs to go home
 
                         TileButton[] row = getColorRow(nextColor);
