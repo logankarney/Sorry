@@ -218,6 +218,7 @@ public class Controller extends Application {
 
                sorryClient.connect(inetAddress, Integer.parseInt(port));
                Thread t = new Thread(sorryClient);
+               t.start();
                sorryClient.register_user(playerName);
                sorryClient.create_game(gameName, chosenColor);
 
