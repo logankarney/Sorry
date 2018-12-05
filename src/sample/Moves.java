@@ -90,6 +90,17 @@ public class Moves {
     }
 
     public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
+
+        boolean addtoSpawn = false;
+        TileButton spawn = null;
+
+        if(newPiece.getPicture() != null && swap == false) {
+            addtoSpawn = true;
+            spawn= getColorSpawn(newPiece.getPieceColor());
+            spawn.setOccupiedBy(spawn.getOccupiedBy()+1);
+        }
+
+
         TileButton temp = new TileButton(playerColor, -10);
         if(swap && newPiece.getPieceColor() != null){
             temp = new TileButton(newPiece.getPieceColor(), newPiece.getSpot());
@@ -257,6 +268,46 @@ public class Moves {
         }
 
         return row;
+    }
+
+    public TileButton[] getColorHome(TileColor c){
+        TileButton[] row = redRow;
+        switch (c){
+            case RED:
+                row = redHome;
+                break;
+            case BLUE:
+                row = blueHome;
+                break;
+            case YELLOW:
+                row = yellowHome;
+                break;
+            case GREEN:
+                row = greenHome;
+                break;
+        }
+
+        return row;
+    }
+
+    public TileButton getColorSpawn(TileColor c){
+        TileButton spawn = spawns[0];
+        switch (c){
+            case RED:
+                spawn = spawns[0];
+                break;
+            case BLUE:
+                spawn = spawns[1];
+                break;
+            case YELLOW:
+                spawn = spawns[2];
+                break;
+            case GREEN:
+                spawn = spawns[3];
+                break;
+        }
+
+        return spawn;
     }
 
     public  void removeCss(ArrayList<TileButton> moves){
