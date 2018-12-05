@@ -75,7 +75,15 @@ public class Moves {
             temp.setPieceColor(newPiece.getPieceColor());
         }
         newPiece.setPicture(oldPiece.getPicture());
-        newPiece.setOccupiedBy(1);
+
+             newPiece.setOccupiedBy(newPiece.getOccupiedBy() +1);
+
+             //TODO:Check if this works
+             if(newPiece.getSpot() == 21) {
+                 TileButton spawn = getColorRow(newPiece.getC())[22];
+                 spawn.setOccupiedBy(spawn.getOccupiedBy() - 1);
+             }
+
         newPiece.setPieceColor(playerColor);
         newPiece.setOnAction(e -> displayMoves(newPiece, playerColor, controller.cardValue));
 
@@ -211,14 +219,15 @@ public class Moves {
 
             if(moveAmount != 13  && spot < 16)  {
                 //if the move goes over to the next array
-                if (moveAmount + spot > 15) {
+                if (moveAmount + spot > 15 ) {
                     TileColor nextColor = getNextRowColor(origSpot.getC(), false) ;
 
                     //if the player is entering their home row next
                     if(nextColor == playerColor){
                         if(moveAmount + spot - 15 >= 3 ) {
                             TileButton[] row = getColorRow(nextColor);
-                            moves.add(row[moveAmount + spot - 2]);
+                            if(moveAmount + spot -2 < 22)
+                                moves.add(row[moveAmount + spot - 2]);
                             return moves;
                         }
                     }
@@ -229,7 +238,7 @@ public class Moves {
                             moves.add(row[moveAmount + spot - 15 - 1]);
                     //if the move stays in the current row;
                 } else {
-                    if(spot < 15 && moveAmount > 0) {
+                    if(spot < 15 && moveAmount > 0 ) {
                         if(currentRow[spot + moveAmount].getOccupiedBy() == 0)
                             moves.add(currentRow[spot + moveAmount]);
                     }
