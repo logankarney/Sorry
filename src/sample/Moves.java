@@ -152,28 +152,55 @@ public class Moves {
             TileButton[] currentRow = getColorRow(origSpot.getC());
 
             //condition for entering the home row
-            if(spot < 2 && origSpot.getC() == playerColor ){
+            if(spot < 2 && origSpot.getC() == playerColor && moveAmount != 4 && moveAmount + spot > 1){
 
-                if(moveAmount + origSpot.getSpot() + 15 < 22)
+                if(moveAmount + origSpot.getSpot() + 15 < 22 && moveAmount + origSpot.getSpot() > 1) {
+
+                    //if(currentRow[moveAmount + 15].getOccupiedBy() == 0)
+
                     moves.add(currentRow[moveAmount + 15]);
 
-               //if(spot + 6 > moveAmount) {
-                   //TileButton[] row = getColorHome(playerColor);
-                   //moves.add(row[moveAmount - 1]);
-               //}
-               return moves;
+                    //if(spot + 6 > moveAmount) {
+                    //TileButton[] row = getColorHome(playerColor);
+                    //moves.add(row[moveAmount - 1]);
+                    //}
+                }
+                    return moves;
             }
 
             //for when the piece is inside its homerow
-            if(spot > 15){
-                //TileButton[] row = getColorHome(origSpot.getC());
-                if(moveAmount + spot < 22){
+            if(spot > 15 && spot < 20 ){
+
+                if(moveAmount == 4){
+                    moveAmount *= -1;
+
+                    //if the move requires them to leave the home area
+                    if(spot + moveAmount < 16){
+                        //if the move makes them back a row
+                        if(spot + moveAmount - 13 < 0){
+                                TileColor prevColor = getNextRowColor(origSpot.getC(), true);
+                                TileButton[] prevRow = getColorRow(prevColor);
+
+                                moves.add(prevRow[spot + moveAmount + 2]);
+                               System.out.println("Spot goes to prev row " + (spot + moveAmount + 2));
+                       }
+                       else{
+                           System.out.println("Spot goes to current row " + (spot + moveAmount - 13));
+                           moves.add(currentRow[spot + moveAmount - 13]);
+                        }
+                    } else{
+                        moves.add((currentRow[spot + moveAmount]));
+                    }
+
+                    return  moves;
+                }
+
+
+                if(moveAmount + spot < 21){
                     //System.out.println(spot);
                   moves.add(currentRow[spot + moveAmount]);
                     return moves;
                 }
-              //  else if(spot != 22)
-                  //  moves.add(row[5]);
             }
 
             //if the card is 4
@@ -200,7 +227,6 @@ public class Moves {
                         }
                     }
 
-                    //TODO:When the player needs to go home
 
                         TileButton[] row = getColorRow(nextColor);
                         if(row[moveAmount + spot - 15 - 1].getOccupiedBy() == 0)
