@@ -156,6 +156,10 @@ public class Controller extends Application {
 
            System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
+           System.out.println("converting");
+           //moves.convertInput(pieces.get(i), pieces.get(i + 1));
+           moves.convertInput("R3", "B14");
+
            //sends the last piece to the server
            //sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
 
@@ -406,17 +410,6 @@ public class Controller extends Application {
         setCurrentCardText(drawn.getValue() + "");
         setCurrentCardDescription(drawn.getDesc());
 
-        //ArrayList<Board> moveList = drawn.getMoves(gameLogic.currentPlayer, gameLogic.board);
-        /*for (TileButton t : moves.calculateMoves(redRow[3], TileColor.RED, drawn.getValue())) {
-                    t.setId("red-calculateMoves-tile");
-                    t.setOnAction(e -> {
-                        moves.reset();
-                    });
-                }
-*/
-        //moves.displayMoves(TileColor.RED, drawn.getValue());
-
-
         //gameLogic.currentPlayer.pawns;
         //TODO: disable drawing of cards, get valid moves
     }
@@ -458,16 +451,6 @@ public class Controller extends Application {
 
     public void setCurrentCardDescription(String newDescription){
         this.currentCardDescription.setText(newDescription);
-    }
-
-    public void changecss(){
-        //for each TileButton passed in
-        /*
-                //store in arraylist to clear later
-                change css id to $playersColor-calculateMoves-tile
-                set selected in that TileButton to true //TODO: have it change some variable to its position
-                on selected click reset every tile in arraylist, then remove them
-         */
     }
 
     public static TileButton[] getRedRow() {
