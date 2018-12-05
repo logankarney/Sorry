@@ -137,7 +137,7 @@ public class Moves {
 
 
     public void displayMoves(TileButton tile, TileColor playerColor, int moveAmount){
-
+        moves.clear();
             if(playerColor == tile.getPieceColor()) {
                 ArrayList<TileButton> moves = move(tile, playerColor, moveAmount);
                 for (TileButton m : moves) {
