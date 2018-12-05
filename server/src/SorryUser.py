@@ -1,6 +1,7 @@
 import asyncio
 import json
 import re
+#import pdb; pdb.set_trace()
 from src.SorryGame import SorryGame
 
 class SorryUser(asyncio.Protocol):
@@ -81,13 +82,12 @@ class SorryUser(asyncio.Protocol):
 	def get_game_list(self, data):
 		available_games = []
 		for game_name, game_data in self.server.current_games.items():
-			if game_data.state == "open":
-				current_users = game_data.get_players_and_colors()
-				available_games.append({
-					game_name: {
-						"players": current_users,
-					},
-				})
+			current_users = game_data.get_players_and_colors()
+			available_games.append({
+				game_name: {
+					"players": current_users,
+				},
+			})
 
 		self.send_json("game_list", {"games": available_games})
 
