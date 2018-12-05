@@ -151,7 +151,7 @@ public class Controller extends Application {
                System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
                //uncommenting this causes the server to stop updating. after receiving two messages
-               //sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
+               sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
            }
 
            System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
@@ -175,7 +175,8 @@ public class Controller extends Application {
                 try {
                     InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
                     sorryClient.connect(address,Integer.parseInt(port));
-
+                    Thread t = new Thread(sorryClient);
+                    t.start();
                     sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
 
@@ -201,7 +202,6 @@ public class Controller extends Application {
 
            try {
                InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
-
                JoinPopup.display(true, null);
                String chosenColor = JoinPopup.getChosenColor();
                gameName = JoinPopup.getGameName();
@@ -217,6 +217,7 @@ public class Controller extends Application {
                addButtons();
 
                sorryClient.connect(inetAddress, Integer.parseInt(port));
+               Thread t = new Thread(sorryClient);
                sorryClient.register_user(playerName);
                sorryClient.create_game(gameName, chosenColor);
 
