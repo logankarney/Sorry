@@ -86,7 +86,7 @@ public class Moves {
              //TODO:Check if this works
              if(newPiece.getSpot() == 21) {
                  TileButton spawn = getColorRow(newPiece.getC())[22];
-                 spawn.setOccupiedBy(spawn.getOccupiedBy() - 1);
+                 //spawn.setOccupiedBy(spawn.getOccupiedBy() - 1);
              }
 
         newPiece.setPieceColor(playerColor);
@@ -506,6 +506,8 @@ public class Moves {
             rtn.setPieceColor(pieceColor);
             rtn.setPicture(getColorPicture(rtn.getPieceColor()));
             rtn.setOnAction(e -> displayMoves(rtn, rtn.getPieceColor(), controller.cardValue));
+            rtn.setOccupiedBy(rtn.getOccupiedBy() + 1);
+
 
             System.out.println("Piece color: " + rtn.getPieceColor());
             System.out.println("Tile color: " + rtn.getC());
@@ -514,7 +516,32 @@ public class Moves {
     }
 
     public void inputClearBoard(){
-
+            for(int i = 0; i < redRow.length; i++){
+                if(redRow[i].getOccupiedBy() > 0){
+                    redRow[i].setOccupiedBy(0);
+                    redRow[i].setPieceColor(null);
+                    redRow[i].setPicture(null);
+                    redRow[i].setOnAction(e -> {});
+                }
+                if(blueRow[i].getOccupiedBy() > 0){
+                    blueRow[i].setOccupiedBy(0);
+                    blueRow[i].setPieceColor(null);
+                    blueRow[i].setPicture(null);
+                    blueRow[i].setOnAction(e -> {});
+                }
+                if(yellowRow[i].getOccupiedBy() > 0){
+                    yellowRow[i].setOccupiedBy(0);
+                    yellowRow[i].setPieceColor(null);
+                    yellowRow[i].setPicture(null);
+                    yellowRow[i].setOnAction(e -> {});
+                }
+                if(greenRow[i].getOccupiedBy() > 0){
+                    greenRow[i].setOccupiedBy(0);
+                    greenRow[i].setPieceColor(null);
+                    greenRow[i].setPicture(null);
+                    greenRow[i].setOnAction(e -> {});
+                }
+            }
     }
 
     public ArrayList<String> getPieces(){

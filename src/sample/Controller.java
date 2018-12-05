@@ -61,6 +61,8 @@ public class Controller extends Application {
 
     protected static int cardValue = 0;
 
+    private Thread t;
+
 
     @Override
     public void start(Stage stage) throws Exception{
@@ -156,14 +158,24 @@ public class Controller extends Application {
 
            System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
-           System.out.println("converting");
-           //moves.convertInput(pieces.get(i), pieces.get(i + 1));
-           moves.convertInput("R3", "B14");
-
            //sends the last piece to the server
            //sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
+           System.out.println("converting");
+
+           // moves.convertInput("R3", "B14");
 
            yourTurn.setText("");
+
+
+           //Clears the board in preparation for input
+           moves.inputClearBoard();
+
+           //Resetting the table for  its old data for now
+           for(i = 0; i < pieces.size() - 2; i+=2) {
+               System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
+               moves.convertInput(pieces.get(i), pieces.get(i + 1));
+           }
+
        }
 
         else if(e.getSource() == joinButton){
@@ -179,6 +191,8 @@ public class Controller extends Application {
                 try {
                     InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
                     sorryClient.connect(address,Integer.parseInt(port));
+                   // t = new Thread(sorryClient);
+                    //t.start();
 
                     sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
@@ -221,6 +235,9 @@ public class Controller extends Application {
                addButtons();
 
                sorryClient.connect(inetAddress, Integer.parseInt(port));
+             //   t = new Thread(sorryClient);
+               //t.start();
+
                sorryClient.register_user(playerName);
                sorryClient.create_game(gameName, chosenColor);
 
