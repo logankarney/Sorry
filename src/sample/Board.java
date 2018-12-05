@@ -6,15 +6,19 @@ public class Board {
     private Pawn[][] sorryBoard;
     private ArrayList<Pawn>[] start;
     private Player[] players;
+    private int numPlayers;
     public Board(Player[] players, int numPlayers){
         sorryBoard = new Pawn[4][21];
         this.players = players;
-        start = new ArrayList[numPlayers];
+        this.numPlayers = numPlayers;
+        start = new ArrayList[4];
         // fill in start
-        for (int i = 0; i<4; i++){
-            start[i] = new ArrayList<>(4);
-            for (int j = 0; j<4; j++){
-                start[i].add(players[i].getPawns()[j]);
+        for (int i = 0; i<numPlayers; i++){
+            if(players[i] != null) {
+                start[i] = new ArrayList<>(4);
+                for (int j = 0; j < 4; j++) {
+                    start[i].add(players[i].getPawns()[j]);
+                }
             }
         }
     }
@@ -25,17 +29,29 @@ public class Board {
     public Board(Board b){
         Pawn[][] temp = b.getSorryBoard();
         ArrayList<Pawn>[] tempStart = b.getStart();
+        Player[] tempPlayers = b.getPlayers();
+
+        numPlayers = b.getNumPlayers();
         sorryBoard = new Pawn[4][21];
         start = new ArrayList[4];
+        players = new Player[4];
+
         for (int i=0; i<4; i++){
-            this.start[i] = new ArrayList<>(4);
-            for (int j=0; j<21; j++){
-                this.sorryBoard[i][j] = temp[i][j];
-                if (j<4){
-                    this.start[i].add(tempStart[i].get(j));
+            if(players[i] != null) {
+                this.players[i] = new Player(tempPlayers[i]);
+                this.start[i] = new ArrayList<>();
+                for (int j = 0; j < 21; j++) {
+                    this.sorryBoard[i][j] = temp[i][j];
+                    if (j < tempStart[i].size()) {
+                        this.start[i].add(tempStart[i].get(j));
+                    }
                 }
             }
         }
+    }
+
+    public int getNumPlayers(){
+        return numPlayers;
     }
 
     /**
@@ -89,6 +105,7 @@ public class Board {
                 }
             }
         }
+        // Moving forward
         // Not in home row
         else if (space > 2 || p.getPlayerID() != row) {
             // normal movement within one row
@@ -137,9 +154,14 @@ public class Board {
             sorryBoard[row][space] = null;
             returnToStart(sorryBoard[newRow][newSpace]);
         }
-        resolveSlide(p);
         p.setLocation(newRow, newSpace);
         sorryBoard[newRow][newSpace] = p;
+        resolveSlide(p);
+
+        if (p.getSpace() == 20){
+            sendHome(p);
+        }
+
         return true;
     }
 
@@ -192,7 +214,16 @@ public class Board {
         return true;
     }
 
+    public void sendHome(Pawn p){
+        p.setHome(true);
+        sorryBoard[p.getPlayerID()][20] = null;
+    }
+
     public void setPawnLocation(int row, int space, Pawn p){
+        if (p.isInStart()){
+            p.setInStart(false);
+            start[p.getPlayerID()].remove(p);
+        }
         sorryBoard[row][space] = p;
         p.setLocation(row,space);
         p.setInStart(false);
@@ -202,21 +233,34 @@ public class Board {
         return players;
     }
 
+    public void setSorryBoard(Pawn[][] sorryBoard) {
+        this.sorryBoard = sorryBoard;
+    }
+
     /**
-     * Performs a slide if necessary
+     * Performs a slide if necessary and sends all pawns on the slider
+     * back to the start (including ally pawns)
      * @param p
      */
     private void resolveSlide(Pawn p){
+        // You don't slide on your own color
         if (p.getPlayerID() != p.getRow()){
+            //Short slider
             if (p.getSpace() == 0){
-                move(p, 1);
-                move(p, 1);
-                move(p, 1);
+                for (int i = 1; i<4; i++){
+                    if (sorryBoard[p.getRow()][i] != null){
+                        returnToStart(sorryBoard[p.getRow()][i]);
+                    }
+                }
+                move(p, 3);
+            // Long slider
             }else if (p.getSpace() == 8){
-                move(p, 1);
-                move(p, 1);
-                move(p, 1);
-                move(p, 1);
+                for (int i = 9; i<13; i++){
+                    if (sorryBoard[p.getRow()][i] != null){
+                        returnToStart(sorryBoard[p.getRow()][i]);
+                    }
+                }
+                move(p, 4);
             }
         }
     }
