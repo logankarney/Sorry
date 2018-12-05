@@ -27,7 +27,7 @@ public class Controller extends Application {
 
     @FXML private TableView<GameInfo> tableView = new TableView<>();
 
-    @FXML private Button hostButton, joinButton, refreshButton;
+    @FXML private Button hostButton, joinButton, refreshButton, endTurn;
 
     @FXML private Button cardButton;
 
@@ -55,7 +55,7 @@ public class Controller extends Application {
     private static SorryClient sorryClient;
     private static GameLogic gameLogic;
 
-    protected static boolean playersTurn = false;
+    protected static boolean playersTurn = false, gameStarted = false;
 
     protected static Moves moves;
 
@@ -138,6 +138,17 @@ public class Controller extends Application {
            onDraw();
         }
 
+        else if(e.getSource() == endTurn){
+           //TODO: if no move was made and its causing a problem, send a piece to move to its current position
+
+           String oldSpot = moves.oldSpot;
+           String newSpot = moves.newSpot;
+
+           System.out.println(oldSpot);
+           System.out.println(newSpot);
+           sorryClient.update_pawn(gameName, oldSpot, newSpot, true);
+       }
+
         else if(e.getSource() == joinButton){
             try {
                 GameInfo chosenGame = tableView.getSelectionModel().getSelectedItem();
@@ -154,6 +165,8 @@ public class Controller extends Application {
 
                     sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
+
+                    moves = new Moves(this);
                 } catch(Exception ex){
                     //ex.printStackTrace();
                 }
@@ -344,9 +357,10 @@ public class Controller extends Application {
         try {
             gamesList = sorryClient.get_game_list();
             System.out.println(gamesList);
-            gamesList = "error";
+            //gamesList = "error";
         } catch (Exception e){
             gamesList = "error";
+            System.out.println("Games list");
         }
 
         /*
@@ -366,6 +380,11 @@ public class Controller extends Application {
         tableView.refresh();
     }
     public void onDraw(){
+
+        if(!gameStarted){
+            gameStarted = true;
+            sorryClient.start_game(gameName);
+        }
 
        gameLogic = sorryClient.getGame();
         moves.reset();

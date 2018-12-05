@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.sun.org.apache.xml.internal.security.signature.reference.ReferenceNodeSetData;
+//import com.sun.org.apache.xml.internal.security.signature.reference.ReferenceNodeSetData;
 import javafx.util.Pair;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
@@ -51,7 +51,6 @@ class SorryClient implements Runnable {
               if(object.containsValue("next_turn")){
                   System.out.println(object.toString());
                   JSONObject data = (JSONObject)object.get("data");
-                  System.out.get
                   if (data.get("player").toString().equals(user)) {
                       isTurn = true;
                   } else{
@@ -140,8 +139,8 @@ class SorryClient implements Runnable {
      * @return a list of currently running games on the server
      */
      String get_game_list(){
-         if(!isTurn)
-             return "Not your turn";
+         //if(!isTurn)
+        //     return "Not your turn";
          try {
             JSONObject json = new JSONObject();
             JSONObject response = new JSONObject();

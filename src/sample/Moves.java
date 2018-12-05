@@ -1,12 +1,5 @@
 package sample;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import sample.Controller;
-import sample.TileButton;
-import sample.TileColor;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Moves {
@@ -15,9 +8,9 @@ public class Moves {
 
     private static ArrayList<TileButton> moves;
 
-    private static TileButton selectedPiece;
-
     private Controller controller;
+
+    protected String oldSpot = "", newSpot = "";
 
 
     public Moves(Controller controller){
@@ -46,7 +39,6 @@ public class Moves {
 
         moves = new ArrayList<TileButton>();
 
-        selectedPiece = null;
 
         //for testing purposes
 
@@ -59,6 +51,10 @@ public class Moves {
     }
 
     public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
+
+        //TODO: check if no piece was moved
+        oldSpot = convertTileButton(oldPiece);
+        newSpot = convertTileButton(newPiece);
 
         TileButton end = null;
 
@@ -129,7 +125,6 @@ public class Moves {
                 for (TileButton m : moves) {
                     m.setId(getId(playerColor));
                     m.setOnAction(e -> {
-                        selectedPiece = m;
                         reset();
                         if(moveAmount == 11)
                             movePiece(tile, m, playerColor, true);
@@ -142,7 +137,7 @@ public class Moves {
 
 
     public ArrayList<TileButton> move(TileButton origSpot, TileColor playerColor, int moveAmount){
-           // Image image = origSpot.getPicture();;
+           // Image image = oldSpot.getPicture();;
 
             int spot = origSpot.getSpot();
 
@@ -415,6 +410,29 @@ public class Moves {
             return true;
         }
         return false;
+    }
+
+    public String convertTileButton(TileButton t){
+        String loc = "";
+
+        switch (t.getC()){
+            case RED:
+                loc = "R";
+                break;
+            case BLUE:
+                loc = "B";
+                break;
+            case YELLOW:
+                loc = "Y";
+                break;
+            case GREEN:
+                loc = "G";
+                break;
+        }
+
+        loc += t.getSpot() + "";
+
+        return  loc;
     }
 
 }
