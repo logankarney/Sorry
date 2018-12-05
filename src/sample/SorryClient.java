@@ -36,34 +36,34 @@ class SorryClient implements Runnable {
 
     public void run(){
         while(true){
-          try {
-              JSONObject object = new JSONObject();
-              JSONParser parser = new JSONParser();
-              object = (JSONObject) parser.parse(in.readLine());
-              if (object.containsValue("pawn_updated")) {
-                  System.out.println("Updated!");
-                  System.out.println(object.toString());
-                  JSONObject data = (JSONObject)object.get("data");
+            try {
+                JSONObject object = new JSONObject();
+                JSONParser parser = new JSONParser();
+                object = (JSONObject) parser.parse(in.readLine());
+                if (object.containsValue("pawn_updated")) {
+                    System.out.println("Updated!");
+                    System.out.println(object.toString());
+                    JSONObject data = (JSONObject)object.get("data");
                   /*if (data.get("player").toString().equals(user)) {
                       isTurn = true;
                   }*/
-              }
-              if(object.containsValue("next_turn")){
-                  System.out.println(object.toString());
-                  JSONObject data = (JSONObject)object.get("data");
-                  if (data.get("player").toString().equals(user)) {
-                      isTurn = true;
-                  } else{
-                      isTurn = false;
-                  }
-              }
-              if(isTurn)
-                  System.out.println("My turn");
-              else
-                  System.out.println("Not my turn");
-          } catch (Exception e){
-              e.printStackTrace();
-          }
+                }
+                if(object.containsValue("next_turn")){
+                    System.out.println(object.toString());
+                    JSONObject data = (JSONObject)object.get("data");
+                    if (data.get("player").toString().equals(user)) {
+                        isTurn = true;
+                    } else{
+                        isTurn = false;
+                    }
+                }
+                if(isTurn)
+                    System.out.println("My turn");
+                else
+                    System.out.println("Not my turn");
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -85,18 +85,18 @@ class SorryClient implements Runnable {
      * @return "Connection established"
      */
     String connect(InetAddress addr, int port){
-       try {
-           connection = new Socket(addr, port);
-           out = new DataOutputStream(connection.getOutputStream());
-           in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-           //Passes off socket to a thread to listen for updates from server
-          // messageHandler m = new messageHandler(addr,port,this);
-         //  Thread t = new Thread(m);
-         //  t.start();
-           return "Connection established";
-       } catch (Exception e){
-           return "No server running at specified port or address.";
-       }
+        try {
+            connection = new Socket(addr, port);
+            out = new DataOutputStream(connection.getOutputStream());
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            //Passes off socket to a thread to listen for updates from server
+            // messageHandler m = new messageHandler(addr,port,this);
+            //  Thread t = new Thread(m);
+            //  t.start();
+            return "Connection established";
+        } catch (Exception e){
+            return "No server running at specified port or address.";
+        }
 
     }
 
@@ -138,9 +138,8 @@ class SorryClient implements Runnable {
      *
      * @return a list of currently running games on the server
      */
-     String get_game_list(){
-         //if(!isTurn)
-        //     return "Not your turn";
+    String get_game_list(){
+
          try {
             JSONObject json = new JSONObject();
             JSONObject response = new JSONObject();
@@ -197,17 +196,17 @@ class SorryClient implements Runnable {
         } catch (Exception e){
             return "error";
         }
-     }
+    }
 
     /**
      * @param color The color the user desires to be
      * @param name user name
      * @return string stating if user has successfully joined the game
      */
-     String join_game(String color, String name){
-         if (gameStarted)
-             return "Game is already in session";
-         try {
+    String join_game(String color, String name){
+        if (gameStarted)
+            return "Game is already in session";
+        try {
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","join_game");
@@ -243,17 +242,17 @@ class SorryClient implements Runnable {
             return "error";
         }
 
-     }
+    }
 
     /**
      * @param name The name of the game to be created
      * @param color The desired color of the host
      * @return response from server
      */
-     String create_game(String name, String color){
-         if(gameStarted)
-             return "Game is already in session";
-         try{
+    String create_game(String name, String color){
+        if(gameStarted)
+            return "Game is already in session";
+        try{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             JSONParser parser = new JSONParser();
@@ -312,7 +311,7 @@ class SorryClient implements Runnable {
      */
     String update_pawn(String game, String pawn, String position, boolean end){
         if(!isTurn)
-            return "";
+            return "This is not your turn";
         try{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
@@ -447,6 +446,8 @@ class Game{
         t.start();
         Thread.sleep(10000);
         sorry.update_pawn("game","B1","B11",true);
+        Thread.sleep(10000);
+        System.out.println(sorry.update_pawn("game","B1","B11",true));
         while(true){}
 
     }
@@ -458,16 +459,14 @@ class Game2{
         SorryClient sorry = new SorryClient();
         sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
         sorry.register_user("lol");
+        System.out.println(sorry.get_game_list());
         sorry.join_game("red","game");
         sorry.start_game("game");
         Thread t = new Thread(sorry);
         t.start();
- //       sorry.get_game_data("game");
+        //       sorry.get_game_data("game");
 //        sorry.get_game_list();
-     //   sorry.update_pawn("game","B1","B11",true);
+        //   sorry.update_pawn("game","B1","B11",true);
         while(true){}
     }
 }
-
-
-
