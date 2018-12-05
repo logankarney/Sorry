@@ -74,6 +74,7 @@ public class Moves {
 
              newPiece.setOccupiedBy(newPiece.getOccupiedBy() +1);
 
+
              //TODO:Check if this works
              if(newPiece.getSpot() == 21) {
                  TileButton spawn = getColorRow(newPiece.getC())[22];
@@ -430,9 +431,50 @@ public class Moves {
                 break;
         }
 
-        loc += t.getSpot() + "";
-
         return  loc;
+    }
+
+    public ArrayList<String> getPieces(){
+        ArrayList<String> pieces = new ArrayList<>();
+
+        int redCounter = 1, blueCounter = 1, yellowCounter = 1, greenCounter = 1;
+
+        for(int i = 0; i < redRow.length; i++){
+            if(redRow[i].getOccupiedBy() > 0){
+                for(int j = 0; j < redRow[i].getOccupiedBy(); j++){
+
+                        String piece = convertTileButton(redRow[i]) + redCounter;
+
+                        //Tile's location
+                        String pos = convertTileButton(redRow[i]) + redRow[i].getSpot();
+
+                        pieces.add(piece);
+                        pieces.add(pos);
+                        redCounter++;
+
+                }
+            }
+
+            if(blueRow[i].getOccupiedBy() > 0){
+                for(int j = 0; j < blueRow[i].getOccupiedBy(); j++){
+
+                }
+            }
+
+            if(yellowRow[i].getOccupiedBy() > 0){
+                for(int j = 0; j < yellowRow[i].getOccupiedBy(); j++){
+
+                }
+            }
+
+            if(greenRow[i].getOccupiedBy() > 0){
+                for(int j = 0; j < greenRow[i].getOccupiedBy(); j++){
+
+                }
+            }
+        }
+
+        return pieces;
     }
 
 }

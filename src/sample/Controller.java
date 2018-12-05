@@ -139,14 +139,27 @@ public class Controller extends Application {
         }
 
         else if(e.getSource() == endTurn){
-           //TODO: if no move was made and its causing a problem, send a piece to move to its current position
 
-           String oldSpot = moves.oldSpot;
-           String newSpot = moves.newSpot;
+           //String oldSpot = moves.oldSpot;
+           //String newSpot = moves.newSpot;
 
-           System.out.println(oldSpot);
-           System.out.println(newSpot);
-           sorryClient.update_pawn(gameName, oldSpot, newSpot, true);
+           ArrayList<String> pieces = moves.getPieces();
+
+           int i;
+
+           for(i = 0; i < pieces.size() - 2; i+=2) {
+               System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
+
+               //uncommenting this causes the server to stop updating. after receiving two messages
+               //sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
+           }
+
+           System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
+
+           //sends the last piece to the server
+           //sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
+
+           yourTurn.setText("");
        }
 
         else if(e.getSource() == joinButton){
