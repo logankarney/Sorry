@@ -443,6 +443,7 @@ public class Moves {
             if(redRow[i].getOccupiedBy() > 0){
                 for(int j = 0; j < redRow[i].getOccupiedBy(); j++){
 
+                        //Piece #
                         String piece = convertTileButton(redRow[i]) + redCounter;
 
                         //Tile's location
@@ -458,17 +459,47 @@ public class Moves {
             if(blueRow[i].getOccupiedBy() > 0){
                 for(int j = 0; j < blueRow[i].getOccupiedBy(); j++){
 
+                    //Piece #
+                    String piece = convertTileButton(blueRow[i]) + blueCounter;
+
+                    //Tile's location
+                    String pos = convertTileButton(blueRow[i]) + blueRow[i].getSpot();
+
+                    pieces.add(piece);
+                    pieces.add(pos);
+                    blueCounter++;
+
                 }
             }
 
             if(yellowRow[i].getOccupiedBy() > 0){
                 for(int j = 0; j < yellowRow[i].getOccupiedBy(); j++){
 
+                    //Piece #
+                    String piece = convertTileButton(yellowRow[i]) + yellowCounter;
+
+                    //Tile's location
+                    String pos = convertTileButton(yellowRow[i]) + yellowRow[i].getSpot();
+
+                    pieces.add(piece);
+                    pieces.add(pos);
+                    yellowCounter++;
+
                 }
             }
 
             if(greenRow[i].getOccupiedBy() > 0){
                 for(int j = 0; j < greenRow[i].getOccupiedBy(); j++){
+
+                    //Piece #
+                    String piece = convertTileButton(greenRow[i]) + greenCounter;
+
+                    //Tile's location
+                    String pos = convertTileButton(greenRow[i]) + greenRow[i].getSpot();
+
+                    pieces.add(piece);
+                    pieces.add(pos);
+                    greenCounter++;
 
                 }
             }
