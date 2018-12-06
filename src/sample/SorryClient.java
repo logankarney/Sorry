@@ -244,9 +244,9 @@ class SorryClient  {
      * @param name The name of the game to get data from
      * @return String representing the JSON data of the currently running game
      */
-    static String get_game_data(String name){
+    static void get_game_data(String name){
         if(gameWon)
-            return "The game has ended";
+            return;
         try{
             out.flush();
             JSONObject json = new JSONObject();
@@ -258,17 +258,17 @@ class SorryClient  {
             byte[] output = json.toString().getBytes();
             out.write(output);
             out.flush();
-            JSONObject response = null;
+           /* JSONObject response = null;
             while(true){
                 response = (JSONObject)parser.parse(in.readLine());
                 if(response.containsValue("game_data")){
                     break;
                 }
             }
-            return response.toString();
+            return response.toString();*/
         } catch (Exception e){
             e.printStackTrace();
-            return "error";
+            //return "error";
         }
     }
 
@@ -395,11 +395,13 @@ class messageHandler implements Runnable{
                 JSONObject object;
                 JSONParser parser = new JSONParser();
                 object = (JSONObject) parser.parse(in.readLine());
+                if(object.containsValue("game_list"))
+                    System.out.println(object);
                 if (object.containsValue("pawn_updated")) {
                     System.out.println("Updated!");
                     //System.out.println(object.toString());
                     JSONObject data = (JSONObject)object.get("data");
-                    System.out.println(data.toString());
+                    //System.out.println(data.toString());
                     //temp = data.get("player").toString();
                     updates.add(data.toString());
                   /*if (data.get("player").toString().equals(user)) {
@@ -409,7 +411,7 @@ class messageHandler implements Runnable{
                 if(object.containsValue("next_turn")){
                   //  System.out.println(object.toString());
                     JSONObject data = (JSONObject)object.get("data");
-                    System.out.println(data.toString());
+                    //System.out.println(data.toString());
                     String next_player = data.get("player").toString();
                     //System.out.println(data.get("player").toString());
                    // System.out.println(SorryClient.user);
@@ -427,8 +429,8 @@ class messageHandler implements Runnable{
                     }
                 }
                 if(SorryClient.isTurn) {
-                    System.out.println("My turn");
-                    System.out.println(updates);
+                    //System.out.println("My turn");
+                  //  System.out.println(updates);
                 }else {
                     System.out.println("Not my turn");
                     SorryClient.controller.updateClient(updates);
@@ -450,13 +452,14 @@ class Game{
         sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
         sorry.register_user("Tanner");
         sorry.create_game("game","blue");
-        Thread.sleep(10000);
-        sorry.update_pawn("game","B1","B11",false);
+        Thread.sleep(5000);
+     //   sorry.get_game_list();
+      /*  sorry.update_pawn("game","B1","B11",false);
         Thread.sleep(10000);
         sorry.update_pawn("game","B1","B11",true);
         Thread.sleep(100000);
         sorry.update_pawn("game","B2","B9",true);
-        while(true){}
+        while(true){}*/
 
     }
 
