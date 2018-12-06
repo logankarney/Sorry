@@ -201,7 +201,7 @@ public class Controller extends Application {
                     sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
 
-                    gameStarted = true;
+                    gameStarted = false;
                     playersTurn = false;
                     hasDrawn = true;
 
