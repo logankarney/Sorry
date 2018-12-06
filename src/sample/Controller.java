@@ -289,27 +289,16 @@ public class Controller extends Application {
 
     }
 
-    public void setPlayersTurn(String color){
+    public void setPlayerTurn(String name){
 
-        TileColor currentColorsTurn = null;
-
-        switch(color.toLowerCase()){
-            case "red":
-                currentColorsTurn = TileColor.RED;
-                break;
-            case "blue":
-                currentColorsTurn = TileColor.BLUE;
-                break;
-            case "yellow":
-                currentColorsTurn = TileColor.YELLOW;
-                break;
-            case "green":
-                currentColorsTurn = TileColor.GREEN;
-                break;
-        }
-        if(playerColor == currentColorsTurn) {
+        if(playerName.equals(name)) {
             this.playersTurn = true;
             this.hasDrawn = false;
+        }
+
+        else{
+            this.playersTurn = false;
+            this.hasDrawn = true;
         }
     }
 
