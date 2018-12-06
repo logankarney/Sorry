@@ -298,7 +298,7 @@ class SorryClient  {
             byte[] output = json.toString().getBytes();
             out.write(output);
             out.flush();
-            Thread.sleep(3000);
+           // Thread.sleep(3000);
             /*while (true) {
                 response = (JSONObject) parser.parse(in.readLine());
                 if(response.containsValue("next_turn"))
@@ -410,7 +410,7 @@ class messageHandler implements Runnable{
                   //  System.out.println(object.toString());
                     JSONObject data = (JSONObject)object.get("data");
                     System.out.println(data.toString());
-                    String next_player = data.get("player").toString();
+                    //String next_player = data.get("player").toString();
                     //System.out.println(data.get("player").toString());
                    // System.out.println(SorryClient.user);
                    /* System.out.println(updates);
