@@ -14,6 +14,8 @@ public class Moves {
 
     private Controller controller;
 
+    protected static TileColor color = null;
+
 
     public Moves(Controller controller){
         this.controller = controller;
@@ -638,5 +640,16 @@ public class Moves {
         return pieces;
     }
 
+
+    public static void main(String[] args){
+        String temp ="game:game,new_position:B11,pawn:B4,player:Tanner";
+        String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
+        System.out.println(loc);
+
+        String pawn = temp.substring(temp.indexOf("pawn:") + 5, temp.indexOf(",player"));
+
+        System.out.println( pawn);
+
+    }
 
 }

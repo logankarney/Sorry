@@ -172,6 +172,22 @@ public class Controller extends Application {
 
                 if(chosenColor.equals("none"))
                     return;
+                else{
+                    switch(chosenColor){
+                        case "Red":
+                            playerColor = TileColor.RED;
+                            break;
+                        case "Blue":
+                            playerColor = TileColor.BLUE;
+                            break;
+                        case "Yellow":
+                            playerColor = TileColor.YELLOW;
+                            break;
+                        case "Green":
+                            playerColor = TileColor.GREEN;
+                            break;
+                    }
+                }
 
                 try {
                     InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
@@ -180,6 +196,7 @@ public class Controller extends Application {
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
 
                     moves = new Moves(this);
+                    moves.color = playerColor;
                 } catch(Exception ex){
                     //ex.printStackTrace();
                 }
@@ -206,6 +223,22 @@ public class Controller extends Application {
                gameName = JoinPopup.getGameName();
                if(chosenColor.equals("none") || gameName.equals("no game name chosen"))
                    return;
+                else{
+                   switch(chosenColor){
+                       case "Red":
+                           playerColor = TileColor.RED;
+                           break;
+                       case "Blue":
+                           playerColor = TileColor.BLUE;
+                           break;
+                       case "Yellow":
+                           playerColor = TileColor.YELLOW;
+                           break;
+                       case "Green":
+                           playerColor = TileColor.GREEN;
+                           break;
+                   }
+               }
 
 
                //sorryClient.register_user(playerName);
@@ -220,6 +253,7 @@ public class Controller extends Application {
                sorryClient.create_game(gameName, chosenColor);
 
                moves = new Moves(this);
+               moves.color = playerColor;
 
            } catch(Exception ex){
                //e.printStacktrace();
