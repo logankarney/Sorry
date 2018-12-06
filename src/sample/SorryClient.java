@@ -377,6 +377,10 @@ class SorryClient  {
         controller.updateClient(updates);
     }
 
+    static void setPlayerTurn(String name){
+        controller.setPlayerTurn(name);
+    }
+
 
 
 }
@@ -424,7 +428,8 @@ class messageHandler implements Runnable{
                   //  System.out.println(object.toString());
                     JSONObject data = (JSONObject)object.get("data");
                     System.out.println(data.toString());
-                    //String next_player = data.get("player").toString();
+                    String next_player = data.get("player").toString();
+                    SorryClient.setPlayerTurn(next_player);
                     //System.out.println(data.get("player").toString());
                    // System.out.println(SorryClient.user);
                    /* System.out.println(updates);
