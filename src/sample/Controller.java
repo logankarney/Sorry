@@ -289,10 +289,28 @@ public class Controller extends Application {
 
     }
 
-    public void setPlayersTurn(boolean playersTurn){
-        this.playersTurn = true;
-        this.hasDrawn = false;
-        cardButton.setDisable(false);
+    public void setPlayersTurn(String color){
+
+        TileColor currentColorsTurn = null;
+
+        switch(color.toLowerCase()){
+            case "red":
+                currentColorsTurn = TileColor.RED;
+                break;
+            case "blue":
+                currentColorsTurn = TileColor.BLUE;
+                break;
+            case "yellow":
+                currentColorsTurn = TileColor.YELLOW;
+                break;
+            case "green":
+                currentColorsTurn = TileColor.GREEN;
+                break;
+        }
+        if(playerColor == currentColorsTurn) {
+            this.playersTurn = true;
+            this.hasDrawn = false;
+        }
     }
 
     public void updateClient(String message){
