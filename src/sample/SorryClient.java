@@ -298,6 +298,7 @@ class SorryClient  {
             byte[] output = json.toString().getBytes();
             out.write(output);
             out.flush();
+            Thread.sleep(3000);
             /*while (true) {
                 response = (JSONObject) parser.parse(in.readLine());
                 if(response.containsValue("next_turn"))
