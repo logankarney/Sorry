@@ -255,13 +255,17 @@ public class Controller extends Application {
 
                addButtons();
 
+               moves = new Moves(this);
+               moves.color = playerColor;
+               playersTurn = true;
+
                sorryClient.connect(inetAddress, Integer.parseInt(port));
                sorryClient.register_user(playerName);
                sorryClient.create_game(gameName, chosenColor);
 
-               moves = new Moves(this);
-               moves.color = playerColor;
                playersTurn = true;
+               hasDrawn = false;
+
 
            } catch(Exception ex){
                //e.printStacktrace();
