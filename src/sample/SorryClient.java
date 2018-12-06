@@ -18,8 +18,8 @@ class SorryClient  {
 
 
     Socket connection;
-    DataOutputStream out;
-    BufferedReader in;
+    static DataOutputStream out;
+    static BufferedReader in;
     static GameLogic game;
     static boolean gameStarted;
     static boolean isTurn;
@@ -244,7 +244,7 @@ class SorryClient  {
      * @param name The name of the game to get data from
      * @return String representing the JSON data of the currently running game
      */
-    String get_game_data(String name){
+    static String get_game_data(String name){
         if(gameWon)
             return "The game has ended";
         try{
@@ -399,15 +399,17 @@ class messageHandler implements Runnable{
                     //System.out.println(object.toString());
                     JSONObject data = (JSONObject)object.get("data");
                     System.out.println(data.toString());
-                    temp = data.get("player").toString();
+                    //temp = data.get("player").toString();
                     updates.add(data.toString());
                   /*if (data.get("player").toString().equals(user)) {
                       isTurn = true;
                   }*/
                 }
                 if(object.containsValue("next_turn")){
-                    System.out.println(object.toString());
+                  //  System.out.println(object.toString());
                     JSONObject data = (JSONObject)object.get("data");
+                    System.out.println(data.toString());
+                    String next_player = data.get("player").toString();
                     //System.out.println(data.get("player").toString());
                    // System.out.println(SorryClient.user);
                    /* System.out.println(updates);
@@ -428,6 +430,7 @@ class messageHandler implements Runnable{
                     System.out.println(updates);
                 }else {
                     System.out.println("Not my turn");
+                    SorryClient.controller.updateClient(updates);
                     updates.clear();
                     System.out.println(updates);
                 }
@@ -450,6 +453,8 @@ class Game{
         sorry.update_pawn("game","B1","B11",false);
         Thread.sleep(10000);
         sorry.update_pawn("game","B1","B11",true);
+        Thread.sleep(100000);
+        sorry.update_pawn("game","B2","B9",true);
         while(true){}
 
     }
