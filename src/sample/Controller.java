@@ -58,6 +58,8 @@ public class Controller extends Application {
 
     protected static boolean playersTurn = false, hasDrawn = false, gameStarted = false;
 
+    private static boolean isHost = false;
+
     protected static Moves moves;
 
     protected static int cardValue = 0;
@@ -168,6 +170,7 @@ public class Controller extends Application {
                 GameInfo chosenGame = tableView.getSelectionModel().getSelectedItem();
                 JoinPopup.display(false, chosenGame.getPlayers());
 
+                gameName = chosenGame.getLobbyName();
                 String chosenColor = JoinPopup.getChosenColor();
 
                 if(chosenColor.equals("none"))
@@ -202,6 +205,7 @@ public class Controller extends Application {
                     sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
 
+                    //TODO: MAYBE CHANGE THIS LOGIC
                     gameStarted = false;
                     playersTurn = false;
                     hasDrawn = true;
@@ -225,6 +229,9 @@ public class Controller extends Application {
        else if(e.getSource() == hostButton) {
 
            try {
+
+               isHost = true;
+
                InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
                JoinPopup.display(true, null);
                String chosenColor = JoinPopup.getChosenColor();
@@ -308,7 +315,7 @@ public class Controller extends Application {
 
     public void updateClient(ArrayList<String> messages){
         Platform.runLater(() -> {
-            if (gameStarted) {
+            if (gameStarted && messages.size() > 0) {
                 moves.inputClearBoard();
             }
             //TODO: parse message
@@ -480,7 +487,8 @@ public class Controller extends Application {
 
         if(!gameStarted){
             gameStarted = true;
-            sorryClient.start_game(gameName);
+            if(isHost)
+                sorryClient.start_game(gameName);
         }
 
         if(!hasDrawn) {
