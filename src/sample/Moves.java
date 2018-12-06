@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.scene.image.Image;
+
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 public class Moves {
@@ -9,8 +12,6 @@ public class Moves {
     private static ArrayList<TileButton> moves;
 
     private Controller controller;
-
-    protected String oldSpot = "", newSpot = "";
 
 
     public Moves(Controller controller){
@@ -50,11 +51,12 @@ public class Moves {
 
     }
 
-    public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
+    public void setPiece(String pawnNumber, String pawnLocation){
+            //Converts B3, R16 to a TileButton on redRow[16] with a blue pawn
+    }
 
-        //TODO: check if no piece was moved
-        oldSpot = convertTileButton(oldPiece);
-        newSpot = convertTileButton(newPiece);
+
+    public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
 
         TileButton end = null;
 
@@ -78,7 +80,7 @@ public class Moves {
              //TODO:Check if this works
              if(newPiece.getSpot() == 21) {
                  TileButton spawn = getColorRow(newPiece.getC())[22];
-                 spawn.setOccupiedBy(spawn.getOccupiedBy() - 1);
+                 //spawn.setOccupiedBy(spawn.getOccupiedBy() - 1);
              }
 
         newPiece.setPieceColor(playerColor);
@@ -105,14 +107,10 @@ public class Moves {
             if(newPiece.getC() != newPiece.getPieceColor()) {
                 TileButton[] row = getColorRow(newPiece.getC());
 
-               /* //removes any piece thats on the slider CURRENT BUG
-                for(int i = newPiece.getSpot(); i < newPiece.getSpot() + 3; i++){
-                    if(row[i].getPicture() != null){
-                        row[i].setPicture(null);
-                        row[i].setPieceColor(null);
-                        row[i].setOccupiedBy(0);
-                    }
-                }*/
+                //removes any piece thats on the slider
+                for(int i = newPiece.getSpot() + 1; i < newPiece.getSpot() + 3; i++){
+                    removePiece(row[i]);
+                }
 
                 movePiece(newPiece, row[newPiece.getSpot() + 3], newPiece.getPieceColor(), false);
             }
@@ -386,6 +384,28 @@ public class Moves {
         moves.clear();
     }
 
+    private Image getColorPicture(TileColor c){
+
+        Image rtn = null;
+
+        switch (c){
+            case RED:
+                rtn = controller.redPiece;
+                break;
+            case BLUE:
+                rtn = controller.bluePiece;
+                break;
+            case YELLOW:
+                rtn = controller.yellowPiece;
+                break;
+            case GREEN:
+                rtn = controller.greenPiece;
+                break;
+        }
+
+        return rtn;
+    }
+
     public String getId(TileColor c){
         String rtn = "-move-tile";
         switch(c){
@@ -432,6 +452,93 @@ public class Moves {
         }
 
         return  loc;
+    }
+
+    public void convertInput(String pawn,String pieceLocation){
+
+            TileColor c = null;
+
+            switch(pieceLocation.charAt(0)){
+                case 'R':
+                    c = TileColor.RED;
+                    break;
+                case 'B':
+                    c = TileColor.BLUE;
+                        break;
+                case 'Y':
+                    c = TileColor.YELLOW;
+                    break;
+                case 'G':
+                    c = TileColor.GREEN;
+                    break;
+            }
+
+            TileColor pieceColor = null;
+
+        switch(pawn.charAt(0)){
+            case 'R':
+                pieceColor= TileColor.RED;
+                break;
+            case 'B':
+                pieceColor= TileColor.BLUE;
+                break;
+            case 'Y':
+                pieceColor = TileColor.YELLOW;
+                break;
+            case 'G':
+                pieceColor = TileColor.GREEN;
+                break;
+        }
+
+            int spot = Integer.parseInt(pieceLocation.substring(1));
+
+            TileButton rtn = getColorRow(c)[spot];
+            rtn.setPieceColor(pieceColor);
+            rtn.setPicture(getColorPicture(rtn.getPieceColor()));
+            rtn.setOnAction(e -> displayMoves(rtn, rtn.getPieceColor(), controller.cardValue));
+            rtn.setOccupiedBy(rtn.getOccupiedBy() + 1);
+
+
+            System.out.println("Piece color: " + rtn.getPieceColor());
+            System.out.println("Tile color: " + rtn.getC());
+            System.out.println("Spot: " + rtn.getSpot());
+
+    }
+
+    private void removePiece(TileButton t){
+        t.setOccupiedBy(0);
+        t.setPieceColor(null);
+        t.setPicture(null);
+        t.setOnAction(e -> {});
+    }
+
+    public void inputClearBoard(){
+            for(int i = 0; i < redRow.length; i++){
+                if(redRow[i].getOccupiedBy() > 0){
+                    redRow[i].setOccupiedBy(0);
+                    redRow[i].setPieceColor(null);
+                    redRow[i].setPicture(null);
+                    redRow[i].setOnAction(e -> {});
+                }
+                if(blueRow[i].getOccupiedBy() > 0){
+                    blueRow[i].setOccupiedBy(0);
+                    blueRow[i].setPieceColor(null);
+                    blueRow[i].setPicture(null);
+                    blueRow[i].setOnAction(e -> {});
+                }
+                if(yellowRow[i].getOccupiedBy() > 0){
+                    yellowRow[i].setOccupiedBy(0);
+                    yellowRow[i].setPieceColor(null);
+                    yellowRow[i].setPicture(null);
+                    yellowRow[i].setOnAction(e -> {});
+                }
+                if(greenRow[i].getOccupiedBy() > 0){
+                    greenRow[i].setOccupiedBy(0);
+                    greenRow[i].setPieceColor(null);
+                    greenRow[i].setPicture(null);
+                    greenRow[i].setOnAction(e -> {});
+                }
+            }
     }
 
     public ArrayList<String> getPieces(){
@@ -507,5 +614,6 @@ public class Moves {
 
         return pieces;
     }
+
 
 }
