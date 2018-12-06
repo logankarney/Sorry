@@ -646,11 +646,12 @@ public class Moves {
 
 
     public static void main(String[] args){
-        String temp ="game:game,new_position:B11,pawn:B4,player:Tanner";
-        String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
+        String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
+        //String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
+        String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
         System.out.println(loc);
 
-        String pawn = temp.substring(temp.indexOf("pawn:") + 5, temp.indexOf(",player"));
+        String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
 
         System.out.println( pawn);
 
