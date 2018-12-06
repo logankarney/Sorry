@@ -51,9 +51,6 @@ public class Moves {
 
     }
 
-    public void setPiece(String pawnNumber, String pawnLocation){
-            //Converts B3, R16 to a TileButton on redRow[16] with a blue pawn
-    }
 
 
     public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
@@ -109,7 +106,8 @@ public class Moves {
 
                 //removes any piece thats on the slider
                 for(int i = newPiece.getSpot() + 1; i < newPiece.getSpot() + 3; i++){
-                    removePiece(row[i]);
+                    if(row[i].getPicture() != null)
+                        removePiece(row[i]);
                 }
 
                 movePiece(newPiece, row[newPiece.getSpot() + 3], newPiece.getPieceColor(), false);
@@ -433,25 +431,32 @@ public class Moves {
         return false;
     }
 
-    public String convertTileButton(TileButton t){
-        String loc = "";
+    public String convertTileButton(TileButton t, boolean piece){
+        String rtn = "";
 
-        switch (t.getC()){
+        TileColor switcher = t.getC();
+
+        //System.out.println("Current switching the " + t.getC() + " row, at spot " + t.getSpot() + ", containing a " + piece);
+
+        if(t.getPieceColor() != null && piece)
+            switcher = t.getPieceColor();
+
+        switch (switcher){
             case RED:
-                loc = "R";
+                rtn = "R";
                 break;
             case BLUE:
-                loc = "B";
+                rtn = "B";
                 break;
             case YELLOW:
-                loc = "Y";
+                rtn = "Y";
                 break;
             case GREEN:
-                loc = "G";
+                rtn = "G";
                 break;
         }
 
-        return  loc;
+        return  rtn;
     }
 
     public void convertInput(String pawn,String pieceLocation){
@@ -506,10 +511,14 @@ public class Moves {
     }
 
     private void removePiece(TileButton t){
+        TileButton spawn = getColorRow(t.getPieceColor())[22];
+        spawn.setOccupiedBy(spawn.getOccupiedBy() + 1);
+
         t.setOccupiedBy(0);
         t.setPieceColor(null);
         t.setPicture(null);
         t.setOnAction(e -> {});
+
     }
 
     public void inputClearBoard(){
@@ -551,10 +560,10 @@ public class Moves {
                 for(int j = 0; j < redRow[i].getOccupiedBy(); j++){
 
                         //Piece #
-                        String piece = convertTileButton(redRow[i]) + redCounter;
+                        String piece = convertTileButton(redRow[i], true) + redCounter;
 
                         //Tile's location
-                        String pos = convertTileButton(redRow[i]) + redRow[i].getSpot();
+                        String pos = convertTileButton(redRow[i], false) + redRow[i].getSpot();
 
                         pieces.add(piece);
                         pieces.add(pos);
@@ -567,10 +576,10 @@ public class Moves {
                 for(int j = 0; j < blueRow[i].getOccupiedBy(); j++){
 
                     //Piece #
-                    String piece = convertTileButton(blueRow[i]) + blueCounter;
+                    String piece = convertTileButton(blueRow[i], true) + blueCounter;
 
                     //Tile's location
-                    String pos = convertTileButton(blueRow[i]) + blueRow[i].getSpot();
+                    String pos = convertTileButton(blueRow[i], false) + blueRow[i].getSpot();
 
                     pieces.add(piece);
                     pieces.add(pos);
@@ -583,10 +592,10 @@ public class Moves {
                 for(int j = 0; j < yellowRow[i].getOccupiedBy(); j++){
 
                     //Piece #
-                    String piece = convertTileButton(yellowRow[i]) + yellowCounter;
+                    String piece = convertTileButton(yellowRow[i], true) + yellowCounter;
 
                     //Tile's location
-                    String pos = convertTileButton(yellowRow[i]) + yellowRow[i].getSpot();
+                    String pos = convertTileButton(yellowRow[i], false) + yellowRow[i].getSpot();
 
                     pieces.add(piece);
                     pieces.add(pos);
@@ -599,10 +608,10 @@ public class Moves {
                 for(int j = 0; j < greenRow[i].getOccupiedBy(); j++){
 
                     //Piece #
-                    String piece = convertTileButton(greenRow[i]) + greenCounter;
+                    String piece = convertTileButton(greenRow[i], true) + greenCounter;
 
                     //Tile's location
-                    String pos = convertTileButton(greenRow[i]) + greenRow[i].getSpot();
+                    String pos = convertTileButton(greenRow[i], false) + greenRow[i].getSpot();
 
                     pieces.add(piece);
                     pieces.add(pos);
