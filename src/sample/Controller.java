@@ -27,7 +27,7 @@ public class Controller extends Application {
 
     @FXML private TableView<GameInfo> tableView = new TableView<>();
 
-    @FXML private Button hostButton, joinButton, refreshButton;
+    @FXML private Button hostButton, joinButton, refreshButton, endTurn;
 
     @FXML private Button cardButton;
 
@@ -55,7 +55,7 @@ public class Controller extends Application {
     private static SorryClient sorryClient;
     private static GameLogic gameLogic;
 
-    protected static boolean playersTurn = false;
+    protected static boolean playersTurn = false, gameStarted = false;
 
     protected static Moves moves;
 
@@ -138,6 +138,29 @@ public class Controller extends Application {
            onDraw();
         }
 
+        else if(e.getSource() == endTurn){
+
+           //String oldSpot = moves.oldSpot;
+           //String newSpot = moves.newSpot;
+
+           ArrayList<String> pieces = moves.getPieces();
+
+           int i;
+
+           for(i = 0; i < pieces.size() - 2; i+=2) {
+               System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
+
+               sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
+           }
+
+           System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
+
+           //sends the last piece to the server
+            sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
+           yourTurn.setText("");
+           System.out.println(moves.gameWon);
+       }
+
         else if(e.getSource() == joinButton){
             try {
                 GameInfo chosenGame = tableView.getSelectionModel().getSelectedItem();
@@ -151,9 +174,10 @@ public class Controller extends Application {
                 try {
                     InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
                     sorryClient.connect(address,Integer.parseInt(port));
-
                     sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
+
+                    moves = new Moves(this);
                 } catch(Exception ex){
                     //ex.printStackTrace();
                 }
@@ -175,7 +199,6 @@ public class Controller extends Application {
 
            try {
                InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
-
                JoinPopup.display(true, null);
                String chosenColor = JoinPopup.getChosenColor();
                gameName = JoinPopup.getGameName();
@@ -216,6 +239,12 @@ public class Controller extends Application {
             removeStartButton();
        }*/
 
+    }
+
+    public void updateClient(String message){
+        moves.inputClearBoard();
+        //TODO: parse message
+        //moves.convertInput(pawn, location);
     }
 
     /** saving for dealing with pieces later **/
@@ -344,9 +373,10 @@ public class Controller extends Application {
         try {
             gamesList = sorryClient.get_game_list();
             System.out.println(gamesList);
-            gamesList = "error";
+            //gamesList = "error";
         } catch (Exception e){
             gamesList = "error";
+            System.out.println("Games list");
         }
 
         /*
@@ -366,6 +396,11 @@ public class Controller extends Application {
         tableView.refresh();
     }
     public void onDraw(){
+
+        if(!gameStarted){
+            gameStarted = true;
+            sorryClient.start_game(gameName);
+        }
 
        gameLogic = sorryClient.getGame();
         moves.reset();

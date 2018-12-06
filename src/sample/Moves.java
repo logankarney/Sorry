@@ -1,12 +1,7 @@
 package sample;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import sample.Controller;
-import sample.TileButton;
-import sample.TileColor;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Moves {
@@ -15,7 +10,7 @@ public class Moves {
 
     private static ArrayList<TileButton> moves;
 
-    private static TileButton selectedPiece;
+    protected static boolean gameWon = false;
 
     private Controller controller;
 
@@ -46,7 +41,6 @@ public class Moves {
 
         moves = new ArrayList<TileButton>();
 
-        selectedPiece = null;
 
         //for testing purposes
 
@@ -57,6 +51,8 @@ public class Moves {
 */
 
     }
+
+
 
     public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
 
@@ -78,10 +74,11 @@ public class Moves {
 
              newPiece.setOccupiedBy(newPiece.getOccupiedBy() +1);
 
+
              //TODO:Check if this works
              if(newPiece.getSpot() == 21) {
                  TileButton spawn = getColorRow(newPiece.getC())[22];
-                 spawn.setOccupiedBy(spawn.getOccupiedBy() - 1);
+                 //spawn.setOccupiedBy(spawn.getOccupiedBy() - 1);
              }
 
         newPiece.setPieceColor(playerColor);
@@ -108,14 +105,11 @@ public class Moves {
             if(newPiece.getC() != newPiece.getPieceColor()) {
                 TileButton[] row = getColorRow(newPiece.getC());
 
-               /* //removes any piece thats on the slider CURRENT BUG
-                for(int i = newPiece.getSpot(); i < newPiece.getSpot() + 3; i++){
-                    if(row[i].getPicture() != null){
-                        row[i].setPicture(null);
-                        row[i].setPieceColor(null);
-                        row[i].setOccupiedBy(0);
-                    }
-                }*/
+                //removes any piece thats on the slider
+                for(int i = newPiece.getSpot() + 1; i < newPiece.getSpot() + 3; i++){
+                    if(row[i].getPicture() != null)
+                        removePiece(row[i]);
+                }
 
                 movePiece(newPiece, row[newPiece.getSpot() + 3], newPiece.getPieceColor(), false);
             }
@@ -129,7 +123,6 @@ public class Moves {
                 for (TileButton m : moves) {
                     m.setId(getId(playerColor));
                     m.setOnAction(e -> {
-                        selectedPiece = m;
                         reset();
                         if(moveAmount == 11)
                             movePiece(tile, m, playerColor, true);
@@ -142,7 +135,7 @@ public class Moves {
 
 
     public ArrayList<TileButton> move(TileButton origSpot, TileColor playerColor, int moveAmount){
-           // Image image = origSpot.getPicture();;
+           // Image image = oldSpot.getPicture();;
 
             int spot = origSpot.getSpot();
 
@@ -390,6 +383,28 @@ public class Moves {
         moves.clear();
     }
 
+    private Image getColorPicture(TileColor c){
+
+        Image rtn = null;
+
+        switch (c){
+            case RED:
+                rtn = controller.redPiece;
+                break;
+            case BLUE:
+                rtn = controller.bluePiece;
+                break;
+            case YELLOW:
+                rtn = controller.yellowPiece;
+                break;
+            case GREEN:
+                rtn = controller.greenPiece;
+                break;
+        }
+
+        return rtn;
+    }
+
     public String getId(TileColor c){
         String rtn = "-move-tile";
         switch(c){
@@ -416,5 +431,212 @@ public class Moves {
         }
         return false;
     }
+
+    public String convertTileButton(TileButton t, boolean piece){
+        String rtn = "";
+
+        TileColor switcher = t.getC();
+
+        //System.out.println("Current switching the " + t.getC() + " row, at spot " + t.getSpot() + ", containing a " + piece);
+
+        if(t.getPieceColor() != null && piece)
+            switcher = t.getPieceColor();
+
+        switch (switcher){
+            case RED:
+                rtn = "R";
+                break;
+            case BLUE:
+                rtn = "B";
+                break;
+            case YELLOW:
+                rtn = "Y";
+                break;
+            case GREEN:
+                rtn = "G";
+                break;
+        }
+
+        return  rtn;
+    }
+
+    public void convertInput(String pawn,String pieceLocation){
+
+            TileColor c = null;
+
+            switch(pieceLocation.charAt(0)){
+                case 'R':
+                    c = TileColor.RED;
+                    break;
+                case 'B':
+                    c = TileColor.BLUE;
+                        break;
+                case 'Y':
+                    c = TileColor.YELLOW;
+                    break;
+                case 'G':
+                    c = TileColor.GREEN;
+                    break;
+            }
+
+            TileColor pieceColor = null;
+
+        switch(pawn.charAt(0)){
+            case 'R':
+                pieceColor= TileColor.RED;
+                break;
+            case 'B':
+                pieceColor= TileColor.BLUE;
+                break;
+            case 'Y':
+                pieceColor = TileColor.YELLOW;
+                break;
+            case 'G':
+                pieceColor = TileColor.GREEN;
+                break;
+        }
+
+            int spot = Integer.parseInt(pieceLocation.substring(1));
+
+            TileButton rtn = getColorRow(c)[spot];
+            rtn.setPieceColor(pieceColor);
+            rtn.setPicture(getColorPicture(rtn.getPieceColor()));
+            rtn.setOnAction(e -> displayMoves(rtn, rtn.getPieceColor(), controller.cardValue));
+            rtn.setOccupiedBy(rtn.getOccupiedBy() + 1);
+
+
+            System.out.println("Piece color: " + rtn.getPieceColor());
+            System.out.println("Tile color: " + rtn.getC());
+            System.out.println("Spot: " + rtn.getSpot());
+
+    }
+
+    private void removePiece(TileButton t){
+        TileButton spawn = getColorRow(t.getPieceColor())[22];
+        spawn.setOccupiedBy(spawn.getOccupiedBy() + 1);
+
+        t.setOccupiedBy(0);
+        t.setPieceColor(null);
+        t.setPicture(null);
+        t.setOnAction(e -> {});
+
+    }
+
+    public void inputClearBoard(){
+            for(int i = 0; i < redRow.length; i++){
+                if(redRow[i].getOccupiedBy() > 0){
+                    redRow[i].setOccupiedBy(0);
+                    redRow[i].setPieceColor(null);
+                    redRow[i].setPicture(null);
+                    redRow[i].setOnAction(e -> {});
+                }
+                if(blueRow[i].getOccupiedBy() > 0){
+                    blueRow[i].setOccupiedBy(0);
+                    blueRow[i].setPieceColor(null);
+                    blueRow[i].setPicture(null);
+                    blueRow[i].setOnAction(e -> {});
+                }
+                if(yellowRow[i].getOccupiedBy() > 0){
+                    yellowRow[i].setOccupiedBy(0);
+                    yellowRow[i].setPieceColor(null);
+                    yellowRow[i].setPicture(null);
+                    yellowRow[i].setOnAction(e -> {});
+                }
+                if(greenRow[i].getOccupiedBy() > 0){
+                    greenRow[i].setOccupiedBy(0);
+                    greenRow[i].setPieceColor(null);
+                    greenRow[i].setPicture(null);
+                    greenRow[i].setOnAction(e -> {});
+                }
+            }
+    }
+
+    public ArrayList<String> getPieces(){
+        ArrayList<String> pieces = new ArrayList<>();
+
+        int redCounter = 1, blueCounter = 1, yellowCounter = 1, greenCounter = 1;
+
+        for(int i = 0; i < redRow.length; i++){
+            if(redRow[i].getOccupiedBy() > 0){
+                for(int j = 0; j < redRow[i].getOccupiedBy(); j++){
+
+                        //Piece #
+                        String piece = convertTileButton(redRow[i], true) + redCounter;
+
+                        //Tile's location
+                        String pos = convertTileButton(redRow[i], false) + redRow[i].getSpot();
+
+                        pieces.add(piece);
+                        pieces.add(pos);
+                        redCounter++;
+
+
+                }
+
+                if(redRow[21].getOccupiedBy() == 4)
+                    gameWon = true;
+            }
+
+            if(blueRow[i].getOccupiedBy() > 0){
+                for(int j = 0; j < blueRow[i].getOccupiedBy(); j++){
+
+                    //Piece #
+                    String piece = convertTileButton(blueRow[i], true) + blueCounter;
+
+                    //Tile's location
+                    String pos = convertTileButton(blueRow[i], false) + blueRow[i].getSpot();
+
+                    pieces.add(piece);
+                    pieces.add(pos);
+                    blueCounter++;
+
+                }
+
+                if(blueRow[21].getOccupiedBy() == 4)
+                    gameWon = true;
+            }
+
+            if(yellowRow[i].getOccupiedBy() > 0){
+                for(int j = 0; j < yellowRow[i].getOccupiedBy(); j++){
+
+                    //Piece #
+                    String piece = convertTileButton(yellowRow[i], true) + yellowCounter;
+
+                    //Tile's location
+                    String pos = convertTileButton(yellowRow[i], false) + yellowRow[i].getSpot();
+
+                    pieces.add(piece);
+                    pieces.add(pos);
+                    yellowCounter++;
+
+                }
+
+                if(yellowRow[21].getOccupiedBy() == 4)
+                    gameWon = true;
+            }
+
+            if(greenRow[i].getOccupiedBy() > 0){
+                for(int j = 0; j < greenRow[i].getOccupiedBy(); j++){
+
+                    //Piece #
+                    String piece = convertTileButton(greenRow[i], true) + greenCounter;
+
+                    //Tile's location
+                    String pos = convertTileButton(greenRow[i], false) + greenRow[i].getSpot();
+
+                    pieces.add(piece);
+                    pieces.add(pos);
+                    greenCounter++;
+
+                }
+            }
+
+            if(greenRow[21].getOccupiedBy() == 4)
+                gameWon = true;
+        }
+
+        return pieces;
+    }
+
 
 }
