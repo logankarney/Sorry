@@ -107,6 +107,8 @@ class SorryClient implements Runnable {
      * @return response from server
      */
     String register_user(String name){
+        if(gameWon)
+            return "The game has ended";
         try {
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
@@ -276,6 +278,8 @@ class SorryClient implements Runnable {
      * @return String representing the JSON data of the currently running game
      */
     String get_game_data(String name){
+        if(gameWon)
+            return "The game has ended";
         try{
             out.flush();
             JSONObject json = new JSONObject();
@@ -309,6 +313,8 @@ class SorryClient implements Runnable {
      * @return The color of the next player
      */
     String update_pawn(String game, String pawn, String position, boolean end){
+        if(gameWon)
+            return "The game has ended";
         if(!isTurn)
             return "This is not your turn";
         try{
