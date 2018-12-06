@@ -2,7 +2,6 @@ package sample;
 
 import javafx.scene.image.Image;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 
 public class Moves {
@@ -10,6 +9,8 @@ public class Moves {
     private static TileButton[] redRow, blueRow, greenRow, yellowRow;
 
     private static ArrayList<TileButton> moves;
+
+    protected static boolean gameWon = false;
 
     private Controller controller;
 
@@ -569,7 +570,11 @@ public class Moves {
                         pieces.add(pos);
                         redCounter++;
 
+
                 }
+
+                if(redRow[21].getOccupiedBy() == 4)
+                    gameWon = true;
             }
 
             if(blueRow[i].getOccupiedBy() > 0){
@@ -586,6 +591,9 @@ public class Moves {
                     blueCounter++;
 
                 }
+
+                if(blueRow[21].getOccupiedBy() == 4)
+                    gameWon = true;
             }
 
             if(yellowRow[i].getOccupiedBy() > 0){
@@ -602,6 +610,9 @@ public class Moves {
                     yellowCounter++;
 
                 }
+
+                if(yellowRow[21].getOccupiedBy() == 4)
+                    gameWon = true;
             }
 
             if(greenRow[i].getOccupiedBy() > 0){
@@ -619,6 +630,9 @@ public class Moves {
 
                 }
             }
+
+            if(greenRow[21].getOccupiedBy() == 4)
+                gameWon = true;
         }
 
         return pieces;
