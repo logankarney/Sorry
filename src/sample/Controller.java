@@ -175,8 +175,6 @@ public class Controller extends Application {
                 try {
                     InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
                     sorryClient.connect(address,Integer.parseInt(port));
-                    Thread t = new Thread(sorryClient);
-                    t.start();
                     sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
 
@@ -217,8 +215,6 @@ public class Controller extends Application {
                addButtons();
 
                sorryClient.connect(inetAddress, Integer.parseInt(port));
-               Thread t = new Thread(sorryClient);
-               t.start();
                sorryClient.register_user(playerName);
                sorryClient.create_game(gameName, chosenColor);
 
