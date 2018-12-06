@@ -277,6 +277,11 @@ public class Controller extends Application {
 
     }
 
+    public void isPlayersTurn(boolean playersTurn){
+        this.playersTurn = true;
+        cardButton.setDisable(false);
+    }
+
     public void updateClient(String message){
         //temporarily keeping this here so the code compiles
     }
@@ -462,6 +467,7 @@ public class Controller extends Application {
 
         //gameLogic.currentPlayer.pawns;
         //TODO: disable drawing of cards, get valid moves
+
     }
 
     private void populateTableView(){
