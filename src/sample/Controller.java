@@ -158,7 +158,9 @@ public class Controller extends Application {
            //sends the last piece to the server
             sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
            yourTurn.setText("");
-           System.out.println(moves.gameWon);
+
+           if(moves.gameWon)
+               sorryClient.setGameWon(true);
        }
 
         else if(e.getSource() == joinButton){
@@ -170,6 +172,22 @@ public class Controller extends Application {
 
                 if(chosenColor.equals("none"))
                     return;
+                else{
+                    switch(chosenColor){
+                        case "Red":
+                            playerColor = TileColor.RED;
+                            break;
+                        case "Blue":
+                            playerColor = TileColor.BLUE;
+                            break;
+                        case "Yellow":
+                            playerColor = TileColor.YELLOW;
+                            break;
+                        case "Green":
+                            playerColor = TileColor.GREEN;
+                            break;
+                    }
+                }
 
                 try {
                     InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
@@ -178,6 +196,7 @@ public class Controller extends Application {
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
 
                     moves = new Moves(this);
+                    moves.color = playerColor;
                 } catch(Exception ex){
                     //ex.printStackTrace();
                 }
@@ -204,6 +223,22 @@ public class Controller extends Application {
                gameName = JoinPopup.getGameName();
                if(chosenColor.equals("none") || gameName.equals("no game name chosen"))
                    return;
+                else{
+                   switch(chosenColor){
+                       case "Red":
+                           playerColor = TileColor.RED;
+                           break;
+                       case "Blue":
+                           playerColor = TileColor.BLUE;
+                           break;
+                       case "Yellow":
+                           playerColor = TileColor.YELLOW;
+                           break;
+                       case "Green":
+                           playerColor = TileColor.GREEN;
+                           break;
+                   }
+               }
 
 
                //sorryClient.register_user(playerName);
@@ -218,6 +253,7 @@ public class Controller extends Application {
                sorryClient.create_game(gameName, chosenColor);
 
                moves = new Moves(this);
+               moves.color = playerColor;
 
            } catch(Exception ex){
                //e.printStacktrace();
@@ -241,7 +277,11 @@ public class Controller extends Application {
 
     }
 
-    public void updateClient(ArrayList message){
+    public void updateClient(String message){
+        //temporarily keeping this here so the code compiles
+    }
+
+    public void updateClient(ArrayList<String> messages){
         moves.inputClearBoard();
         //TODO: parse message
         //moves.convertInput(pawn, location);
