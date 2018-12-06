@@ -109,8 +109,9 @@ class SorryClient  {
      *
      * @return a list of currently running games on the server
      */
-     String get_game_list(){
+     void get_game_list(){
          try {
+            Thread.sleep(1000);
             JSONObject json = new JSONObject();
             JSONObject response = new JSONObject();
             JSONParser parser = new JSONParser();
@@ -119,7 +120,7 @@ class SorryClient  {
             byte[] output = json.toString().getBytes();
             out.write(output);
             out.flush();
-            while(true) {
+         /*   while(true) {
                 response = (JSONObject) parser.parse(in.readLine());
                 if (response.containsValue("game_list"))
                     break;
@@ -160,11 +161,11 @@ class SorryClient  {
                         }
                     }
                 }
-            }*/
-            return return_object.toString();
+            }
+            return return_object.toString();*/
 
         } catch (Exception e){
-            return "error";
+            return;
         }
     }
 
@@ -177,6 +178,7 @@ class SorryClient  {
         if (gameStarted)
             return;
         try {
+            Thread.sleep(1000);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","join_game");
@@ -221,6 +223,7 @@ class SorryClient  {
         if(gameStarted)
             return;
         try{
+            Thread.sleep(1000);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             JSONParser parser = new JSONParser();
@@ -248,7 +251,7 @@ class SorryClient  {
         if(gameWon)
             return;
         try{
-            out.flush();
+            Thread.sleep(1000);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             JSONParser parser = new JSONParser();
@@ -285,6 +288,7 @@ class SorryClient  {
         if(!isTurn)
             return;
         try{
+            Thread.sleep(1000);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             JSONObject response;
@@ -298,7 +302,7 @@ class SorryClient  {
             byte[] output = json.toString().getBytes();
             out.write(output);
             out.flush();
-            Thread.sleep(3000);
+           // Thread.sleep(3000);
             /*while (true) {
                 response = (JSONObject) parser.parse(in.readLine());
                 if(response.containsValue("next_turn"))
@@ -336,6 +340,7 @@ class SorryClient  {
         if(gameStarted)
             return "Game is already in session";
         try{
+            Thread.sleep(1000);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","start_game");
@@ -368,6 +373,12 @@ class SorryClient  {
         gameWon = won;
     }
 
+    static void updateClient(ArrayList updates){
+        controller.updateClient(updates);
+    }
+
+
+
 }
 
 class messageHandler implements Runnable{
@@ -395,8 +406,9 @@ class messageHandler implements Runnable{
                 JSONObject object;
                 JSONParser parser = new JSONParser();
                 object = (JSONObject) parser.parse(in.readLine());
-                if(object.containsValue("game_list"))
-                    System.out.println(object);
+                if(object.containsValue("game_list")) {
+                    String games = parser.parse("data").toString();
+                }
                 if (object.containsValue("pawn_updated")) {
                     System.out.println("Updated!");
                     //System.out.println(object.toString());
@@ -411,8 +423,8 @@ class messageHandler implements Runnable{
                 if(object.containsValue("next_turn")){
                   //  System.out.println(object.toString());
                     JSONObject data = (JSONObject)object.get("data");
-                    //System.out.println(data.toString());
-                    String next_player = data.get("player").toString();
+                    System.out.println(data.toString());
+                    //String next_player = data.get("player").toString();
                     //System.out.println(data.get("player").toString());
                    // System.out.println(SorryClient.user);
                    /* System.out.println(updates);
@@ -433,7 +445,7 @@ class messageHandler implements Runnable{
                   //  System.out.println(updates);
                 }else {
                     System.out.println("Not my turn");
-                    SorryClient.controller.updateClient(updates);
+                    SorryClient.updateClient(updates);
                     updates.clear();
                     System.out.println(updates);
                 }
@@ -472,7 +484,6 @@ class Game2{
         sorry.register_user("lol");
      //   System.out.println(sorry.get_game_list());
         sorry.join_game("red","game");
-        Thread.sleep(4000);
         sorry.start_game("game");
         //       sorry.get_game_data("game");
 //        sorry.get_game_list();

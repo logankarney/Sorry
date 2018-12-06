@@ -435,8 +435,8 @@ public class Controller extends Application {
     public void onRefreshClick(){
         String gamesList;
         try {
-            gamesList = sorryClient.get_game_list();
-            System.out.println(gamesList);
+          //  gamesList = sorryClient.get_game_list();
+         //   System.out.println(gamesList);
             //gamesList = "error";
         } catch (Exception e){
             gamesList = "error";
