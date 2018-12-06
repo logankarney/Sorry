@@ -189,19 +189,25 @@ public class Controller extends Application {
                 }
 
                 try {
+
+                    changeFXML("game.fxml");
+                    addButtons();
+
+                    moves = new Moves(this);
+                    moves.color = playerColor;
+
                     InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
                     sorryClient.connect(address,Integer.parseInt(port));
                     sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
 
-                    moves = new Moves(this);
-                    moves.color = playerColor;
+                    gameStarted = true;
+
                 } catch(Exception ex){
-                    //ex.printStackTrace();
+                    ex.printStackTrace();
                 }
 
-                changeFXML("game.fxml");
-                addButtons();
+
 
             } catch(NullPointerException ex){
             }
@@ -291,6 +297,18 @@ public class Controller extends Application {
         moves.inputClearBoard();
         //TODO: parse message
         //moves.convertInput(pawn, location);
+        for(String temp : messages) {
+
+            System.out.println("currently parsing : " + temp);
+
+            String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
+            System.out.println(loc);
+
+            String pawn = temp.substring(temp.indexOf("pawn:") + 5, temp.indexOf(",player"));
+
+            System.out.println(pawn);
+            moves.convertInput(pawn, loc);
+        }
     }
 
     /** saving for dealing with pieces later **/
@@ -455,6 +473,7 @@ public class Controller extends Application {
             moves.reset();
             Card drawn = gameLogic.drawCard();
             cardValue = drawn.getValue();
+            cardValue = 1;
             setCurrentCardText(drawn.getValue() + "");
             setCurrentCardDescription(drawn.getDesc());
             hasDrawn = true;
