@@ -241,7 +241,7 @@ public class Controller extends Application {
 
     }
 
-    public void updateClient(String message){
+    public void updateClient(ArrayList message){
         moves.inputClearBoard();
         //TODO: parse message
         //moves.convertInput(pawn, location);

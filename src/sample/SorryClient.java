@@ -279,11 +279,11 @@ class SorryClient  {
      * @param end True if turn is over, false if the turn is continuing
      * @return The color of the next player
      */
-    String update_pawn(String game, String pawn, String position, boolean end){
+    void update_pawn(String game, String pawn, String position, boolean end){
         if(gameWon)
-            return "The game has ended";
+            return;
         if(!isTurn)
-            return "This is not your turn";
+            return;
         try{
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
@@ -298,7 +298,7 @@ class SorryClient  {
             byte[] output = json.toString().getBytes();
             out.write(output);
             out.flush();
-            while (true) {
+            /*while (true) {
                 response = (JSONObject) parser.parse(in.readLine());
                 if(response.containsValue("next_turn"))
                     break;
@@ -320,10 +320,10 @@ class SorryClient  {
             }
             response_data = (JSONObject)response.get("data");
             JSONObject players = (JSONObject)response_data.get("players");
-            return players.get(player).toString().toUpperCase();
+            return players.get(player).toString().toUpperCase();*/
         } catch (Exception e){
             e.printStackTrace();
-            return "error";
+        //    return "error";
         }
     }
 
@@ -374,6 +374,7 @@ class messageHandler implements Runnable{
     Socket connection;
     DataOutputStream out;
     BufferedReader in;
+    JSONObject game;
 
     messageHandler(Socket connection){
         try {
@@ -386,6 +387,8 @@ class messageHandler implements Runnable{
     }
 
     public void run(){
+        ArrayList<String> updates = new ArrayList<>();
+        String temp = "";
         while(true){
             try {
                 JSONObject object;
@@ -396,7 +399,8 @@ class messageHandler implements Runnable{
                     //System.out.println(object.toString());
                     JSONObject data = (JSONObject)object.get("data");
                     System.out.println(data.toString());
-                    SorryClient.controller.updateClient(data.toString());
+                    temp = data.get("player").toString();
+                    updates.add(data.toString());
                   /*if (data.get("player").toString().equals(user)) {
                       isTurn = true;
                   }*/
@@ -404,18 +408,29 @@ class messageHandler implements Runnable{
                 if(object.containsValue("next_turn")){
                     System.out.println(object.toString());
                     JSONObject data = (JSONObject)object.get("data");
-                    System.out.println(data.get("player").toString());
-                    System.out.println(SorryClient.user);
+                    //System.out.println(data.get("player").toString());
+                   // System.out.println(SorryClient.user);
+                   /* System.out.println(updates);
+               //     System.out.println("here");
+                    if(data.get("player") != temp){
+                      //  SorryClient.controller.updateClient(updates);
+                        System.out.println("Here");
+                        updates.clear();
+                    }*/
                     if (data.get("player").toString().equals(SorryClient.user)) {
                         SorryClient.isTurn = true;
                     } else{
                         SorryClient.isTurn = false;
                     }
                 }
-                if(SorryClient.isTurn)
-                   System.out.println("My turn");
-                else
-                   System.out.println("Not my turn");
+                if(SorryClient.isTurn) {
+                    System.out.println("My turn");
+                    System.out.println(updates);
+                }else {
+                    System.out.println("Not my turn");
+                    updates.clear();
+                    System.out.println(updates);
+                }
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -432,9 +447,9 @@ class Game{
         sorry.register_user("Tanner");
         sorry.create_game("game","blue");
         Thread.sleep(10000);
+        sorry.update_pawn("game","B1","B11",false);
+        Thread.sleep(10000);
         sorry.update_pawn("game","B1","B11",true);
-        Thread.sleep(30000);
-        System.out.println(sorry.update_pawn("game","B1","B11",true));
         while(true){}
 
     }
@@ -453,6 +468,9 @@ class Game2{
         //       sorry.get_game_data("game");
 //        sorry.get_game_list();
         //   sorry.update_pawn("game","B1","B11",true);
+        Thread.sleep(30000);
+        System.out.println("game2");
+        sorry.update_pawn("game","R1","R11",true);
         while(true){}
     }
 }
