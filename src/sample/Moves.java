@@ -13,8 +13,6 @@ public class Moves {
 
     private Controller controller;
 
-    protected String oldSpot = "", newSpot = "";
-
 
     public Moves(Controller controller){
         this.controller = controller;
@@ -59,10 +57,6 @@ public class Moves {
 
 
     public void movePiece(TileButton oldPiece, TileButton newPiece, TileColor playerColor, boolean swap){
-
-        //TODO: check if no piece was moved
-        oldSpot = convertTileButton(oldPiece);
-        newSpot = convertTileButton(newPiece);
 
         TileButton end = null;
 
@@ -113,14 +107,10 @@ public class Moves {
             if(newPiece.getC() != newPiece.getPieceColor()) {
                 TileButton[] row = getColorRow(newPiece.getC());
 
-               /* //removes any piece thats on the slider CURRENT BUG
-                for(int i = newPiece.getSpot(); i < newPiece.getSpot() + 3; i++){
-                    if(row[i].getPicture() != null){
-                        row[i].setPicture(null);
-                        row[i].setPieceColor(null);
-                        row[i].setOccupiedBy(0);
-                    }
-                }*/
+                //removes any piece thats on the slider
+                for(int i = newPiece.getSpot() + 1; i < newPiece.getSpot() + 3; i++){
+                    removePiece(row[i]);
+                }
 
                 movePiece(newPiece, row[newPiece.getSpot() + 3], newPiece.getPieceColor(), false);
             }
@@ -513,6 +503,13 @@ public class Moves {
             System.out.println("Tile color: " + rtn.getC());
             System.out.println("Spot: " + rtn.getSpot());
 
+    }
+
+    private void removePiece(TileButton t){
+        t.setOccupiedBy(0);
+        t.setPieceColor(null);
+        t.setPicture(null);
+        t.setOnAction(e -> {});
     }
 
     public void inputClearBoard(){

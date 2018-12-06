@@ -142,9 +142,6 @@ public class Controller extends Application {
 
         else if(e.getSource() == endTurn){
 
-           //String oldSpot = moves.oldSpot;
-           //String newSpot = moves.newSpot;
-
            ArrayList<String> pieces = moves.getPieces();
 
            int i;
