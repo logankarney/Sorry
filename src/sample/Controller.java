@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -290,16 +291,15 @@ public class Controller extends Application {
     }
 
     public void setPlayerTurn(String name){
-
-        if(playerName.equals(name)) {
-            this.playersTurn = true;
-            this.hasDrawn = false;
-        }
-
-        else{
-            this.playersTurn = false;
-            this.hasDrawn = true;
-        }
+        Platform.runLater(() -> {
+            if (playerName.equals(name)) {
+                this.playersTurn = true;
+                this.hasDrawn = false;
+            } else {
+                this.playersTurn = false;
+                this.hasDrawn = true;
+            }
+        });
     }
 
     public void updateClient(String message){
@@ -307,23 +307,25 @@ public class Controller extends Application {
     }
 
     public void updateClient(ArrayList<String> messages){
-        if(gameStarted) {
-            moves.inputClearBoard();
-        }
-        //TODO: parse message
-        //moves.convertInput(pawn, location);
-        for(String temp : messages) {
+        Platform.runLater(() -> {
+            if (gameStarted) {
+                moves.inputClearBoard();
+            }
+            //TODO: parse message
+            //moves.convertInput(pawn, location);
+            for (String temp : messages) {
 
-            //String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
-            //String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
-            String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
-            System.out.println(loc);
+                //String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
+                //String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
+                String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
+                System.out.println(loc);
 
-            String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
+                String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
 
-            System.out.println( pawn);
-            moves.convertInput(pawn, loc);
-        }
+                System.out.println(pawn);
+                moves.convertInput(pawn, loc);
+            }
+        });
     }
 
     /** saving for dealing with pieces later **/

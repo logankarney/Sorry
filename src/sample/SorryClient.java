@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 //import com.sun.org.apache.xml.internal.security.signature.reference.ReferenceNodeSetData;
+import javafx.application.Platform;
 import javafx.util.Pair;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
@@ -111,7 +112,7 @@ class SorryClient  {
      */
      void get_game_list(){
          try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
             JSONObject json = new JSONObject();
             JSONObject response = new JSONObject();
             JSONParser parser = new JSONParser();
@@ -178,7 +179,7 @@ class SorryClient  {
         if (gameStarted)
             return;
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","join_game");
@@ -223,7 +224,7 @@ class SorryClient  {
         if(gameStarted)
             return;
         try{
-            Thread.sleep(1000);
+            Thread.sleep(100);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             JSONParser parser = new JSONParser();
@@ -251,7 +252,7 @@ class SorryClient  {
         if(gameWon)
             return;
         try{
-            Thread.sleep(1000);
+            Thread.sleep(100);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             JSONParser parser = new JSONParser();
@@ -288,7 +289,7 @@ class SorryClient  {
         if(!isTurn)
             return;
         try{
-            Thread.sleep(1000);
+            Thread.sleep(100);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             JSONObject response;
@@ -340,7 +341,7 @@ class SorryClient  {
         if(gameStarted)
             return "Game is already in session";
         try{
-            Thread.sleep(1000);
+            Thread.sleep(100);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
             json.put("command","start_game");
