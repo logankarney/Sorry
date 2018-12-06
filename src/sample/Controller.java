@@ -277,7 +277,7 @@ public class Controller extends Application {
 
     }
 
-    public void isPlayersTurn(boolean playersTurn){
+    public void setPlayersTurn(boolean playersTurn){
         this.playersTurn = true;
         this.hasDrawn = false;
         cardButton.setDisable(false);
