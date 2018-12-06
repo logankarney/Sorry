@@ -240,10 +240,10 @@ public class Controller extends Application {
 
     }
 
-    public void updateClient(String pawn, String location, boolean first){
-            if(first)
-                moves.inputClearBoard();
-            moves.convertInput(pawn, location);
+    public void updateClient(String message){
+        moves.inputClearBoard();
+        //TODO: parse message
+        //moves.convertInput(pawn, location);
     }
 
     /** saving for dealing with pieces later **/
