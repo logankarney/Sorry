@@ -277,6 +277,10 @@ public class Controller extends Application {
 
     }
 
+    public void updateClient(String message){
+        //temporarily keeping this here so the code compiles
+    }
+
     public void updateClient(ArrayList<String> messages){
         moves.inputClearBoard();
         //TODO: parse message
