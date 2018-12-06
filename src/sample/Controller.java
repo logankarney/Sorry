@@ -61,8 +61,6 @@ public class Controller extends Application {
 
     protected static int cardValue = 0;
 
-    private Thread t;
-
 
     @Override
     public void start(Stage stage) throws Exception{
@@ -142,6 +140,9 @@ public class Controller extends Application {
 
         else if(e.getSource() == endTurn){
 
+           //String oldSpot = moves.oldSpot;
+           //String newSpot = moves.newSpot;
+
            ArrayList<String> pieces = moves.getPieces();
 
            int i;
@@ -150,29 +151,15 @@ public class Controller extends Application {
                System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
                //uncommenting this causes the server to stop updating. after receiving two messages
-               //sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
+               sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
            }
 
            System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
            //sends the last piece to the server
            //sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
-           System.out.println("converting");
-
-           // moves.convertInput("R3", "B14");
 
            yourTurn.setText("");
-
-
-           //Clears the board in preparation for input
-           moves.inputClearBoard();
-
-           //Resetting the table for  its old data for now
-           for(i = 0; i < pieces.size() - 2; i+=2) {
-               System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
-               moves.convertInput(pieces.get(i), pieces.get(i + 1));
-           }
-
        }
 
         else if(e.getSource() == joinButton){
@@ -188,9 +175,6 @@ public class Controller extends Application {
                 try {
                     InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
                     sorryClient.connect(address,Integer.parseInt(port));
-                   // t = new Thread(sorryClient);
-                    //t.start();
-
                     sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
 
@@ -216,7 +200,6 @@ public class Controller extends Application {
 
            try {
                InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
-
                JoinPopup.display(true, null);
                String chosenColor = JoinPopup.getChosenColor();
                gameName = JoinPopup.getGameName();
@@ -232,9 +215,6 @@ public class Controller extends Application {
                addButtons();
 
                sorryClient.connect(inetAddress, Integer.parseInt(port));
-             //   t = new Thread(sorryClient);
-               //t.start();
-
                sorryClient.register_user(playerName);
                sorryClient.create_game(gameName, chosenColor);
 
@@ -424,6 +404,17 @@ public class Controller extends Application {
         setCurrentCardText(drawn.getValue() + "");
         setCurrentCardDescription(drawn.getDesc());
 
+        //ArrayList<Board> moveList = drawn.getMoves(gameLogic.currentPlayer, gameLogic.board);
+        /*for (TileButton t : moves.calculateMoves(redRow[3], TileColor.RED, drawn.getValue())) {
+                    t.setId("red-calculateMoves-tile");
+                    t.setOnAction(e -> {
+                        moves.reset();
+                    });
+                }
+*/
+        //moves.displayMoves(TileColor.RED, drawn.getValue());
+
+
         //gameLogic.currentPlayer.pawns;
         //TODO: disable drawing of cards, get valid moves
     }
@@ -465,6 +456,16 @@ public class Controller extends Application {
 
     public void setCurrentCardDescription(String newDescription){
         this.currentCardDescription.setText(newDescription);
+    }
+
+    public void changecss(){
+        //for each TileButton passed in
+        /*
+                //store in arraylist to clear later
+                change css id to $playersColor-calculateMoves-tile
+                set selected in that TileButton to true //TODO: have it change some variable to its position
+                on selected click reset every tile in arraylist, then remove them
+         */
     }
 
     public static TileButton[] getRedRow() {
