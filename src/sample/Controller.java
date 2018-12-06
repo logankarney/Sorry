@@ -158,7 +158,9 @@ public class Controller extends Application {
            //sends the last piece to the server
             sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
            yourTurn.setText("");
-           System.out.println(moves.gameWon);
+
+           if(moves.gameWon)
+               sorryClient.setGameWon(true);
        }
 
         else if(e.getSource() == joinButton){
@@ -241,7 +243,7 @@ public class Controller extends Application {
 
     }
 
-    public void updateClient(String message){
+    public void updateClient(ArrayList<String> messages){
         moves.inputClearBoard();
         //TODO: parse message
         //moves.convertInput(pawn, location);
