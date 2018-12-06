@@ -55,7 +55,7 @@ public class Controller extends Application {
     private static SorryClient sorryClient;
     private static GameLogic gameLogic;
 
-    protected static boolean playersTurn = false, gameStarted = false;
+    protected static boolean playersTurn = false, hasDrawn = false, gameStarted = false;
 
     protected static Moves moves;
 
@@ -134,7 +134,6 @@ public class Controller extends Application {
         port = ConnectPopup.getPort();
 
        if(e.getSource() == cardButton){
-           yourTurn.setText("Your Turn");
            onDraw();
         }
 
@@ -254,6 +253,7 @@ public class Controller extends Application {
 
                moves = new Moves(this);
                moves.color = playerColor;
+               playersTurn = true;
 
            } catch(Exception ex){
                //e.printStacktrace();
@@ -279,6 +279,7 @@ public class Controller extends Application {
 
     public void isPlayersTurn(boolean playersTurn){
         this.playersTurn = true;
+        this.hasDrawn = false;
         cardButton.setDisable(false);
     }
 
@@ -447,13 +448,17 @@ public class Controller extends Application {
             sorryClient.start_game(gameName);
         }
 
-       gameLogic = sorryClient.getGame();
-        moves.reset();
-        Card drawn = gameLogic.drawCard();
-        cardValue = drawn.getValue();
-        setCurrentCardText(drawn.getValue() + "");
-        setCurrentCardDescription(drawn.getDesc());
+        if(!hasDrawn) {
+            yourTurn.setText("Your Turn");
 
+            gameLogic = sorryClient.getGame();
+            moves.reset();
+            Card drawn = gameLogic.drawCard();
+            cardValue = drawn.getValue();
+            setCurrentCardText(drawn.getValue() + "");
+            setCurrentCardDescription(drawn.getDesc());
+            hasDrawn = true;
+        }
         //ArrayList<Board> moveList = drawn.getMoves(gameLogic.currentPlayer, gameLogic.board);
         /*for (TileButton t : moves.calculateMoves(redRow[3], TileColor.RED, drawn.getValue())) {
                     t.setId("red-calculateMoves-tile");
@@ -466,8 +471,6 @@ public class Controller extends Application {
 
 
         //gameLogic.currentPlayer.pawns;
-        //TODO: disable drawing of cards, get valid moves
-
     }
 
     private void populateTableView(){

@@ -115,23 +115,27 @@ public class Moves {
 
                 movePiece(newPiece, row[newPiece.getSpot() + 3], newPiece.getPieceColor(), false);
             }
+
+            controller.playersTurn = false;
     }
 
 
     public void displayMoves(TileButton tile, TileColor playerColor, int moveAmount){
-        moves.clear();
-            if(playerColor == tile.getPieceColor() && playerColor == color) {
+        if(controller.playersTurn) {
+            moves.clear();
+            if (playerColor == tile.getPieceColor() && playerColor == color) {
                 ArrayList<TileButton> moves = move(tile, playerColor, moveAmount);
                 for (TileButton m : moves) {
                     m.setId(getId(playerColor));
                     m.setOnAction(e -> {
                         reset();
-                        if(moveAmount == 11)
+                        if (moveAmount == 11)
                             movePiece(tile, m, playerColor, true);
                         else
-                             movePiece(tile, m, playerColor, false);
+                            movePiece(tile, m, playerColor, false);
                     });
                 }
+            }
         }
     }
 
