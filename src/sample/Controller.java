@@ -147,12 +147,12 @@ public class Controller extends Application {
            int i;
 
            for(i = 0; i < pieces.size() - 2; i+=2) {
-               System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
+              // System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
                sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
            }
 
-           System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
+           //System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
            //sends the last piece to the server
             sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
@@ -307,7 +307,9 @@ public class Controller extends Application {
     }
 
     public void updateClient(ArrayList<String> messages){
-        moves.inputClearBoard();
+        if(gameStarted) {
+            moves.inputClearBoard();
+        }
         //TODO: parse message
         //moves.convertInput(pawn, location);
         for(String temp : messages) {
