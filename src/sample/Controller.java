@@ -156,7 +156,6 @@ public class Controller extends Application {
            System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
            //sends the last piece to the server
-           sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
 
            yourTurn.setText("");
        }
@@ -239,6 +238,12 @@ public class Controller extends Application {
             removeStartButton();
        }*/
 
+    }
+
+    public void updateClient(String pawn, String location, boolean first){
+            if(first)
+                moves.inputClearBoard();
+            moves.convertInput(pawn, location);
     }
 
     /** saving for dealing with pieces later **/
