@@ -150,13 +150,13 @@ public class Controller extends Application {
            for(i = 0; i < pieces.size() - 2; i+=2) {
                System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
-               //sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
+               sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
            }
 
            System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
            //sends the last piece to the server
-            //sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
+            sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
            yourTurn.setText("");
            System.out.println(moves.gameWon);
        }
