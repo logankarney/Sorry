@@ -25,6 +25,7 @@ class SorryClient  {
     static boolean gameStarted;
     static boolean isTurn;
     static boolean gameWon;
+    static boolean turnBegin = false;
     static String user;
     String game_name;
     String color;
@@ -375,9 +376,10 @@ class SorryClient  {
     }
 
     static void updateClient(ArrayList updates){
+        ArrayList<String> temp = new ArrayList<>();
+        temp.addAll(updates);
         controller.updateClient(updates);
         //updates.clear();;
-        //return updates;
     }
 
     static void setPlayerTurn(String name){
@@ -422,8 +424,9 @@ class messageHandler implements Runnable{
                     JSONObject data = (JSONObject)object.get("data");
                     //System.out.println(data.toString());
                     //temp = data.get("player").toString();
-                     updates.add(data.toString());
-                     SorryClient.updateClient(updates);
+                     //updates.add(data.toString());
+                     if(!updates.contains(data.toString()))
+                        updates.add(data.toString());
                   /*if (data.get("player").toString().equals(user)) {
                       isTurn = true;
                   }*/
@@ -445,17 +448,24 @@ class messageHandler implements Runnable{
                     }*/
                     if (data.get("player").toString().equals(SorryClient.user)) {
                         SorryClient.isTurn = true;
+                        SorryClient.turnBegin = true;
+
                     } else{
+                       // SorryClient.updateClient(updates);
                         SorryClient.isTurn = false;
-                        SorryClient.updateClient(updates);
+                        SorryClient.turnBegin = false;
                     }
+                }
+                if(!SorryClient.isTurn || !SorryClient.turnBegin) {
+                    SorryClient.updateClient(updates);
+                    Thread.sleep(5000);
+                    updates.clear();
                 }
                 if(SorryClient.isTurn) {
                     //System.out.println("My turn");
                   //  System.out.println(updates);
                 }else {
                     System.out.println("Not my turn");
-
                     System.out.println(updates);
                 }
             } catch (Exception e){

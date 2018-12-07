@@ -315,8 +315,8 @@ public class Controller extends Application {
 
     public void updateClient(ArrayList<String> messages){
 
-        String name = messages.get(0);
-        name = name.substring(name.indexOf("player\":") + 9, name.length() - 2);
+     //   String name = messages.get(0);
+        //name = name.substring(name.indexOf("player\":") + 9, name.length() - 2);
 
             Platform.runLater(() -> {
                 if (gameStarted && messages.size() > 0) {
