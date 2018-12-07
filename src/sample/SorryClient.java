@@ -386,6 +386,10 @@ class SorryClient  {
         controller.setPlayerTurn(name);
     }
 
+    static void setGameList(String games){
+        controller.setGamesList(games);
+    }
+
 
 
 }
@@ -416,7 +420,8 @@ class messageHandler implements Runnable{
                 JSONParser parser = new JSONParser();
                 object = (JSONObject) parser.parse(in.readLine());
                 if(object.containsValue("game_list")) {
-                    String games = parser.parse("data").toString();
+                    String games = object.get("data").toString();
+                    SorryClient.setGameList(games);
                 }
                 if (object.containsValue("pawn_updated")) {
                     System.out.println("Updated!");
@@ -475,17 +480,19 @@ class messageHandler implements Runnable{
     }
 }
 
-/*class Game{
+class Game {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
 
         SorryClient sorry = new SorryClient();
-        sorry.connect(InetAddress.getByName("127.0.0.1") ,12000);
+        sorry.connect(InetAddress.getByName("127.0.0.1"), 12000);
         sorry.register_user("Tanner");
-        sorry.create_game("game","blue");
-        Thread.sleep(5000);
+        sorry.create_game("game", "blue");
+        sorry.get_game_list();
+    }
+}
      //   sorry.get_game_list();
-      /*  sorry.update_pawn("game","B1","B11",false);
+      /* sorry.update_pawn("game","B1","B11",false);
         Thread.sleep(10000);
         sorry.update_pawn("game","B1","B11",true);
         Thread.sleep(100000);
