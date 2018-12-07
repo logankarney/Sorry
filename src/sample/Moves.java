@@ -511,13 +511,16 @@ public class Moves {
 
             rtn.setPieceColor(pieceColor);
             rtn.setPicture(getColorPicture(rtn.getPieceColor()));
-            rtn.setOnAction(e -> displayMoves(rtn, rtn.getPieceColor(), controller.cardValue));
+            rtn.setOnAction(e -> {
+                reset();
+                displayMoves(rtn, rtn.getPieceColor(), controller.cardValue);
+            });
             rtn.setOccupiedBy(rtn.getOccupiedBy() + 1);
 
 
-            System.out.println("Piece color: " + rtn.getPieceColor());
-            System.out.println("Tile color: " + rtn.getC());
-            System.out.println("Spot: " + rtn.getSpot());
+           // System.out.println("Piece color: " + rtn.getPieceColor());
+           // System.out.println("Tile color: " + rtn.getC());
+           // System.out.println("Spot: " + rtn.getSpot());
 
     }
 
