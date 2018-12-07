@@ -376,6 +376,8 @@ class SorryClient  {
 
     static void updateClient(ArrayList updates){
         controller.updateClient(updates);
+        //updates.clear();;
+        //return updates;
     }
 
     static void setPlayerTurn(String name){
@@ -420,7 +422,8 @@ class messageHandler implements Runnable{
                     JSONObject data = (JSONObject)object.get("data");
                     //System.out.println(data.toString());
                     //temp = data.get("player").toString();
-                    updates.add(data.toString());
+                     updates.add(data.toString());
+                     SorryClient.updateClient(updates);
                   /*if (data.get("player").toString().equals(user)) {
                       isTurn = true;
                   }*/
@@ -444,6 +447,7 @@ class messageHandler implements Runnable{
                         SorryClient.isTurn = true;
                     } else{
                         SorryClient.isTurn = false;
+                        SorryClient.updateClient(updates);
                     }
                 }
                 if(SorryClient.isTurn) {
@@ -451,8 +455,7 @@ class messageHandler implements Runnable{
                   //  System.out.println(updates);
                 }else {
                     System.out.println("Not my turn");
-                    SorryClient.updateClient(updates);
-                    updates.clear();
+
                     System.out.println(updates);
                 }
             } catch (Exception e){
@@ -462,7 +465,7 @@ class messageHandler implements Runnable{
     }
 }
 
-class Game{
+/*class Game{
 
     public static void main(String[] args) throws Exception{
 
@@ -477,7 +480,7 @@ class Game{
         sorry.update_pawn("game","B1","B11",true);
         Thread.sleep(100000);
         sorry.update_pawn("game","B2","B9",true);
-        while(true){}*/
+        while(true){}
 
     }
 
@@ -499,4 +502,4 @@ class Game2{
         sorry.update_pawn("game","R1","R11",true);
         while(true){}
     }
-}
+}*/

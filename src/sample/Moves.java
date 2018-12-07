@@ -121,10 +121,8 @@ public class Moves {
 
 
     public void displayMoves(TileButton tile, TileColor playerColor, int moveAmount){
-        reset();
-        moves.clear();
         if(controller.playersTurn) {
-
+            moves.clear();
             if (playerColor == tile.getPieceColor() && playerColor == color) {
                 ArrayList<TileButton> moves = move(tile, playerColor, moveAmount);
                 for (TileButton m : moves) {
