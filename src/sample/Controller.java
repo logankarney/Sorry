@@ -97,6 +97,9 @@ public class Controller extends Application {
 
     public void setGamesList(String gamesList){
         this.gamesList = gamesList;
+        System.out.println("setGamesList: "+this.gamesList);
+     //   System.out.println("controller");
+        //System.out.println(gamesList);
     }
 
 
@@ -280,7 +283,7 @@ public class Controller extends Application {
                sorryClient.connect(inetAddress, Integer.parseInt(port));
                sorryClient.register_user(playerName);
                sorryClient.create_game(gameName, chosenColor);
-
+               sorryClient.get_game_list();
                playersTurn = true;
                hasDrawn = false;
 
@@ -498,7 +501,17 @@ public class Controller extends Application {
 
     public void onRefreshClick(){
 
-        System.out.println("games list ->" + gamesList);
+        try {
+            sorryClient.get_game_list();
+            System.out.println("Button clicked");
+            System.out.println("onRefreshClick: "+gamesList);
+          //  gamesList = sorryClient.get_game_list();
+         //   System.out.println(gamesList);
+            //gamesList = "error";
+        } catch (Exception e){
+            gamesList = "error";
+            System.out.println("Games list");
+        }
 
         /*
         if(!gamesList.equals("none")){
