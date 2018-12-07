@@ -65,7 +65,7 @@ public class Controller extends Application {
 
     protected static int cardValue = 0;
 
-    private static boolean immune = true;
+    private static String gamesList;
 
 
     @Override
@@ -93,6 +93,10 @@ public class Controller extends Application {
 
     //    buttonSound = new Media(new File("src/res/HITMARKER.mp3").toURI().toString());
       //  buttonPlayer = new MediaPlayer(buttonSound);
+    }
+
+    public void setGamesList(String gamesList){
+        this.gamesList = gamesList;
     }
 
 
