@@ -65,7 +65,7 @@ public class Controller extends Application {
 
     protected static int cardValue = 0;
 
-    private static boolean immune = false;
+    private static boolean immune = true;
 
 
     @Override
@@ -309,10 +309,8 @@ public class Controller extends Application {
                 this.playersTurn = true;
                 this.hasDrawn = false;
             } else {
-              //  if(!immune){
-                    moves.inputClearBoard();
-                    //immune = false
-                //}
+                        moves.inputClearBoard();
+
                 this.playersTurn = false;
                 this.hasDrawn = true;
             }
