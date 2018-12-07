@@ -432,7 +432,7 @@ public class Moves {
         }
         return  rtn;
     }
-    
+
 
     public String convertTileButton(TileButton t, boolean piece){
         String rtn = "";
@@ -661,7 +661,7 @@ public class Moves {
     }
 
     public static void main(String[] args){
-        String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
+        /*String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
         //String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
         String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
         System.out.println(loc);
@@ -673,6 +673,36 @@ public class Moves {
         System.out.println(name);
 
         System.out.println( pawn);
+*/
+
+            //String temp = "{\"games\":[{\"my game\":{\"players\":{\"Logan\":\"Red\"}}}]}";
+       String temp = "{\"games\":[{\"Logan's game\":{\"players\":{\"logan\":\"Red\"}}},{\"Tanner's game\":{\"players\":{\"Tanner\":\"Red\"}}}]}";
+
+
+        String sub = temp.substring(temp.indexOf("games\":[{") + 9, temp.length() - 4);
+        String[] info = sub.split("}}},\\{");
+        for(String all : info){
+            //System.out.println(all);
+            //String game_name = all.substring(0,all.indexOf("players") - 3);
+            //System.out.println(game_name);
+
+            int nameSpot = all.indexOf("players");
+            //String name = all.substring(nameSpot. );
+            //System.out.println(name);
+
+            String colors = "";
+
+            if(all.contains("Red"))
+                colors += "R";
+            if(all.contains("Blue"))
+                colors += "B";
+            if(all.contains("Yellow"))
+                colors += "Y";
+            if(all.contains("Green"))
+                colors += "G";
+
+            //System.out.println(colors);
+        }
 
     }
 

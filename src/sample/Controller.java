@@ -77,22 +77,6 @@ public class Controller extends Application {
         stage.setScene(scene);
         stage.show();
         stage.setResizable(false);
-
-       // backgroundSound = new Media(new File("src/res/bensound-hipjazz.mp3").toURI().toString());
-        //backgroundPlayer = new MediaPlayer(backgroundSound);
-       // backgroundPlayer.play();
-
-        //https://stackoverflow.com/questions/43190594/javafx-mediaplayer-loop
-        //  answer by Berke Bakar
-      //  backgroundPlayer.setOnEndOfMedia(() -> {
-       //     backgroundPlayer.seek(Duration.ZERO);
-      //      backgroundPlayer.play();
-        //});
-
-
-
-    //    buttonSound = new Media(new File("src/res/HITMARKER.mp3").toURI().toString());
-      //  buttonPlayer = new MediaPlayer(buttonSound);
     }
 
     public void setGamesList(String gamesList){
@@ -132,6 +116,12 @@ public class Controller extends Application {
 
             sorryClient = new SorryClient(this);
             populateTableView();
+
+            try {
+                InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
+                sorryClient.connect(inetAddress, Integer.parseInt(port));
+                sorryClient.register_user(playerName);
+            } catch (Exception e){}
             onRefreshClick();
 
             firstTime = false;
@@ -213,9 +203,9 @@ public class Controller extends Application {
                     moves = new Moves(this);
                     moves.color = playerColor;
 
-                    InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
-                    sorryClient.connect(address,Integer.parseInt(port));
-                    sorryClient.register_user(playerName);
+                    //InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
+                    //sorryClient.connect(address,Integer.parseInt(port));
+                    //sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
 
                     //TODO: MAYBE CHANGE THIS LOGIC
@@ -245,7 +235,7 @@ public class Controller extends Application {
 
                isHost = true;
 
-               InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
+
                JoinPopup.display(true, null);
                String chosenColor = JoinPopup.getChosenColor();
                gameName = JoinPopup.getGameName();
@@ -280,8 +270,7 @@ public class Controller extends Application {
                moves.color = playerColor;
                playersTurn = true;
 
-               sorryClient.connect(inetAddress, Integer.parseInt(port));
-               sorryClient.register_user(playerName);
+
                sorryClient.create_game(gameName, chosenColor);
                sorryClient.get_game_list();
                playersTurn = true;
@@ -515,19 +504,48 @@ public class Controller extends Application {
             System.out.println("Games list");
         }
 
+        try {
+            String sub = gamesList.substring(gamesList.indexOf("games\":[{") + 9, gamesList.length() - 4);
+            String[] info = sub.split("}}},\\{");
+            for (String all : info) {
+                //System.out.println(all);
+                String game_name = all.substring(0, all.indexOf("players") - 3);
+                //System.out.println(game_name);
+
+                String colors = "";
+
+                if (all.contains("Red"))
+                    colors += "R";
+                if (all.contains("Blue"))
+                    colors += "B";
+                if (all.contains("Yellow"))
+                    colors += "Y";
+                if (all.contains("Green"))
+                    colors += "G";
+
+                System.out.println(colors);
+
+                GameInfo room = new GameInfo(game_name, "name", colors);
+                tableView.getItems().add(room);
+            }
+        } catch(Exception e){
+            System.out.println("caught exception");
+        }
+
+
+
         /*
         if(!gamesList.equals("none")){
             String[] games = gamesList.split("\n");
             for (String game : games) {
                 String[] gameData = game.split("\t");
-                GameInfo room = new FileInfo(gameData[0], gameData[1], ect.);
-                table.getItems().add(room);
+
             }
         }
         */
 
-        GameInfo game1 = new GameInfo("Logan's game", "logan",   "127.0.0.1","R");
-        tableView.getItems().add(game1);
+        //GameInfo game1 = new GameInfo("Logan's game", "logan",   "R");
+        //tableView.getItems().add(game1);
 
         tableView.refresh();
     }
@@ -573,11 +591,6 @@ public class Controller extends Application {
                 new PropertyValueFactory<GameInfo,String>("hostName")
         );
 
-        TableColumn hostIPCol = new TableColumn("Host IP");
-        hostIPCol.setCellValueFactory(
-                new PropertyValueFactory<GameInfo,String>("hostIP")
-        );
-
         TableColumn playersCol = new TableColumn("Players");
         playersCol.setCellValueFactory(
                 new PropertyValueFactory<GameInfo,String>("players")
@@ -586,9 +599,8 @@ public class Controller extends Application {
 
         lobbyNameCol.setMinWidth(300);
         hostNameCol.setMinWidth(240);
-        hostIPCol.setMinWidth(200);
         playersCol.setMinWidth(50);
-        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, hostIPCol, playersCol);
+        tableView.getColumns().addAll(lobbyNameCol, hostNameCol,  playersCol);
     }
 
     public String getCurrentCardText() {
@@ -637,13 +649,11 @@ public class Controller extends Application {
 
         private final SimpleStringProperty lobbyName;
         private final SimpleStringProperty hostName;
-        private final SimpleStringProperty hostIP;
         private final SimpleStringProperty players;
 
-        private GameInfo(String lobbyName, String hostName, String hostIP, String players){
+        private GameInfo(String lobbyName, String hostName, String players){
             this.lobbyName = new SimpleStringProperty(lobbyName);
             this.hostName = new SimpleStringProperty(hostName);
-            this.hostIP = new SimpleStringProperty(hostIP);
             this.players = new SimpleStringProperty(players);
         }
 
@@ -668,13 +678,6 @@ public class Controller extends Application {
             return hostName;
         }
 
-        public String getHostIP() {
-            return hostIP.get();
-        }
-
-        public SimpleStringProperty hostIPProperty() {
-            return hostIP;
-        }
 
         public SimpleStringProperty playersProperty() {
             return players;
