@@ -486,7 +486,7 @@ class Game {
     public static void main(String[] args) throws Exception {
 
         SorryClient sorry = new SorryClient();
-        sorry.connect(InetAddress.getByName("127.0.0.1"), 12000);
+        //sorry.connect(InetAddress.getByName("127.0.0.1"), 12000);
         sorry.register_user("Tanner");
         sorry.create_game("game", "blue");
         sorry.get_game_list();

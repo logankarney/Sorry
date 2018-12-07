@@ -118,7 +118,7 @@ public class Controller extends Application {
             populateTableView();
 
             try {
-                InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
+                InetAddress inetAddress = InetAddress.getByName("35.39.165.136");
                 sorryClient.connect(inetAddress, Integer.parseInt(port));
                 sorryClient.register_user(playerName);
             } catch (Exception e){}
