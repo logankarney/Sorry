@@ -421,6 +421,7 @@ class messageHandler implements Runnable{
                 object = (JSONObject) parser.parse(in.readLine());
                 if(object.containsValue("game_list")) {
                     String games = object.get("data").toString();
+                    System.out.println("Sorry Client: "+games);
                     SorryClient.setGameList(games);
                 }
                 if (object.containsValue("pawn_updated")) {
