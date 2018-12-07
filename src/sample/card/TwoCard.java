@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class TwoCard extends Card {
     public TwoCard(){
         value = 2;
-        desc =  "Start a Pawn Out or move one man, which is already in play, forward two squares. Draw again.";
+        desc =  "Start a Pawn Out or move one man, which is already in play, forward two squares.";
     }
 
     public ArrayList<Board> getMoves(Player p, Board b){

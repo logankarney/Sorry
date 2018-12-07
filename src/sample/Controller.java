@@ -1,6 +1,8 @@
+
 package sample;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -17,7 +19,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.card.Card;
 
+import java.lang.reflect.Array;
 import java.net.InetAddress;
+import java.util.ArrayList;
 
 public class Controller extends Application {
 
@@ -26,7 +30,7 @@ public class Controller extends Application {
 
     @FXML private TableView<GameInfo> tableView = new TableView<>();
 
-    @FXML private Button hostButton, joinButton, refreshButton;
+    @FXML private Button hostButton, joinButton, refreshButton, endTurn;
 
     @FXML private Button cardButton;
 
@@ -42,11 +46,6 @@ public class Controller extends Application {
     /** The outside rows for each color */
     private static TileButton[] redRow, blueRow, greenRow, yellowRow;
 
-    /** the inside lane for each color */
-    private static TileButton[] redHome, blueHome, greenHome, yellowHome;
-
-    /** The spawn for each color, red's is 0, blue's is 1, ect */
-    private static TileButton[] spawns;
 
     protected static TileColor playerColor = null;
 
@@ -56,9 +55,18 @@ public class Controller extends Application {
 
     protected Image redPiece, bluePiece, yellowPiece, greenPiece;
 
-    private static SorryClient sorryBoard;
+    private static SorryClient sorryClient;
+    private static GameLogic gameLogic;
 
-    protected static boolean playersTurn = false;
+    protected static boolean playersTurn = false, hasDrawn = false, gameStarted = false;
+
+    private static boolean isHost = false;
+
+    protected static Moves moves;
+
+    protected static int cardValue = 0;
+
+    private static String gamesList = "";
 
 
     @Override
@@ -70,22 +78,13 @@ public class Controller extends Application {
         stage.setScene(scene);
         stage.show();
         stage.setResizable(false);
+    }
 
-       // backgroundSound = new Media(new File("src/res/bensound-hipjazz.mp3").toURI().toString());
-        //backgroundPlayer = new MediaPlayer(backgroundSound);
-       // backgroundPlayer.play();
-
-        //https://stackoverflow.com/questions/43190594/javafx-mediaplayer-loop
-        //  answer by Berke Bakar
-      //  backgroundPlayer.setOnEndOfMedia(() -> {
-       //     backgroundPlayer.seek(Duration.ZERO);
-      //      backgroundPlayer.play();
-        //});
-
-
-
-    //    buttonSound = new Media(new File("src/res/HITMARKER.mp3").toURI().toString());
-      //  buttonPlayer = new MediaPlayer(buttonSound);
+    public void setGamesList(String gamesList){
+        this.gamesList = gamesList;
+        System.out.println("setGamesList: "+this.gamesList);
+     //   System.out.println("controller");
+        //System.out.println(gamesList);
     }
 
 
@@ -107,22 +106,23 @@ public class Controller extends Application {
             port = ConnectPopup.getPort();
 
             //size = amount of tiles in rows, 5 for home, 1 for finish, 1 for spawn
-            redRow = new TileButton[size];
-            redHome = new TileButton[7];
+            redRow = new TileButton[size + 7];
 
-            blueRow = new TileButton[size];
-            blueHome = new TileButton[7];
+            blueRow = new TileButton[size + 7];
 
-            yellowRow = new TileButton[size];
-            yellowHome = new TileButton[7];
+            yellowRow = new TileButton[size + 7];
 
-            greenRow = new TileButton[size];
-            greenHome = new TileButton[7];
+            greenRow = new TileButton[size + 7];
 
-            spawns = new TileButton[4];
 
-            sorryBoard = new SorryClient(this);
+            sorryClient = new SorryClient(this);
             populateTableView();
+
+            try {
+                InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
+                sorryClient.connect(inetAddress, Integer.parseInt(port));
+                sorryClient.register_user(playerName);
+            } catch (Exception e){}
             onRefreshClick();
 
             firstTime = false;
@@ -131,39 +131,83 @@ public class Controller extends Application {
 
 
     @FXML private void fxButtonClicked(Event e){
-//        buttonPlayer.stop();
- //       buttonPlayer.play();
 
         playerName = ConnectPopup.getUsername();
         port = ConnectPopup.getPort();
 
        if(e.getSource() == cardButton){
-           yourTurn.setText("Your Turn");
            onDraw();
         }
+
+        else if(e.getSource() == endTurn){
+
+
+           ArrayList<String> pieces = moves.getPieces();
+
+           int i;
+
+           for(i = 0; i < pieces.size() - 2; i+=2) {
+
+               sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
+           }
+
+
+           //sends the last piece to the server
+            sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
+
+           yourTurn.setText("");
+
+           if(moves.gameWon)
+               sorryClient.setGameWon(true);
+       }
 
         else if(e.getSource() == joinButton){
             try {
                 GameInfo chosenGame = tableView.getSelectionModel().getSelectedItem();
                 JoinPopup.display(false, chosenGame.getPlayers());
 
+                gameName = chosenGame.getLobbyName();
                 String chosenColor = JoinPopup.getChosenColor();
 
                 if(chosenColor.equals("none"))
                     return;
-
-                try {
-                    InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
-                    sorryBoard.connect(address,Integer.parseInt(port));
-
-                    sorryBoard.register_user(playerName);
-                    sorryBoard.join_game(chosenColor, chosenGame.getLobbyName());
-                } catch(Exception ex){
-                    //ex.printStackTrace();
+                else{
+                    switch(chosenColor){
+                        case "Red":
+                            playerColor = TileColor.RED;
+                            break;
+                        case "Blue":
+                            playerColor = TileColor.BLUE;
+                            break;
+                        case "Yellow":
+                            playerColor = TileColor.YELLOW;
+                            break;
+                        case "Green":
+                            playerColor = TileColor.GREEN;
+                            break;
+                    }
                 }
 
-                changeFXML("game.fxml");
-                addButtons();
+                try {
+
+                    changeFXML("game.fxml");
+                    addButtons();
+
+                    moves = new Moves(this);
+                    moves.color = playerColor;
+
+                    sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
+
+                    //TODO: MAYBE CHANGE THIS LOGIC
+                    gameStarted = false;
+                    playersTurn = false;
+                    hasDrawn = true;
+
+                } catch(Exception ex){
+                    ex.printStackTrace();
+                }
+
+
 
             } catch(NullPointerException ex){
             }
@@ -178,45 +222,97 @@ public class Controller extends Application {
        else if(e.getSource() == hostButton) {
 
            try {
-               InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
+
+               isHost = true;
+
 
                JoinPopup.display(true, null);
                String chosenColor = JoinPopup.getChosenColor();
                gameName = JoinPopup.getGameName();
                if(chosenColor.equals("none") || gameName.equals("no game name chosen"))
                    return;
-
-
-               //sorryBoard.register_user(playerName);
-               //sorryBoard.join_game(chosenColor, playerName);
+                else{
+                   switch(chosenColor){
+                       case "Red":
+                           playerColor = TileColor.RED;
+                           break;
+                       case "Blue":
+                           playerColor = TileColor.BLUE;
+                           break;
+                       case "Yellow":
+                           playerColor = TileColor.YELLOW;
+                           break;
+                       case "Green":
+                           playerColor = TileColor.GREEN;
+                           break;
+                   }
+               }
 
                changeFXML("game.fxml");
 
                addButtons();
 
-               sorryBoard.connect(inetAddress, Integer.parseInt(port));
-               sorryBoard.register_user(playerName);
-               sorryBoard.create_game(gameName, chosenColor);
+               moves = new Moves(this);
+               moves.color = playerColor;
+               playersTurn = true;
+
+
+               sorryClient.create_game(gameName, chosenColor);
+               sorryClient.get_game_list();
+               playersTurn = true;
+               hasDrawn = false;
+
+
            } catch(Exception ex){
                //e.printStacktrace();
            }
 
        }
 
-       /*else if(e.getSource() == toggleCSSButton){
-           greenRow[3].setPicture(greenPiece);
-           if(greenRow[3].getId().equals("yellow-tile"))
-           greenRow[3].setId("yellow-move-tile");
-           else
-               greenRow[3].setId("yellow-tile");
-       }*/
+    }
 
-       /*else if(e.getSource() == startButton){
-            String gameName = JoinPopup.getGameName();
-            sorryBoard.start_game(gameName);
-            removeStartButton();
-       }*/
+    public void setPlayerTurn(String name){
+        Platform.runLater(() -> {
+            if (playerName.equals(name)) {
+                this.playersTurn = true;
+                this.hasDrawn = false;
+                moves.reset();
+            } else {
+                        moves.inputClearBoard();
 
+                this.playersTurn = false;
+                this.hasDrawn = true;
+            }
+        });
+    }
+
+
+    public void updateClient(ArrayList<String> messages){
+
+            Platform.runLater(() -> {
+
+                addPieces(messages);
+
+            });
+
+
+
+    }
+
+    public void addPieces(ArrayList<String> messages){
+        for (String temp : messages) {
+
+            String name = messages.get(0);
+            name = name.substring(name.indexOf("player\":") + 9, name.length() - 2);
+
+            String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
+
+            String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
+
+
+            System.out.println("creating the " + pawn + " pawn at " + loc +" due to " + name);
+            moves.convertInput(pawn, loc);
+        }
     }
 
     /** saving for dealing with pieces later **/
@@ -269,112 +365,145 @@ public class Controller extends Application {
 
         }
 
-        int offset = 16;
 
-        for(int i = size; i < redHome.length + offset - 1; i++){
-            redHome[i - offset] = new TileButton(TileColor.RED, i);
-            redHome[i - offset].setLayoutX(33 + 46 * 2);
-            redHome[i - offset].setLayoutY(33 + (i + 1 - size)* 46);
+        for(int i = size; i < redRow.length  - 1; i++){
+            redRow[i] = new TileButton(TileColor.RED, i);
+            redRow[i].setLayoutX(33 + 46 * 2);
+            redRow[i].setLayoutY(33 + (i + 1 - size)* 46);
 
-            blueHome[i - offset] = new TileButton(TileColor.BLUE, i);
-            blueHome[i - offset].setLayoutX((33 + 15 * 46) - (i - size) * 46);
-            blueHome[i - offset].setLayoutY(33 + 46 * 2);
+            blueRow[i] = new TileButton(TileColor.BLUE, i);
+            blueRow[i].setLayoutX((33 + 15 * 46) - (i - size) * 46);
+            blueRow[i].setLayoutY(33 + 46 * 2);
 
-            yellowHome[i - offset] = new TileButton(TileColor.YELLOW, i);
-            yellowHome[i - offset].setLayoutX(33 + 14 * 46);
-            yellowHome[i - offset].setLayoutY(33 + 16 * 46 - (i - size + 1) * 46);
+            yellowRow[i] = new TileButton(TileColor.YELLOW, i);
+            yellowRow[i].setLayoutX(33 + 14 * 46);
+            yellowRow[i].setLayoutY(33 + 16 * 46 - (i - size + 1) * 46);
 
-            greenHome[i - offset] = new TileButton(TileColor.GREEN, i);
-            greenHome[i - offset].setLayoutX(33 + (i + 1- size)* 46);
-            greenHome[i - offset].setLayoutY(33 + 46 * 14);
+            greenRow[i] = new TileButton(TileColor.GREEN, i);
+            greenRow[i].setLayoutX(33 + (i + 1- size)* 46);
+            greenRow[i].setLayoutY(33 + 46 * 14);
 
             //Scoring tile
-            if(i == redHome.length + offset - 2){
-                redHome[i - offset].setPrefSize(92,92);
-                redHome[i - offset].setOccupiedBy(0);
+            if(i == redRow.length -2){
+                redRow[i].setPrefSize(92,92);
+                redRow[i].setOccupiedBy(0);
 
-                blueHome[i - offset].setPrefSize(92,92);
-                blueHome[i - offset].setLayoutX(blueHome[i - offset].getLayoutX() - 46);
-                blueHome[i - offset].setOccupiedBy(0);
+                blueRow[i].setPrefSize(92,92);
+                blueRow[i].setLayoutX(blueRow[i].getLayoutX() - 46);
+                blueRow[i].setOccupiedBy(0);
 
-                yellowHome[i - offset].setPrefSize(92,92);
-                yellowHome[i - offset].setLayoutX(yellowHome[i - offset].getLayoutX() - 46);
-                yellowHome[i - offset].setLayoutY(yellowHome[i - offset].getLayoutY() - 46);
-                yellowHome[i - offset].setOccupiedBy(0);
+                yellowRow[i].setPrefSize(92,92);
+                yellowRow[i].setLayoutX(yellowRow[i].getLayoutX() - 46);
+                yellowRow[i].setLayoutY(yellowRow[i].getLayoutY() - 46);
+                yellowRow[i].setOccupiedBy(0);
 
-                greenHome[i - offset].setPrefSize(92,92);
-                greenHome[i - offset].setLayoutY(greenHome[i - offset].getLayoutY() - 46);
-                greenHome[i - offset].setOccupiedBy(0);
+                greenRow[i].setPrefSize(92,92);
+                greenRow[i].setLayoutY(greenRow[i].getLayoutY() - 46);
+                greenRow[i].setOccupiedBy(0);
             }
 
-            pane.getChildren().addAll(redHome[i - offset], blueHome[i - offset], yellowHome[i - offset], greenHome[i - offset]);
+            pane.getChildren().addAll(redRow[i], blueRow[i], yellowRow[i], greenRow[i]);
 
         }
 
         //home area
         int last = 22;
 
-        spawns[0] = new TileButton(TileColor.RED, last);
-        spawns[0].setPrefSize(92,92);
-        spawns[0].setLayoutX(46 * 4 + 33);
-        spawns[0].setLayoutY(33 + 46);
-        spawns[0].setOccupiedBy(4);
+        redRow[last] = new TileButton(TileColor.RED, last);
+        redRow[last].setPrefSize(92,92);
+        redRow[last].setLayoutX(46 * 4 + 33);
+        redRow[last].setLayoutY(33 + 46);
+        redRow[last].setOccupiedBy(4);
 
-        spawns[1] = new TileButton(TileColor.BLUE, last);
-        spawns[1].setPrefSize(92, 92);
-        spawns[1].setLayoutX(33 + 14 * 46);
-        spawns[1].setLayoutY(33 + 46 * 4);
-        spawns[1].setOccupiedBy(4);
+        blueRow[last] = new TileButton(TileColor.BLUE, last);
+        blueRow[last] .setPrefSize(92, 92);
+        blueRow[last] .setLayoutX(33 + 14 * 46);
+        blueRow[last] .setLayoutY(33 + 46 * 4);
+        blueRow[last] .setOccupiedBy(4);
 
-        spawns[2] = new TileButton(TileColor.YELLOW, last);
-        spawns[2].setPrefSize(92,92);
-        spawns[2].setLayoutX(33 + 11 * 46);
-        spawns[2].setLayoutY(33 + 14 * 46);
-        spawns[2].setOccupiedBy(4);
+        yellowRow[last]  = new TileButton(TileColor.YELLOW, last);
+        yellowRow[last] .setPrefSize(92,92);
+        yellowRow[last] .setLayoutX(33 + 11 * 46);
+        yellowRow[last] .setLayoutY(33 + 14 * 46);
+        yellowRow[last] .setOccupiedBy(4);
 
-        spawns[3] = new TileButton(TileColor.GREEN, last);
-        spawns[3].setPrefSize(92,92);
-        spawns[3].setLayoutX(33 + 46);
-        spawns[3].setLayoutY(33 + 46 * 11);
-        spawns[3].setOccupiedBy(4);
+        greenRow[last] = new TileButton(TileColor.GREEN, last);
+        greenRow[last] .setPrefSize(92,92);
+        greenRow[last] .setLayoutX(33 + 46);
+        greenRow[last] .setLayoutY(33 + 46 * 11);
+        greenRow[last] .setOccupiedBy(4);
 
-        pane.getChildren().addAll(spawns[0], spawns[1], spawns[2], spawns[3]);
+        pane.getChildren().addAll(redRow[last], blueRow[last], yellowRow[last], greenRow[last]);
     }
 
     public void onRefreshClick(){
-        String gamesList;
+
+        tableView.getItems().clear();;
+
         try {
-            gamesList = sorryBoard.get_game_list();
-            System.out.println(gamesList);
-            gamesList = "error";
+            sorryClient.get_game_list();
+            System.out.println("Button clicked");
+            System.out.println("onRefreshClick: "+gamesList);
+
         } catch (Exception e){
             gamesList = "error";
+            System.out.println("Games list");
         }
 
-        /*
-        if(!gamesList.equals("none")){
-            String[] games = gamesList.split("\n");
-            for (String game : games) {
-                String[] gameData = game.split("\t");
-                GameInfo room = new FileInfo(gameData[0], gameData[1], ect.);
-                table.getItems().add(room);
+        try {
+            String sub = gamesList.substring(gamesList.indexOf("games\":[{") + 9, gamesList.length() - 4);
+            String[] info = sub.split("}}},\\{");
+            for (String all : info) {
+                String game_name = all.substring(1, all.indexOf("players") - 4);
+
+                int nameSpot = all.indexOf("players");
+
+                String name = all.substring(nameSpot + 10);
+                String names[] = name.split("\"");
+
+                String colors = "";
+
+                if (all.contains("Red"))
+                    colors += "R";
+                if (all.contains("Blue"))
+                    colors += "B";
+                if (all.contains("Yellow"))
+                    colors += "Y";
+                if (all.contains("Green"))
+                    colors += "G";
+
+                System.out.println(colors);
+
+                GameInfo room = new GameInfo(game_name, names[1], colors);
+                tableView.getItems().add(room);
             }
+        } catch(Exception e){
+            System.out.println("caught exception");
         }
-        */
 
-        GameInfo game1 = new GameInfo("Logan's game", "logan",   "127.0.0.1","R");
-        tableView.getItems().add(game1);
 
         tableView.refresh();
     }
-
     public void onDraw(){
 
-        Card drawn = sorryBoard.getGame().drawCard();
-        setCurrentCardText(drawn.getValue() + "");
-        setCurrentCardDescription(drawn.getDesc());
+        if(!gameStarted){
+            gameStarted = true;
+            if(isHost)
+                sorryClient.start_game(gameName);
+        }
 
-        //TODO: disable drawing of cards, get valid moves
+        if(!hasDrawn) {
+            yourTurn.setText("Your Turn");
+
+            gameLogic = sorryClient.getGame();
+            moves.reset();
+            Card drawn = gameLogic.drawCard();
+            cardValue = drawn.getValue();
+            setCurrentCardText(drawn.getValue() + "");
+            setCurrentCardDescription(drawn.getDesc());
+            hasDrawn = true;
+        }
+
     }
 
     private void populateTableView(){
@@ -386,11 +515,6 @@ public class Controller extends Application {
                 new PropertyValueFactory<GameInfo,String>("hostName")
         );
 
-        TableColumn hostIPCol = new TableColumn("Host IP");
-        hostIPCol.setCellValueFactory(
-                new PropertyValueFactory<GameInfo,String>("hostIP")
-        );
-
         TableColumn playersCol = new TableColumn("Players");
         playersCol.setCellValueFactory(
                 new PropertyValueFactory<GameInfo,String>("players")
@@ -399,9 +523,8 @@ public class Controller extends Application {
 
         lobbyNameCol.setMinWidth(300);
         hostNameCol.setMinWidth(240);
-        hostIPCol.setMinWidth(200);
         playersCol.setMinWidth(50);
-        tableView.getColumns().addAll(lobbyNameCol, hostNameCol, hostIPCol, playersCol);
+        tableView.getColumns().addAll(lobbyNameCol, hostNameCol,  playersCol);
     }
 
     public String getCurrentCardText() {
@@ -416,15 +539,6 @@ public class Controller extends Application {
         this.currentCardDescription.setText(newDescription);
     }
 
-    public void changecss(){
-        //for each TileButton passed in
-        /*
-                //store in arraylist to clear later
-                change css id to $playersColor-move-tile
-                set selected in that TileButton to true //TODO: have it change some variable to its position
-                on selected click reset every tile in arraylist, then remove them
-         */
-    }
 
     public static TileButton[] getRedRow() {
         return redRow;
@@ -442,37 +556,19 @@ public class Controller extends Application {
         return yellowRow;
     }
 
-    public static TileButton[] getRedHome() {
-        return redHome;
-    }
-
-    public static TileButton[] getBlueHome() {
-        return blueHome;
-    }
-
-    public static TileButton[] getGreenHome() {
-        return greenHome;
-    }
-
-    public static TileButton[] getYellowHome() {
-        return yellowHome;
-    }
-
-    public static TileButton[] getSpawns() {
-        return spawns;
+    public Text getCurrentCard() {
+        return currentCard;
     }
 
     public static class GameInfo{
 
         private final SimpleStringProperty lobbyName;
         private final SimpleStringProperty hostName;
-        private final SimpleStringProperty hostIP;
         private final SimpleStringProperty players;
 
-        private GameInfo(String lobbyName, String hostName, String hostIP, String players){
+        private GameInfo(String lobbyName, String hostName, String players){
             this.lobbyName = new SimpleStringProperty(lobbyName);
             this.hostName = new SimpleStringProperty(hostName);
-            this.hostIP = new SimpleStringProperty(hostIP);
             this.players = new SimpleStringProperty(players);
         }
 
@@ -497,13 +593,6 @@ public class Controller extends Application {
             return hostName;
         }
 
-        public String getHostIP() {
-            return hostIP.get();
-        }
-
-        public SimpleStringProperty hostIPProperty() {
-            return hostIP;
-        }
 
         public SimpleStringProperty playersProperty() {
             return players;
@@ -517,6 +606,3 @@ public class Controller extends Application {
         launch(args);
     }
 }
-
-
-

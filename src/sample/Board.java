@@ -55,7 +55,7 @@ public class Board {
     }
 
     /**
-     * Attempt to move the specified pawn. True if successful.
+     * Attempt to calculateMoves the specified pawn. True if successful.
      * @param p
      * @param numSpaces
      */
@@ -192,9 +192,9 @@ public class Board {
     }
 
     /**
-     * Attempt to move a pawn from spawn
+     * Attempt to calculateMoves a pawn from spawn
      * @param p
-     * @return true if move is successful
+     * @return true if calculateMoves is successful
      */
     public boolean moveFromStart(Pawn p){
         int id = p.getPlayerID();
