@@ -501,6 +501,8 @@ public class Controller extends Application {
 
     public void onRefreshClick(){
 
+        tableView.getItems().clear();;
+
         try {
             sorryClient.get_game_list();
             System.out.println("Button clicked");
