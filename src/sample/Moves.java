@@ -653,6 +653,10 @@ public class Moves {
 
         String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
 
+        String name = temp;
+        name = name.substring(name.indexOf("player\":") + 9, name.length() - 2);
+        System.out.println(name);
+
         System.out.println( pawn);
 
     }

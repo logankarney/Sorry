@@ -314,25 +314,30 @@ public class Controller extends Application {
     }
 
     public void updateClient(ArrayList<String> messages){
-        Platform.runLater(() -> {
-            if (gameStarted && messages.size() > 0) {
-                moves.inputClearBoard();
-            }
-            //TODO: parse message
-            //moves.convertInput(pawn, location);
-            for (String temp : messages) {
 
-                //String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
-                //String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
-                String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
-                System.out.println(loc);
+        String name = messages.get(0);
+        name = name.substring(name.indexOf("player\":") + 9, name.length() - 2);
 
-                String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
+            Platform.runLater(() -> {
+                if (gameStarted && messages.size() > 0) {
+                    moves.inputClearBoard();
+                }
+                //TODO: parse message
+                //moves.convertInput(pawn, location);
+                for (String temp : messages) {
 
-                System.out.println(pawn);
-                moves.convertInput(pawn, loc);
-            }
-        });
+                    //String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
+                    //String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
+                    String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
+                    System.out.println(loc);
+
+                    String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
+
+                    System.out.println(pawn);
+                    moves.convertInput(pawn, loc);
+                }
+            });
+
     }
 
     /** saving for dealing with pieces later **/

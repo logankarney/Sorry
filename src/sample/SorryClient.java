@@ -25,6 +25,7 @@ class SorryClient  {
     static boolean gameStarted;
     static boolean isTurn;
     static boolean gameWon;
+    static boolean sentThisTurn = false;
     static String user;
     String game_name;
     String color;
@@ -289,6 +290,10 @@ class SorryClient  {
         if(!isTurn)
             return;
         try{
+
+            if(end)
+                sentThisTurn = true;
+
             Thread.sleep(100);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
@@ -375,7 +380,10 @@ class SorryClient  {
     }
 
     static void updateClient(ArrayList updates){
-        controller.updateClient(updates);
+        if(!sentThisTurn) {
+            controller.updateClient(updates);
+            sentThisTurn = true;
+        }
         //updates.clear();;
         //return updates;
     }
