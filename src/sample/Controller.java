@@ -118,7 +118,7 @@ public class Controller extends Application {
             populateTableView();
 
             try {
-                InetAddress inetAddress = InetAddress.getByName("35.39.165.136");
+                InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
                 sorryClient.connect(inetAddress, Integer.parseInt(port));
                 sorryClient.register_user(playerName);
             } catch (Exception e){}
@@ -130,8 +130,6 @@ public class Controller extends Application {
 
 
     @FXML private void fxButtonClicked(Event e){
-//        buttonPlayer.stop();
- //       buttonPlayer.play();
 
         playerName = ConnectPopup.getUsername();
         port = ConnectPopup.getPort();
@@ -142,25 +140,19 @@ public class Controller extends Application {
 
         else if(e.getSource() == endTurn){
 
-           //String oldSpot = moves.oldSpot;
-           //String newSpot = moves.newSpot;
 
            ArrayList<String> pieces = moves.getPieces();
 
            int i;
 
            for(i = 0; i < pieces.size() - 2; i+=2) {
-              // System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
                sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), false);
            }
 
-           //System.out.println(pieces.get(i) + ":" + pieces.get(i + 1));
 
            //sends the last piece to the server
             sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
-
-           //immune = true;
 
            yourTurn.setText("");
 
@@ -203,9 +195,6 @@ public class Controller extends Application {
                     moves = new Moves(this);
                     moves.color = playerColor;
 
-                    //InetAddress address = InetAddress.getByName(chosenGame.getHostIP());
-                    //sorryClient.connect(address,Integer.parseInt(port));
-                    //sorryClient.register_user(playerName);
                     sorryClient.join_game(chosenColor, chosenGame.getLobbyName());
 
                     //TODO: MAYBE CHANGE THIS LOGIC
@@ -258,10 +247,6 @@ public class Controller extends Application {
                    }
                }
 
-
-               //sorryClient.register_user(playerName);
-               //sorryClient.join_game(chosenColor, playerName);
-
                changeFXML("game.fxml");
 
                addButtons();
@@ -283,20 +268,6 @@ public class Controller extends Application {
 
        }
 
-       /*else if(e.getSource() == toggleCSSButton){
-           greenRow[3].setPicture(greenPiece);
-           if(greenRow[3].getId().equals("yellow-tile"))
-           greenRow[3].setId("yellow-calculateMoves-tile");
-           else
-               greenRow[3].setId("yellow-tile");
-       }*/
-
-       /*else if(e.getSource() == startButton){
-            String gameName = JoinPopup.getGameName();
-            sorryClient.start_game(gameName);
-            removeStartButton();
-       }*/
-
     }
 
     public void setPlayerTurn(String name){
@@ -317,32 +288,10 @@ public class Controller extends Application {
 
     public void updateClient(ArrayList<String> messages){
 
-     //   String name = messages.get(0);
-        //name = name.substring(name.indexOf("player\":") + 9, name.length() - 2);
-
             Platform.runLater(() -> {
 
-                /*ArrayList<String> backup = new ArrayList<>();
-                for(String s : moves.getPieces()){
-                    System.out.println("HERE");
-                    backup.add(new String(s));
-                }*/
-
-                if (gameStarted && messages.size() > 0) {
-                   // moves.inputClearBoard();
-                }
                 addPieces(messages);
-                //TODO: parse message
-                //moves.convertInput(pawn, location);
 
-           /*     if(moves.isEmpty()){
-
-                    System.out.println("its empty HERE");
-                    for(String s : backup){
-                        System.out.println("test");
-                    }
-                    addPieces(backup);
-                }*/
             });
 
 
@@ -355,8 +304,6 @@ public class Controller extends Application {
             String name = messages.get(0);
             name = name.substring(name.indexOf("player\":") + 9, name.length() - 2);
 
-            //String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
-            //String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
             String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
 
             String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
@@ -496,9 +443,7 @@ public class Controller extends Application {
             sorryClient.get_game_list();
             System.out.println("Button clicked");
             System.out.println("onRefreshClick: "+gamesList);
-          //  gamesList = sorryClient.get_game_list();
-         //   System.out.println(gamesList);
-            //gamesList = "error";
+
         } catch (Exception e){
             gamesList = "error";
             System.out.println("Games list");
@@ -508,15 +453,12 @@ public class Controller extends Application {
             String sub = gamesList.substring(gamesList.indexOf("games\":[{") + 9, gamesList.length() - 4);
             String[] info = sub.split("}}},\\{");
             for (String all : info) {
-                //System.out.println(all);
                 String game_name = all.substring(1, all.indexOf("players") - 4);
 
                 int nameSpot = all.indexOf("players");
-                //String endSpot = all.substring(all.indexOf(nameSpot + 10), all.indexOf("\":", nameSpot));
-                //System.out.println(nameSpot);
+
                 String name = all.substring(nameSpot + 10);
                 String names[] = name.split("\"");
-                //System.out.println(game_name);
 
                 String colors = "";
 
@@ -539,20 +481,6 @@ public class Controller extends Application {
         }
 
 
-
-        /*
-        if(!gamesList.equals("none")){
-            String[] games = gamesList.split("\n");
-            for (String game : games) {
-                String[] gameData = game.split("\t");
-
-            }
-        }
-        */
-
-        //GameInfo game1 = new GameInfo("Logan's game", "logan",   "R");
-        //tableView.getItems().add(game1);
-
         tableView.refresh();
     }
     public void onDraw(){
@@ -574,18 +502,7 @@ public class Controller extends Application {
             setCurrentCardDescription(drawn.getDesc());
             hasDrawn = true;
         }
-        //ArrayList<Board> moveList = drawn.getMoves(gameLogic.currentPlayer, gameLogic.board);
-        /*for (TileButton t : moves.calculateMoves(redRow[3], TileColor.RED, drawn.getValue())) {
-                    t.setId("red-calculateMoves-tile");
-                    t.setOnAction(e -> {
-                        moves.reset();
-                    });
-                }
-*/
-        //moves.displayMoves(TileColor.RED, drawn.getValue());
 
-
-        //gameLogic.currentPlayer.pawns;
     }
 
     private void populateTableView(){
@@ -621,15 +538,6 @@ public class Controller extends Application {
         this.currentCardDescription.setText(newDescription);
     }
 
-    public void changecss(){
-        //for each TileButton passed in
-        /*
-                //store in arraylist to clear later
-                change css id to $playersColor-calculateMoves-tile
-                set selected in that TileButton to true //TODO: have it change some variable to its position
-                on selected click reset every tile in arraylist, then remove them
-         */
-    }
 
     public static TileButton[] getRedRow() {
         return redRow;

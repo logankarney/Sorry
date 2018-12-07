@@ -133,18 +133,7 @@ public class GameLogic{
     public Board getBoard() {
         return board;
     }
-
-
-/*public static void main(String[] args){
-    GameLogic game = new GameLogic();
-    game.addPlayer(new Player("Ryan", TileColor.BLUE));
-    game.addPlayer(new Player("Em", TileColor.GREEN));
-    game.addPlayer(new Player("Tanner", TileColor.YELLOW));
-    game.addPlayer(new Player("Logan", TileColor.RED));
-
-    game.startGame();
-
-}*/
+    
 
 
 }

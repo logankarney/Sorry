@@ -44,14 +44,6 @@ public class Moves {
         moves = new ArrayList<TileButton>();
 
 
-        //for testing purposes
-
-      /*  redRow[20].setPicture(controller.redPiece);
-        redRow[20].setOccupiedBy(1);
-        redRow[20].setPieceColor(TileColor.RED);
-        redRow[20].setOnAction(e -> displayMoves(redRow[20], TileColor.RED, controller.cardValue));
-*/
-
     }
 
 
@@ -80,7 +72,6 @@ public class Moves {
              //TODO:Check if this works
              if(newPiece.getSpot() == 21) {
                  TileButton spawn = getColorRow(newPiece.getC())[22];
-                 //spawn.setOccupiedBy(spawn.getOccupiedBy() - 1);
              }
 
         newPiece.setPieceColor(playerColor);
@@ -160,10 +151,6 @@ public class Moves {
 
                     moves.add(currentRow[moveAmount + 15]);
 
-                    //if(spot + 6 > moveAmount) {
-                    //TileButton[] row = getColorHome(playerColor);
-                    //moves.add(row[moveAmount - 1]);
-                    //}
                 }
                     return moves;
             }
@@ -439,7 +426,6 @@ public class Moves {
 
         TileColor switcher = t.getC();
 
-        //System.out.println("Current switching the " + t.getC() + " row, at spot " + t.getSpot() + ", containing a " + piece);
 
         if(t.getPieceColor() != null && piece)
             switcher = t.getPieceColor();
@@ -510,10 +496,6 @@ public class Moves {
             });
             rtn.setOccupiedBy(rtn.getOccupiedBy() + 1);
 
-
-           // System.out.println("Piece color: " + rtn.getPieceColor());
-           // System.out.println("Tile color: " + rtn.getC());
-           // System.out.println("Spot: " + rtn.getSpot());
 
     }
 
@@ -661,34 +643,16 @@ public class Moves {
     }
 
     public static void main(String[] args){
-        /*String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
-        //String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
-        String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
-        System.out.println(loc);
 
-        String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
-
-        String name = temp;
-        name = name.substring(name.indexOf("player\":") + 9, name.length() - 2);
-        System.out.println(name);
-
-        System.out.println( pawn);
-*/
-
-            //String temp = "{\"games\":[{\"my game\":{\"players\":{\"Logan\":\"Red\"}}}]}";
        String temp = "{\"games\":[{\"Logan's game\":{\"players\":{\"logan\":\"Red\"}}},{\"Tanner's game\":{\"players\":{\"Tanner\":\"Red\"}}}]}";
 
 
         String sub = temp.substring(temp.indexOf("games\":[{") + 9, temp.length() - 4);
         String[] info = sub.split("}}},\\{");
         for(String all : info){
-            //System.out.println(all);
-            //String game_name = all.substring(0,all.indexOf("players") - 3);
-            //System.out.println(game_name);
 
             int nameSpot = all.indexOf("players");
-            //String endSpot = all.substring(all.indexOf(nameSpot + 10), all.indexOf("\":", nameSpot));
-            //System.out.println(nameSpot);
+
             String name = all.substring(nameSpot + 10);
             String names[] = name.split("\"");
             System.out.println(names[1]);
@@ -704,7 +668,6 @@ public class Moves {
             if(all.contains("Green"))
                 colors += "G";
 
-            //System.out.println(colors);
         }
 
     }
