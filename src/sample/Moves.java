@@ -355,13 +355,16 @@ public class Moves {
 
             else if(moveAmount == 11){
                     for(TileButton t : getEnemyPieces(playerColor)){
-                        moves.add(t);
+
+                        if(t.getSpot() < 16)
+                            moves.add(t);
                     }
             }
 
             else if(moveAmount == 13){
                 for(TileButton t : getEnemyPieces(playerColor)){
-                    moves.add(t);
+                    if(t.getSpot() < 16)
+                        moves.add(t);
                 }
             }
             return moves;

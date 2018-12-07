@@ -65,7 +65,7 @@ public class Controller extends Application {
 
     protected static int cardValue = 0;
 
-    private static String gamesList;
+    private static String gamesList = "";
 
 
     @Override
@@ -312,6 +312,7 @@ public class Controller extends Application {
             if (playerName.equals(name)) {
                 this.playersTurn = true;
                 this.hasDrawn = false;
+                moves.reset();
             } else {
                         moves.inputClearBoard();
 
@@ -496,15 +497,8 @@ public class Controller extends Application {
     }
 
     public void onRefreshClick(){
-        String gamesList;
-        try {
-          //  gamesList = sorryClient.get_game_list();
-         //   System.out.println(gamesList);
-            //gamesList = "error";
-        } catch (Exception e){
-            gamesList = "error";
-            System.out.println("Games list");
-        }
+
+        System.out.println("games list ->" + gamesList);
 
         /*
         if(!gamesList.equals("none")){
@@ -537,7 +531,6 @@ public class Controller extends Application {
             moves.reset();
             Card drawn = gameLogic.drawCard();
             cardValue = drawn.getValue();
-            cardValue = 1;
             setCurrentCardText(drawn.getValue() + "");
             setCurrentCardDescription(drawn.getDesc());
             hasDrawn = true;
