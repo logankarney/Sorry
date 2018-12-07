@@ -1,3 +1,4 @@
+
 package sample;
 
 import javafx.application.Application;
@@ -605,6 +606,3 @@ public class Controller extends Application {
         launch(args);
     }
 }
-
-
-
