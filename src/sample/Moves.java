@@ -432,14 +432,7 @@ public class Moves {
         }
         return  rtn;
     }
-
-    public boolean winner(TileButton home){
-        if(home.getOccupiedBy() == 4){
-            System.out.println("winner");
-            return true;
-        }
-        return false;
-    }
+    
 
     public String convertTileButton(TileButton t, boolean piece){
         String rtn = "";
