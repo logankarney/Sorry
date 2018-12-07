@@ -505,6 +505,7 @@ public class Moves {
             int spot = Integer.parseInt(pieceLocation.substring(1));
 
             TileButton rtn = getColorRow(c)[spot];
+
             rtn.setPieceColor(pieceColor);
             rtn.setPicture(getColorPicture(rtn.getPieceColor()));
             rtn.setOnAction(e -> displayMoves(rtn, rtn.getPieceColor(), controller.cardValue));
@@ -644,6 +645,21 @@ public class Moves {
         return pieces;
     }
 
+    public boolean isEmpty(){
+        for(int i = 0; i < redRow.length; i++) {
+            if (redRow[i].getOccupiedBy() > 0) {
+                return false;
+            }
+            if (blueRow[i].getOccupiedBy() > 0)
+                return false;
+            if (yellowRow[i].getOccupiedBy() > 0)
+                return false;
+            if(greenRow[i].getOccupiedBy() > 0)
+                return false;
+        }
+
+        return true;
+    }
 
     public static void main(String[] args){
         String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
@@ -660,5 +676,6 @@ public class Moves {
         System.out.println( pawn);
 
     }
+
 
 }

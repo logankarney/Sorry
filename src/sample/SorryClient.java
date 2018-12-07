@@ -458,7 +458,7 @@ class messageHandler implements Runnable{
                 }
                 if(!SorryClient.isTurn || !SorryClient.turnBegin) {
                     SorryClient.updateClient(updates);
-                    Thread.sleep(5000);
+                    Thread.sleep(500);
                     updates.clear();
                 }
                 if(SorryClient.isTurn) {

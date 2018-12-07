@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.card.Card;
 
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
@@ -63,6 +64,8 @@ public class Controller extends Application {
     protected static Moves moves;
 
     protected static int cardValue = 0;
+
+    private static boolean immune = false;
 
 
     @Override
@@ -159,6 +162,9 @@ public class Controller extends Application {
 
            //sends the last piece to the server
             sorryClient.update_pawn(gameName, pieces.get(i), pieces.get(i + 1), true);
+
+           //immune = true;
+
            yourTurn.setText("");
 
            if(moves.gameWon)
@@ -303,15 +309,16 @@ public class Controller extends Application {
                 this.playersTurn = true;
                 this.hasDrawn = false;
             } else {
+              //  if(!immune){
+                    moves.inputClearBoard();
+                    //immune = false
+                //}
                 this.playersTurn = false;
                 this.hasDrawn = true;
             }
         });
     }
 
-    public void updateClient(String message){
-        //temporarily keeping this here so the code compiles
-    }
 
     public void updateClient(ArrayList<String> messages){
 
@@ -319,25 +326,50 @@ public class Controller extends Application {
         //name = name.substring(name.indexOf("player\":") + 9, name.length() - 2);
 
             Platform.runLater(() -> {
+
+                /*ArrayList<String> backup = new ArrayList<>();
+                for(String s : moves.getPieces()){
+                    System.out.println("HERE");
+                    backup.add(new String(s));
+                }*/
+
                 if (gameStarted && messages.size() > 0) {
-                    moves.inputClearBoard();
+                   // moves.inputClearBoard();
                 }
+                addPieces(messages);
                 //TODO: parse message
                 //moves.convertInput(pawn, location);
-                for (String temp : messages) {
 
-                    //String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
-                    //String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
-                    String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
-                    System.out.println(loc);
+           /*     if(moves.isEmpty()){
 
-                    String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
-
-                    System.out.println(pawn);
-                    moves.convertInput(pawn, loc);
-                }
+                    System.out.println("its empty HERE");
+                    for(String s : backup){
+                        System.out.println("test");
+                    }
+                    addPieces(backup);
+                }*/
             });
 
+
+
+    }
+
+    public void addPieces(ArrayList<String> messages){
+        for (String temp : messages) {
+
+            String name = messages.get(0);
+            name = name.substring(name.indexOf("player\":") + 9, name.length() - 2);
+
+            //String temp ="{\"game\":\"Logan's game\",\"new_position\":\"R17\",\"pawn\":\"R3\",\"player\":\"Player1\"}";
+            //String loc = temp.substring(temp.indexOf("new_position:") + 13, temp.indexOf(",pawn"));
+            String loc = temp.substring(temp.indexOf("new_position\":") + 15, temp.indexOf((",\"pawn")) - 1);
+
+            String pawn = temp.substring(temp.indexOf("pawn\":") + 7, temp.indexOf(",\"player") - 1);
+
+
+            System.out.println("creating the " + pawn + " pawn at " + loc +" due to " + name);
+            moves.convertInput(pawn, loc);
+        }
     }
 
     /** saving for dealing with pieces later **/
