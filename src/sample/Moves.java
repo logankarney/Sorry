@@ -687,8 +687,11 @@ public class Moves {
             //System.out.println(game_name);
 
             int nameSpot = all.indexOf("players");
-            //String name = all.substring(nameSpot. );
-            //System.out.println(name);
+            //String endSpot = all.substring(all.indexOf(nameSpot + 10), all.indexOf("\":", nameSpot));
+            //System.out.println(nameSpot);
+            String name = all.substring(nameSpot + 10);
+            String names[] = name.split("\"");
+            System.out.println(names[1]);
 
             String colors = "";
 

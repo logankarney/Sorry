@@ -509,7 +509,13 @@ public class Controller extends Application {
             String[] info = sub.split("}}},\\{");
             for (String all : info) {
                 //System.out.println(all);
-                String game_name = all.substring(0, all.indexOf("players") - 3);
+                String game_name = all.substring(1, all.indexOf("players") - 4);
+
+                int nameSpot = all.indexOf("players");
+                //String endSpot = all.substring(all.indexOf(nameSpot + 10), all.indexOf("\":", nameSpot));
+                //System.out.println(nameSpot);
+                String name = all.substring(nameSpot + 10);
+                String names[] = name.split("\"");
                 //System.out.println(game_name);
 
                 String colors = "";
@@ -525,7 +531,7 @@ public class Controller extends Application {
 
                 System.out.println(colors);
 
-                GameInfo room = new GameInfo(game_name, "name", colors);
+                GameInfo room = new GameInfo(game_name, names[1], colors);
                 tableView.getItems().add(room);
             }
         } catch(Exception e){
